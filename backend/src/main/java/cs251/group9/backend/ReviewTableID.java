@@ -3,13 +3,12 @@ package cs251.group9.backend;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
-
+import jakarta.persistence.Embeddable;
 import jakarta.persistence.Entity;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 
-
-@Entity
+@Embeddable
 public class ReviewTableID implements Serializable {
     @ManyToOne
     @JoinColumn(name = "userID")
