@@ -5,6 +5,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.*;
 
-public interface CustomerRepository extends JpaRepository<Customer, String> {
-    Optional<Customer> findByUNameAndUEmail(String UName, String UEmail);
+public interface PlayedRepository extends JpaRepository<Played, PlayedId> {
+    List<Played> findByGameGameID(String gameId);
 }

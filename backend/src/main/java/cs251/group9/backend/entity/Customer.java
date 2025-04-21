@@ -1,115 +1,89 @@
-/*
- * Customer Entity
- */
-
 package cs251.group9.backend.entity;
 
-import java.math.BigDecimal;
 import jakarta.persistence.*;
 
+
 @Entity
-@Table(name = "Customer")
 public class Customer {
-
     @Id
-    private String userId;
+    @Column(length = 10)
+    private String userID;
 
     @Column(unique = true, nullable = false)
-    private String uName;
+    private String UName;
 
     @Column(unique = true, nullable = false)
-    private String uEmail;
+    private String UEmail;
 
-    private String uNumber;
+    private String UNumber;
     private Integer age;
     private String country;
-    private String dName;
+    private String DName;
     private String name;
     private String surname;
-
-    @Column(precision = 10, scale = 2)
-    private BigDecimal money = BigDecimal.ZERO;
-
-	public String getUserId() {
-		return userId;
+    private Integer money = 0;
+	public String getUserID() {
+		return userID;
 	}
-
-	public void setUserId(String userId) {
-		this.userId = userId;
+	public void setUserID(String userID) {
+		this.userID = userID;
 	}
-
 	public String getUName() {
-		return uName;
+		return UName;
 	}
-
-	public void setUName(String uName) {
-		this.uName = uName;
+	public void setUName(String UName) {
+		this.UName = UName;
 	}
-
 	public String getUEmail() {
-		return uEmail;
+		return UEmail;
 	}
-
-	public void setUEmail(String uEmail) {
-		this.uEmail = uEmail;
+	public void setUEmail(String UEmail) {
+		this.UEmail = UEmail;
 	}
-
 	public String getUNumber() {
-		return uNumber;
+		return UNumber;
 	}
-
-	public void setUNumber(String uNumber) {
-		this.uNumber = uNumber;
+	public void setUNumber(String UNumber) {
+		this.UNumber = UNumber;
 	}
-
 	public Integer getAge() {
 		return age;
 	}
-
 	public void setAge(Integer age) {
 		this.age = age;
 	}
-
 	public String getCountry() {
 		return country;
 	}
-
 	public void setCountry(String country) {
 		this.country = country;
 	}
-
 	public String getDName() {
-		return dName;
+		return DName;
 	}
-
-	public void setDName(String dName) {
-		this.dName = dName;
+	public void setDName(String DName) {
+		this.DName = DName;
 	}
-
 	public String getName() {
 		return name;
 	}
-
 	public void setName(String name) {
 		this.name = name;
 	}
-
 	public String getSurname() {
 		return surname;
 	}
-
 	public void setSurname(String surname) {
 		this.surname = surname;
 	}
-
-	public BigDecimal getMoney() {
+	public Integer getMoney() {
 		return money;
 	}
-
-	public void setMoney(BigDecimal money) {
+	public void setMoney(Integer money) {
 		this.money = money;
 	}
 
-    // Getters and Setters
+    // Getters & Setters
+    
     
 }
