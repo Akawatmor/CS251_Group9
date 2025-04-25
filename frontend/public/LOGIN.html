@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Login to TVaporr</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter&family=Poppins&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body, html {
+      margin: 0;
+      padding: 0;
+      width: 100%;
+      height: 100%;
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(180deg, #E6C000 14%, #5D110D 66%, #480E0C 78%, #340C0A 90%);
+      overflow: hidden;
+      position: relative;
+    }
+
+    .background-img {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      background: url('./PICTURE/LOGIN_BG1.png') no-repeat center;
+      background-size: 100% 100%;
+      opacity: 0.9;
+      z-index: 0;
+    }
+
+    .login-container {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: #350B09;
+      border-radius: 25px;
+      padding: 40px;
+      width: 900px;
+      max-width: 95%;
+      height: 500px;
+      display: flex;
+      gap: 30px;
+      z-index: 2;
+
+      opacity: 0;
+      animation: fadeIn 1.2s ease-out forwards;
+
+    }
+
+    .form-section {
+      flex: 2;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    .form-section h1 {
+      color: white;
+      text-align: center;
+      font-size: 48px;
+      margin-bottom: 40px;
+    }
+
+    label {
+      color: white;
+      font-size: 20px;
+      margin-bottom: 8px;
+    }
+
+    input {
+      background: #6A3C3A;
+      border: none;
+      border-radius: 12px;
+      height: 50px;
+      color: white;
+      font-size: 18px;
+      padding: 0 15px;
+      margin-bottom: 20px;
+    }
+
+    .login-btn {
+      background-color: #CF514C;
+      color: white;
+      font-size: 24px;
+      border: none;
+      border-radius: 12px;
+      padding: 10px;
+      cursor: pointer;
+      margin-top: 10px;
+      width: 200px;
+      align-self: center;
+    }
+
+    .qr-section {
+      flex: 1;
+      margin-top: 80px;
+      margin-bottom: 80px;
+      margin-left: 20px;
+      background: #D9D9D9;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 48px;
+      color: black;
+      font-family: Poppins, sans-serif;
+    }
+
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translate(-50%, -60%); }
+      to { opacity: 1; transform: translate(-50%, -50%); }
+    }
+
+    @media screen and (max-width: 768px) {
+      .login-container {
+        flex-direction: column;
+        height: auto;
+        padding: 20px;
+      }
+
+      .qr-section {
+        height: 200px;
+        margin-top: 50px;
+      }
+
+      .form-section h1 {
+        font-size: 36px;
+      }
+    }
+  </style>
+</head>
+
+<body onload="generateQRCode()">
+  <div class="background-img"></div>
+  <div class="alert">
+    <h2>Insert Alert Here</h2>
+  </div>
+
+  <div class="login-container">
+    <form id="loginForm" class="form-section">
+      <h1>TVaporr</h1>
+      <label for="username">Username</label>
+      <input type="text" name="user" placeholder="Enter username" />
+      <label for="password">Password</label>
+      <input type="password" name="pass" placeholder="Enter password" />
+      <button type="submit" class="login-btn">Login</button>
+    </form>
+
+    <div class="qr-section" id="qrCodeContainer">
+      QR
+    </div>
+  </div>
+</body>
+<script>
+
+function generateQRCode() {
+      fetch("/generate-qrcode")
+        .then((res) => res.json())
+        .then((data) => {
+          const qrCodeContainer = document.getElementById("qrCodeContainer");
+          qrCodeContainer.innerHTML = `<img src="${data.qrCode}" alt="QR Code">`;
+        })
+        .catch((err) => console.error("Error generating QR code", err));
+    }
+
+document.getElementById('loginForm').addEventListener('submit', async (e) => {
+  e.preventDefault();
+
+  const user = e.target.user.value;
+  const pass = e.target.pass.value;
+
+  const res = await fetch('/service/login', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({ user, pass })
+  });
+
+  const data = await res.json();
+  console.log(data);
+
+  const errorDiv = document.getElementById('errorMsg');
+  if (data.success) {
+
+    window.location.href = "/home";
+
+  } else {
+    errorDiv.textContent = data.message;
+    errorDiv.classList.add('show');
+    setTimeout(() => {
+      errorDiv.classList.remove('show');
+    }, 2000);
+  }
+});
+
+</script>
+</html>

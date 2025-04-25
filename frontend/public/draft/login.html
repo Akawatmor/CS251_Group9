@@ -25,7 +25,7 @@
       position: absolute;
       width: 100%;
       height: 100%;
-      background: url('./front_R.png') no-repeat center;
+      background: url('./PICTURE/LOGIN_BG1.png') no-repeat center;
       background-size: 100% 100%;
       opacity: 0.9;
       z-index: 0;
@@ -137,20 +137,56 @@
 
 <body>
   <div class="background-img"></div>
+  <div class="alert">
+    <h2>Insert Alert Here</h2>
+  </div>
 
   <div class="login-container">
-    <div class="form-section">
+    <form id="loginForm" class="form-section">
       <h1>TVaporr</h1>
       <label for="username">Username</label>
-      <input type="text" id="username" placeholder="Enter username" />
+      <input type="text" name="user" placeholder="Enter username" />
       <label for="password">Password</label>
-      <input type="password" id="password" placeholder="Enter password" />
-      <button class="login-btn">Login</button>
-    </div>
+      <input type="password" name="pass" placeholder="Enter password" />
+      <button type="submit" class="login-btn">Login</button>
+    </form>
 
     <div class="qr-section">
       QR
     </div>
   </div>
 </body>
+<script>
+document.getElementById('loginForm').addEventListener('submit', async (e) => {
+  e.preventDefault();
+
+  const user = e.target.user.value;
+  const pass = e.target.pass.value;
+
+  const res = await fetch('/service/login', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({ user, pass })
+  });
+
+  const data = await res.json();
+  console.log(data);
+
+  const errorDiv = document.getElementById('errorMsg');
+  if (data.success) {
+
+    window.location.href = "/home";
+
+  } else {
+    errorDiv.textContent = data.message;
+    errorDiv.classList.add('show');
+    setTimeout(() => {
+      errorDiv.classList.remove('show');
+    }, 2000);
+  }
+});
+
+</script>
 </html>

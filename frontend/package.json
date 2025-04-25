@@ -10,7 +10,10 @@
   "author": "SKO",
   "license": "ISC",
   "dependencies": {
-    "express": "4.19.2",
-    "node": "^22.11.0"
+    "express": "^4.21.2",
+    "express-session": "^1.18.1",
+    "node": "^22.11.0",
+    "qrcode": "^1.5.4",
+    "socket.io": "^4.8.1"
   }
 }
