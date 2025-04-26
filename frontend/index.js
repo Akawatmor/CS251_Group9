@@ -101,9 +101,18 @@ app.post("/service/login", (requ, resp) => {
     requ.session.user = user;
     resp.json({ success: true });
   }
-  //else re
+  else if (user == "" && pass == ""){
+    resp.json({ success: false, message: 'Blank Input' });
+  }
+  else if (user == USER && pass == ""){
+    resp.json({ success: false, message: 'Password Cannot be Blank!' });
+  }
+  else if (user == USER && pass != PASS){
+    resp.json({ success: false, message: 'Invalid Password!' });
+  }
+  //else Show on
   else{
-    resp.json({ success: false, message: 'Invalid username or password.' });
+    resp.json({ success: false, message: 'No Username Exist!' });
   }
 });
 
@@ -136,7 +145,6 @@ app.get("/home", (requ, resp) => {
 
 
 app.all("/service", (requ, resp) =>{
-
   if(requ.method != "POST"){
     resp.status(405).send(`
       <h1>Error! Method Not Allowed</h1>
@@ -154,17 +162,16 @@ app.get('/go', (requ, resp) => {
 /*
 //Default Route (/) to index.html
 app.get("/index/", (requ, resp) => {
-  resp.sendFile(path.join(__dirname, "public" , "index.html"));
+  resp.sendFile(path.join(__dirname, "public" , "_index.html"));
 });
 */
 
-//logout
+//Logout Function
 app.get("/service/logout", (req, res) => {
   req.session.destroy(() => {
     res.status(200).send(html_redirect_logo_5sec);
   });
 });
-
 
 //Listen Part (Connection)
 app.listen(PORT, () => {
