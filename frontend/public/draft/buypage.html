@@ -1,4 +1,4 @@
-<div style="width: 100%; height: 100%; position: relative; background: white">
+<!-- <div style="width: 100%; height: 100%; position: relative; background: white">
     <div style="width: 1920px; height: 84px; left: 0px; top: 73px; position: absolute; background: #B0B0B0"></div>
     <div style="width: 1455px; height: 1179px; left: 0px; top: 857px; position: absolute; background: #471C1A"></div>
     <div style="width: 1297px; height: 304px; left: 79px; top: 1175px; position: absolute; background: #6A3C3A"></div>
@@ -40,4 +40,243 @@
     <div style="width: 52px; height: 52px; left: 1685px; top: 86px; position: absolute">
         <img style="width: 43.33px; height: 43.33px; left: 4.33px; top: 4.33px; position: absolute; background: var(--Slate-200, #E3E3E3)" src="https://placehold.co/43x43" />
     </div>
-</div>
+</div>-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Game Page</title>
+    <style>
+        body {
+            margin: 0;
+            background: white;
+            font-family: Poppins, sans-serif;
+        }
+        .topbar {
+            width: 1920px;
+            height: 84px;
+            background: #350B09;
+            position: absolute;
+            top: 73px;
+            left: 0;
+        }
+        .navbar {
+            width: 1920px;
+            height: 157px;
+            background: #230706;
+            position: absolute;
+            top: 0;
+            left: 0;
+        }
+        .navbar-item {
+            color: white;
+            font-size: 32px;
+            position: absolute;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .homepage { left: 91px; top: 93px; }
+        .library { left: 344px; top: 94px; }
+        .account { left: 1722px; top: 95px; }
+        .divider {
+            width: 56px;
+            height: 0px;
+            outline: 1px solid white;
+            transform: rotate(-90deg);
+            position: absolute;
+        }
+        .divider1 { left: 30px; top: 143px; }
+        .divider2 { left: 344px; top: 143px; }
+        .divider3 { left: 536px; top: 143px; }
+        .content-top {
+            width: 1455px;
+            height: 700px;
+            background: #6A3C3A;
+            position: absolute;
+            top: 157px;
+            left: 0;
+        }
+        .sidebar {
+            width: 465px;
+            height: 1879px;
+            background: linear-gradient(180deg, #350B09 0%, #471C1A 100%);
+            position: absolute;
+            top: 2036px;
+            left: 1920px;
+            transform: rotate(180deg);
+            transform-origin: top left;
+        }
+        .sidebar-edge {
+            width: 34px;
+            height: 1879px;
+            background: #6A3C3A;
+            position: absolute;
+            top: 157px;
+            left: 1889px;
+        }
+        .game-title {
+            color: white;
+            font-size: 32px;
+            position: absolute;
+            top: 950px;
+            left: 157px;
+        }
+        .buy-button {
+            width: 265px;
+            height: 67px;
+            background: linear-gradient(90deg, #BF6655 0%, #D39819 100%);
+            position: absolute;
+            top: 935px;
+            left: 1079px;
+        }
+        .buy-text {
+            color: white;
+            font-size: 32px;
+            font-weight: 700;
+            text-align: center;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: absolute;
+            top: 951px;
+            left: 1115px;
+            width: 192px;
+            height: 34px;
+        }
+        .buy-label {
+            color: white;
+            font-size: 32px;
+            position: absolute;
+            top: 941px;
+            left: 984px;
+        }
+        .game-section {
+            width: 1455px;
+            height: 1179px;
+            background: #471C1A;
+            position: absolute;
+            top: 857px;
+            left: 0;
+        }
+        .section-box {
+            background: #6A3C3A;
+            position: absolute;
+        }
+        .rating-box { width: 1297px; height: 101px; top: 1052px; left: 80px; }
+        .rating-text { left: 114px; top: 1079px; }
+        .description-box { width: 1297px; height: 304px; top: 1175px; left: 79px; }
+        .description-text { left: 137px; top: 1232px; }
+        .comment-box { width: 1297px; height: 101px; top: 1519px; left: 80px; }
+        .comment-text { left: 114px; top: 1546px; }
+        .comment-section-box { width: 1297px; height: 373px; top: 1663px; left: 79px; }
+        .comment-section-text { left: 113px; top: 1690px; }
+        .section-label {
+            color: white;
+            font-size: 32px;
+            position: absolute;
+            word-wrap: break-word;
+        }
+        .game-card {
+            background: #6A3C3A;
+            width: 403px;
+            height: 220px;
+            position: absolute;
+            left: 1471px;
+        }
+        .card1 { top: 185px; }
+        .card2 { top: 430px; }
+        .card3 { top: 678px; }
+        .card4 { top: 926px; }
+        .card5 { top: 1171px; }
+        .card6 { top: 1416px; }
+        .card7 { top: 1664px; }
+        .icon {
+            width: 52px;
+            height: 52px;
+            position: absolute;
+            top: 86px;
+            left: 1685px;
+        }
+        .icon img {
+            width: 43.33px;
+            height: 43.33px;
+            position: absolute;
+            left: 4.33px;
+            top: 4.33px;
+            background: #E3E3E3;
+        }
+        .menu-icon {
+            width: 34px;
+            height: 28px;
+            border: 4px solid white;
+            border-radius: 6px;
+            position: absolute;
+            left: 1805px;
+            top: 22px;
+        }
+        .notification-icon {
+            width: 48px;
+            height: 48px;
+            position: absolute;
+            overflow: hidden;
+        }
+        .notification1 { left: 1742px; top: 12px; }
+        .notification2 { left: 1855px; top: 12px; }
+        .notification2 div {
+            width: 24px;
+            height: 24px;
+            left: 12px;
+            top: 12px;
+            position: absolute;
+            outline: 4px solid white;
+            outline-offset: -2px;
+        }
+    </style>
+</head>
+<body>
+    <div class="navbar"></div>
+    <div class="topbar"></div>
+    <div class="navbar-item homepage">Homepage</div>
+    <div class="navbar-item library">Library</div>
+    <div class="navbar-item account">Account</div>
+    <div class="divider divider1"></div>
+    <div class="divider divider2"></div>
+    <div class="divider divider3"></div>
+    <div class="icon"><img src="https://placehold.co/43x43" alt="profile-icon"></div>
+    <div class="menu-icon"></div>
+    <div class="notification-icon notification1"></div>
+    <div class="notification-icon notification2">
+        <div></div>
+    </div>
+    <div class="content-top"></div>
+    <div class="sidebar"></div>
+    <div class="sidebar-edge"></div>
+    <div class="game-section"></div>
+
+    <div class="game-title">THE GAME!!!!!</div>
+    <div class="buy-label">Buy</div>
+    <div class="buy-button"></div>
+    <div class="buy-text">1000 Bath</div>
+
+    <div class="section-box rating-box"></div>
+    <div class="section-label rating-text">rating</div>
+
+    <div class="section-box description-box"></div>
+    <div class="section-label description-text">discription</div>
+
+    <div class="section-box comment-box"></div>
+    <div class="section-label comment-text">comment</div>
+
+    <div class="section-box comment-section-box"></div>
+    <div class="section-label comment-section-text">comment section</div>
+
+    <div class="game-card card1"></div>
+    <div class="game-card card2"></div>
+    <div class="game-card card3"></div>
+    <div class="game-card card4"></div>
+    <div class="game-card card5"></div>
+    <div class="game-card card6"></div>
+    <div class="game-card card7"></div>
+</body>
+</html>

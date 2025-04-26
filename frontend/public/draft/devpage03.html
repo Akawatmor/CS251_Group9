@@ -1,4 +1,4 @@
-<div style="width: 100%; height: 100%; position: relative; background: white; overflow: hidden">
+<!--<div style="width: 100%; height: 100%; position: relative; background: white; overflow: hidden">
     <div style="width: 465px; height: 1080px; left: 0px; top: 0px; position: absolute; background: #471C1A"></div>
     <div style="width: 1455px; height: 1080px; left: 1920px; top: 1080px; position: absolute; transform: rotate(180deg); transform-origin: top left; background: #6A3C3A"></div>
     <div style="width: 329px; height: 79px; left: 1526px; top: 936px; position: absolute; background: #471C1A"></div>
@@ -19,4 +19,178 @@
     <div style="width: 370px; height: 0px; left: 47px; top: 277px; position: absolute; outline: 1px white solid; outline-offset: -0.50px"></div>
     <div style="width: 370px; height: 0px; left: 47px; top: 355px; position: absolute; outline: 1px white solid; outline-offset: -0.50px"></div>
     <div style="width: 370px; height: 0px; left: 47px; top: 431px; position: absolute; outline: 1px white solid; outline-offset: -0.50px"></div>
-</div>
+</div>-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Pricing Page</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background: white;
+            overflow: hidden;
+            position: relative;
+            width: 100%;
+            height: 100%;
+            font-family: Poppins, sans-serif;
+        }
+        .background-left {
+            width: 465px;
+            height: 1080px;
+            background: #471C1A;
+            position: absolute;
+            left: 0;
+            top: 0;
+        }
+        .background-right {
+            width: 1455px;
+            height: 1080px;
+            background: #6A3C3A;
+            position: absolute;
+            left: 1920px;
+            top: 1080px;
+            transform: rotate(180deg);
+            transform-origin: top left;
+        }
+        .apply-button-bg {
+            width: 329px;
+            height: 79px;
+            background: #471C1A;
+            position: absolute;
+            left: 1526px;
+            top: 936px;
+        }
+        .upload-bg, .event-bg {
+            width: 545px;
+            height: 79px;
+            background: #471C1A;
+            position: absolute;
+        }
+        .upload-bg {
+            top: 152px;
+            left: 522px;
+        }
+        .event-bg {
+            top: 409px;
+            left: 522px;
+        }
+        .title, .subtitle {
+            color: white;
+            font-size: 32px;
+            font-weight: 400;
+            word-wrap: break-word;
+            position: absolute;
+        }
+        .title.pricing {
+            top: 57px;
+            left: 522px;
+        }
+        .title.event-pricing {
+            top: 277px;
+            left: 522px;
+        }
+        .title.apply {
+            top: 928px;
+            left: 1594px;
+            width: 192px;
+            height: 95px;
+            display: flex;
+            justify-content: center;
+            text-align: center;
+            flex-direction: column;
+        }
+        .menu-icon {
+            width: 48px;
+            height: 48px;
+            position: absolute;
+            left: 48px;
+            top: 48px;
+            overflow: hidden;
+        }
+        .menu-icon div {
+            width: 28px;
+            height: 28px;
+            position: absolute;
+            left: 10px;
+            top: 10px;
+            outline: 4px white solid;
+            outline-offset: -2px;
+        }
+        .menu-item {
+            width: 232px;
+            height: 34px;
+            color: white;
+            font-size: 32px;
+            font-weight: 400;
+            display: flex;
+            justify-content: center;
+            flex-direction: column;
+            position: absolute;
+        }
+        .menu-store {
+            top: 145px;
+            left: 48px;
+        }
+        .menu-game {
+            top: 223px;
+            left: 48px;
+        }
+        .menu-pricing {
+            top: 299px;
+            left: 48px;
+        }
+        .menu-contact {
+            top: 375px;
+            left: 48px;
+        }
+        .menu-line {
+            width: 370px;
+            height: 0;
+            outline: 1px white solid;
+            outline-offset: -0.5px;
+            position: absolute;
+            left: 47px;
+        }
+        .line1 { top: 201px; }
+        .line2 { top: 277px; }
+        .line3 { top: 355px; }
+        .line4 { top: 431px; }
+    </style>
+</head>
+<body>
+
+    <div class="background-left"></div>
+    <div class="background-right"></div>
+
+    <div class="apply-button-bg"></div>
+    <div class="upload-bg"></div>
+    <div class="event-bg"></div>
+
+    <div class="title pricing">pricing</div>
+    <div class="title event-pricing">pricing in event</div>
+    <div class="title apply">apply</div>
+
+    <div class="menu-icon">
+        <div></div>
+    </div>
+
+    <div class="menu-item menu-store">Store</div>
+    <div class="menu-item menu-game">Game</div>
+    <div class="menu-item menu-pricing">Pricing</div>
+    <div class="menu-item menu-contact">Contact us</div>
+
+    <div class="menu-line line1"></div>
+    <div class="menu-line line2"></div>
+    <div class="menu-line line3"></div>
+    <div class="menu-line line4"></div>
+
+    <script>
+        // ตอนนี้ยังไม่มีสคริปต์ (Script) ทำอะไรเพิ่มเติม
+        // แต่ถ้าต้องการทำให้ปุ่ม apply กดได้ หรือมีเอฟเฟกต์ interactive ต่าง ๆ สามารถเขียนในนี้ได้
+        console.log("Page loaded successfully!");
+    </script>
+
+</body>
+</html>
