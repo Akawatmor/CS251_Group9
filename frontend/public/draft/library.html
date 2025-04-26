@@ -1,4 +1,4 @@
-<div style="width: 100%; height: 100%; position: relative; background: #471C1A; overflow: hidden">
+<!--<div style="width: 100%; height: 100%; position: relative; background: #471C1A; overflow: hidden">
     <div style="width: 1920px; height: 1080px; left: 1920px; top: 1080px; position: absolute; transform: rotate(180deg); transform-origin: top left; background: #471C1A"></div>
     <div style="width: 465px; height: 1007px; left: 0px; top: 73px; position: absolute; background: linear-gradient(180deg, #350B09 67%, #471C1A 100%)"></div>
     <div style="width: 1920px; height: 157px; left: 0px; top: 0px; position: absolute; background: #230706"></div>
@@ -32,4 +32,200 @@
     <div style="width: 52px; height: 52px; left: 1694px; top: 82px; position: absolute">
         <img style="width: 43.33px; height: 43.33px; left: 4.33px; top: 4.33px; position: absolute; background: var(--Slate-200, #E3E3E3)" src="https://placehold.co/43x43" />
     </div>
-</div>
+</div>-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Separated Layout</title>
+    <style>
+        body {
+            margin: 0;
+            background: #471C1A;
+            overflow: hidden;
+            position: relative;
+            width: 100%;
+            height: 100%;
+        }
+        .rotated-background {
+            width: 1920px;
+            height: 1080px;
+            position: absolute;
+            left: 1920px;
+            top: 1080px;
+            transform: rotate(180deg);
+            transform-origin: top left;
+            background: #471C1A;
+        }
+        .side-gradient {
+            width: 465px;
+            height: 1007px;
+            position: absolute;
+            left: 0;
+            top: 73px;
+            background: linear-gradient(180deg, #350B09 67%, #471C1A 100%);
+        }
+        .top-bar {
+            width: 1920px;
+            height: 157px;
+            position: absolute;
+            top: 0;
+            background: #230706;
+        }
+        .sub-bar-top, .sub-bar-middle {
+            width: 1920px;
+            height: 84px;
+            position: absolute;
+            background: #350B09;
+        }
+        .sub-bar-top {
+            top: 73px;
+        }
+        .sub-bar-middle {
+            top: 631px;
+            left: -29px;
+        }
+        .border-box {
+            width: 34px;
+            height: 28px;
+            position: absolute;
+            top: 22px;
+            left: 1805px;
+            border-radius: 6px;
+            border: 4px solid white;
+        }
+        .icon {
+            width: 48px;
+            height: 48px;
+            position: absolute;
+            overflow: hidden;
+        }
+        .icon1 {
+            left: 1742px;
+            top: 12px;
+        }
+        .icon2 {
+            left: 1855px;
+            top: 12px;
+        }
+        .icon2 div {
+            width: 24px;
+            height: 24px;
+            position: absolute;
+            left: 12px;
+            top: 12px;
+            outline: 4px solid white;
+            outline-offset: -2px;
+        }
+        .nav-text {
+            position: absolute;
+            text-align: center;
+            display: flex;
+            justify-content: center;
+            flex-direction: column;
+            color: white;
+            font-size: 32px;
+            font-family: 'Poppins', sans-serif;
+            font-weight: 400;
+            word-wrap: break-word;
+        }
+        .line {
+            width: 56px;
+            height: 0;
+            position: absolute;
+            transform: rotate(-90deg);
+            transform-origin: top left;
+            outline: 1px solid white;
+            outline-offset: -0.5px;
+        }
+        .right-side-bar {
+            width: 34px;
+            height: 923px;
+            position: absolute;
+            top: 157px;
+            left: 1889px;
+            background: #6A3C3A;
+        }
+        .menu-text {
+            color: white;
+            font-family: 'Poppins', sans-serif;
+            font-weight: 400;
+            display: flex;
+            justify-content: center;
+            flex-direction: column;
+            word-wrap: break-word;
+        }
+        .main-panel {
+            width: 1362px;
+            height: 463px;
+            position: absolute;
+            left: 493px;
+            top: 168px;
+            background: #6A3C3A;
+        }
+        .profile {
+            width: 52px;
+            height: 52px;
+            position: absolute;
+            top: 82px;
+            left: 1694px;
+        }
+        .profile img {
+            width: 43.33px;
+            height: 43.33px;
+            position: absolute;
+            top: 4.33px;
+            left: 4.33px;
+            background: #E3E3E3;
+        }
+    </style>
+</head>
+<body>
+    <div class="rotated-background"></div>
+    <div class="side-gradient"></div>
+    <div class="top-bar"></div>
+    <div class="sub-bar-top"></div>
+    <div class="sub-bar-middle"></div>
+    <div class="border-box"></div>
+
+    <div class="icon icon1"></div>
+    <div class="icon icon2">
+        <div></div>
+    </div>
+
+    <div class="nav-text" style="left: 91px; top: 93px;">Homepage</div>
+    <div class="nav-text" style="left: 344px; top: 94px;">Library</div>
+
+    <div class="line" style="left: 30px; top: 143px;"></div>
+    <div class="line" style="left: 344px; top: 143px;"></div>
+    <div class="line" style="left: 536px; top: 143px;"></div>
+
+    <div class="right-side-bar"></div>
+
+    <div class="menu-text" style="position:absolute; left:47px; top:168px; font-size:32px;">All apps</div>
+    <div class="menu-text" style="position:absolute; left:62px; top:226px; font-size:24px;">game1</div>
+    <div class="menu-text" style="position:absolute; left:62px; top:272px; font-size:24px;">game2</div>
+
+    <div class="main-panel"></div>
+
+    <div class="nav-text" style="left:1348px; top:656px;">Other</div>
+    <div class="nav-text" style="left:555px; top:656px;">Store</div>
+    <div class="nav-text" style="left:767px; top:656px;">Setting</div>
+    <div class="nav-text" style="left:1009px; top:656px;">Report Bugs</div>
+
+    <div class="line" style="left:702px; top:701px;"></div>
+    <div class="line" style="left:944px; top:701px;"></div>
+    <div class="line" style="left:1280px; top:701px;"></div>
+    <div class="line" style="left:1500px; top:701px;"></div>
+    <div class="line" style="left:493px; top:701px;"></div>
+
+    <div class="nav-text" style="left:1731px; top:91px;">Account</div>
+    <div class="profile">
+        <img src="https://placehold.co/43x43" alt="Profile">
+    </div>
+
+    <script>
+        // ถ้ามีสคริปต์เพิ่มเติม ใส่ไว้ที่นี่
+    </script>
+</body>
+</html>

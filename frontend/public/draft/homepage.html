@@ -1,4 +1,4 @@
-<div style="width: 100%; height: 100%; position: relative; background: white; overflow: hidden">
+<!--<div style="width: 100%; height: 100%; position: relative; background: white; overflow: hidden">
     <div style="width: 1455px; height: 1080px; left: 1920px; top: 1080px; position: absolute; transform: rotate(180deg); transform-origin: top left; background: linear-gradient(270deg, #471C1A 32%, #9F3E3A 70%, #C9A24E 99%)"></div>
     <img style="width: 2002px; height: 2002px; left: 322px; top: -600px; position: absolute" src="https://placehold.co/2002x2002" />
     <div style="width: 1455px; height: 488px; left: 1920px; top: 645px; position: absolute; transform: rotate(180deg); transform-origin: top left; background: #6A3C3A"></div>
@@ -34,4 +34,274 @@
     <div style="width: 52px; height: 52px; left: 1691px; top: 87px; position: absolute">
         <img style="width: 43.33px; height: 43.33px; left: 4.33px; top: 4.33px; position: absolute; background: var(--Slate-200, #E3E3E3)" src="https://placehold.co/43x43" />
     </div>
-</div>
+</div>-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>TVaporr</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background: white;
+            overflow: hidden;
+        }
+        .bg-rotate {
+            width: 1455px;
+            height: 1080px;
+            left: 1920px;
+            top: 1080px;
+            position: absolute;
+            transform: rotate(180deg);
+            transform-origin: top left;
+            background: linear-gradient(270deg, #471C1A 32%, #9F3E3A 70%, #C9A24E 99%);
+        }
+        .background-img {
+            width: 2002px;
+            height: 2002px;
+            left: 322px;
+            top: -600px;
+            position: absolute;
+        }
+        .section-dark {
+            width: 1455px;
+            height: 488px;
+            left: 1920px;
+            top: 645px;
+            position: absolute;
+            transform: rotate(180deg);
+            transform-origin: top left;
+            background: #6A3C3A;
+        }
+        .card {
+            width: 401px;
+            height: 248px;
+            background: #6A3C3A;
+            position: absolute;
+        }
+        .vertical-bar {
+            width: 34px;
+            height: 435px;
+            left: 1886px;
+            top: 645px;
+            position: absolute;
+            background: #6A3C3A;
+        }
+        .header-bar {
+            width: 1920px;
+            height: 73px;
+            background: #230706;
+            position: absolute;
+            top: 0;
+            left: 0;
+        }
+        .side-bar {
+            width: 465px;
+            height: 1007px;
+            left: 0;
+            top: 73px;
+            position: absolute;
+            background: linear-gradient(180deg, #350B09 67%, #471C1A 100%);
+        }
+        .top-bar {
+            width: 1455px;
+            height: 84px;
+            left: 465px;
+            top: 73px;
+            position: absolute;
+            background: #350B09;
+        }
+        .small-bar {
+            width: 838px;
+            height: 56px;
+            left: 485px;
+            top: 669px;
+            position: absolute;
+            background: #6A3C3A;
+        }
+        .logo {
+            width: 332px;
+            height: 93px;
+            left: 66px;
+            top: 97px;
+            position: absolute;
+            text-align: center;
+            color: white;
+            font-size: 64px;
+            font-family: Poppins, sans-serif;
+            font-weight: 400;
+        }
+        .menu-item, .account {
+            position: absolute;
+            text-align: center;
+            justify-content: center;
+            display: flex;
+            flex-direction: column;
+            color: white;
+            font-size: 32px;
+            font-family: Poppins, sans-serif;
+            font-weight: 400;
+            word-wrap: break-word;
+        }
+        .menu-homepage { width: 192px; height: 34px; left: 526px; top: 93px; }
+        .menu-library { width: 192px; height: 34px; left: 779px; top: 94px; }
+        .menu-account { width: 192px; height: 34px; left: 1728px; top: 96px; }
+        .divider {
+            width: 56px;
+            height: 0;
+            position: absolute;
+            transform: rotate(-90deg);
+            transform-origin: top left;
+            outline: 1px white solid;
+            outline-offset: -0.5px;
+        }
+        .divider1 { left: 465px; top: 143px; }
+        .divider2 { left: 779px; top: 143px; }
+        .divider3 { left: 971px; top: 143px; }
+        .icon-button {
+            width: 48px;
+            height: 48px;
+            overflow: hidden;
+            position: absolute;
+        }
+        .outline-icon {
+            width: 24px;
+            height: 24px;
+            left: 12px;
+            top: 12px;
+            position: absolute;
+            outline: 4px white solid;
+            outline-offset: -2px;
+        }
+        .small-outline {
+            width: 27px;
+            height: 27px;
+            left: 4.5px;
+            top: 4.5px;
+            position: absolute;
+            outline: 4px white solid;
+            outline-offset: -2px;
+        }
+        .divider-line {
+            width: 370px;
+            height: 0;
+            left: 47px;
+            top: 214px;
+            position: absolute;
+            outline: 1px white solid;
+            outline-offset: -0.5px;
+        }
+        .tags-title {
+            width: 204px;
+            height: 58px;
+            left: 47px;
+            top: 227px;
+            position: absolute;
+            justify-content: center;
+            display: flex;
+            flex-direction: column;
+            color: white;
+            font-size: 32px;
+            font-family: Poppins, sans-serif;
+            font-weight: 400;
+            word-wrap: break-word;
+        }
+        .tag {
+            width: 107px;
+            height: 36px;
+            position: absolute;
+            justify-content: center;
+            display: flex;
+            flex-direction: column;
+            color: white;
+            font-size: 24px;
+            font-family: Poppins, sans-serif;
+            font-weight: 400;
+            word-wrap: break-word;
+        }
+        .tag1 { left: 96px; top: 291px; }
+        .tag2 { left: 96px; top: 337px; }
+        .tag-box {
+            width: 22px;
+            height: 22px;
+            position: absolute;
+            background: #6A3C3A;
+        }
+        .tag-box1 { left: 47px; top: 298px; }
+        .tag-box2 { left: 47px; top: 344px; }
+        .profile-pic {
+            width: 52px;
+            height: 52px;
+            left: 1691px;
+            top: 87px;
+            position: absolute;
+        }
+        .profile-pic img {
+            width: 43.33px;
+            height: 43.33px;
+            left: 4.33px;
+            top: 4.33px;
+            position: absolute;
+            background: var(--Slate-200, #E3E3E3);
+        }
+        .square-btn {
+            width: 34px;
+            height: 28px;
+            left: 1805px;
+            top: 22px;
+            position: absolute;
+            border-radius: 6px;
+            border: 4px white solid;
+        }
+    </style>
+</head>
+<body>
+    <div class="bg-rotate"></div>
+    <img class="background-img" src="https://placehold.co/2002x2002" />
+    <div class="section-dark"></div>
+
+    <div class="card" style="left: 485px; top: 749px;"></div>
+    <div class="card" style="left: 970px; top: 749px;"></div>
+    <div class="card" style="left: 1435px; top: 749px;"></div>
+
+    <div class="vertical-bar"></div>
+    <div class="header-bar"></div>
+    <div class="side-bar"></div>
+    <div class="top-bar"></div>
+    <div class="small-bar"></div>
+
+    <div class="logo">TVaporr</div>
+    <div class="menu-item menu-homepage">Homepage</div>
+    <div class="menu-item menu-library">Library</div>
+    <div class="menu-item menu-account">Account</div>
+
+    <div class="divider divider1"></div>
+    <div class="divider divider2"></div>
+    <div class="divider divider3"></div>
+
+    <div class="square-btn"></div>
+    <div class="icon-button" style="left: 1742px; top: 12px;"></div>
+    <div class="icon-button" style="left: 1855px; top: 12px;">
+        <div class="outline-icon"></div>
+    </div>
+    <div class="icon-button" style="width: 36px; height: 36px; left: 1276px; top: 679px;">
+        <div class="small-outline"></div>
+    </div>
+
+    <div class="divider-line"></div>
+    <div class="tags-title">All tags</div>
+    <div class="tag tag1">tags1</div>
+    <div class="tag tag2">tags2</div>
+    <div class="tag-box tag-box1"></div>
+    <div class="tag-box tag-box2"></div>
+
+    <div class="profile-pic">
+        <img src="https://placehold.co/43x43" />
+    </div>
+
+    <script>
+        // ตอนนี้ยังไม่มีสคริปต์ JavaScript อะไรเพิ่ม ถ้ามีให้เขียนไว้ตรงนี้
+    </script>
+</body>
+</html>
