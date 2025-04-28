@@ -23,174 +23,150 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>Pricing Page</title>
-    <style>
-        body {
-            margin: 0;
-            padding: 0;
-            background: white;
-            overflow: hidden;
-            position: relative;
-            width: 100%;
-            height: 100%;
-            font-family: Poppins, sans-serif;
-        }
-        .background-left {
-            width: 465px;
-            height: 1080px;
-            background: #471C1A;
-            position: absolute;
-            left: 0;
-            top: 0;
-        }
-        .background-right {
-            width: 1455px;
-            height: 1080px;
-            background: #6A3C3A;
-            position: absolute;
-            left: 1920px;
-            top: 1080px;
-            transform: rotate(180deg);
-            transform-origin: top left;
-        }
-        .apply-button-bg {
-            width: 329px;
-            height: 79px;
-            background: #471C1A;
-            position: absolute;
-            left: 1526px;
-            top: 936px;
-        }
-        .upload-bg, .event-bg {
-            width: 545px;
-            height: 79px;
-            background: #471C1A;
-            position: absolute;
-        }
-        .upload-bg {
-            top: 152px;
-            left: 522px;
-        }
-        .event-bg {
-            top: 409px;
-            left: 522px;
-        }
-        .title, .subtitle {
-            color: white;
-            font-size: 32px;
-            font-weight: 400;
-            word-wrap: break-word;
-            position: absolute;
-        }
-        .title.pricing {
-            top: 57px;
-            left: 522px;
-        }
-        .title.event-pricing {
-            top: 277px;
-            left: 522px;
-        }
-        .title.apply {
-            top: 928px;
-            left: 1594px;
-            width: 192px;
-            height: 95px;
-            display: flex;
-            justify-content: center;
-            text-align: center;
-            flex-direction: column;
-        }
-        .menu-icon {
-            width: 48px;
-            height: 48px;
-            position: absolute;
-            left: 48px;
-            top: 48px;
-            overflow: hidden;
-        }
-        .menu-icon div {
-            width: 28px;
-            height: 28px;
-            position: absolute;
-            left: 10px;
-            top: 10px;
-            outline: 4px white solid;
-            outline-offset: -2px;
-        }
-        .menu-item {
-            width: 232px;
-            height: 34px;
-            color: white;
-            font-size: 32px;
-            font-weight: 400;
-            display: flex;
-            justify-content: center;
-            flex-direction: column;
-            position: absolute;
-        }
-        .menu-store {
-            top: 145px;
-            left: 48px;
-        }
-        .menu-game {
-            top: 223px;
-            left: 48px;
-        }
-        .menu-pricing {
-            top: 299px;
-            left: 48px;
-        }
-        .menu-contact {
-            top: 375px;
-            left: 48px;
-        }
-        .menu-line {
-            width: 370px;
-            height: 0;
-            outline: 1px white solid;
-            outline-offset: -0.5px;
-            position: absolute;
-            left: 47px;
-        }
-        .line1 { top: 201px; }
-        .line2 { top: 277px; }
-        .line3 { top: 355px; }
-        .line4 { top: 431px; }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TVaporr</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
 </head>
 <body>
 
-    <div class="background-left"></div>
-    <div class="background-right"></div>
-
-    <div class="apply-button-bg"></div>
-    <div class="upload-bg"></div>
-    <div class="event-bg"></div>
-
-    <div class="title pricing">pricing</div>
-    <div class="title event-pricing">pricing in event</div>
-    <div class="title apply">apply</div>
-
-    <div class="menu-icon">
-        <div></div>
-    </div>
-
-    <div class="menu-item menu-store">Store</div>
-    <div class="menu-item menu-game">Game</div>
-    <div class="menu-item menu-pricing">Pricing</div>
-    <div class="menu-item menu-contact">Contact us</div>
-
-    <div class="menu-line line1"></div>
-    <div class="menu-line line2"></div>
-    <div class="menu-line line3"></div>
-    <div class="menu-line line4"></div>
-
-    <script>
-        // ตอนนี้ยังไม่มีสคริปต์ (Script) ทำอะไรเพิ่มเติม
-        // แต่ถ้าต้องการทำให้ปุ่ม apply กดได้ หรือมีเอฟเฟกต์ interactive ต่าง ๆ สามารถเขียนในนี้ได้
-        console.log("Page loaded successfully!");
-    </script>
-
+      <div class="layout">
+        <aside class="sidebar">
+          <div class="logo"><a href="#">&#8592;</a></div>
+          <div class="tags">
+            <a href="#">1</a><hr>
+            <a href="#">2</a><hr>
+            <a href="#">3</a><hr>
+            <a href="#">4</a><hr>
+          </div>
+        </aside>
+      </div> 
+    
 </body>
+
+<style>
+
+body, html {
+  margin: 0;
+  padding: 0;
+  font-family: 'Poppins', sans-serif;
+  height: 100%;
+  background: linear-gradient(270deg, #471C1A 32%, #9F3E3A 70%, #C9A24E 99%);
+}
+
+.layout {
+  display: flex;
+  height: 100vh;
+}
+
+.sidebar {
+  background: linear-gradient(180deg, #350B09 67%, #471C1A 100%);
+  color: white;
+  width: 250px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.logo {
+  font-size: 32px;
+}
+
+.sidebar hr {
+  border: 0;
+  border-top: 1px solid white;
+  margin: 10px 0;
+}
+
+.sidebar h2 {
+  font-size: 20px;
+}
+.sidebar a {
+  text-decoration: none;
+  color: white;
+}
+.tags label {
+  display: block;
+  margin-top: 10px;
+  font-size: 16px;
+}
+
+.main-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  background: url('https://i.ibb.co/7z1RVtk/dots-bg.png') no-repeat center/cover;
+}
+
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #230706;
+  color: white;
+  padding: 0 30px;
+  height: 60px;
+}
+
+.nav-links {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.nav-links a {
+  text-decoration: none;
+  color: white;
+  font-size: 20px;
+}
+
+.account {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.hero {
+  background-color: rgba(255, 255, 255, 0.1);
+  margin: 20px;
+  height: 250px;
+  border-radius: 8px;
+}
+
+.search-section {
+  display: flex;
+  align-items: center;
+  margin: 0 20px 20px 20px;
+}
+
+.search-section input {
+  flex: 1;
+  padding: 10px;
+  font-size: 16px;
+}
+
+.search-section button {
+  padding: 10px 15px;
+  font-size: 20px;
+  background-color: #471C1A;
+  color: white;
+  border: none;
+  cursor: pointer;
+}
+
+.cards {
+  display: flex;
+  gap: 20px;
+  margin: 0 20px;
+}
+
+.card {
+  flex: 1;
+  background-color: rgba(255, 255, 255, 0.1);
+  height: 200px;
+  border-radius: 8px;
+}
+</style>
 </html>
