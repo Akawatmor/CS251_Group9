@@ -1,0 +1,26 @@
+<!-- public/unauthorized.html -->
+<html>
+<head>
+  <title>Unauthorized Access</title>
+</head>
+<script>
+    let seconds = 5;
+    function countdown() {
+      const el = document.getElementById("count");
+      el.textContent = seconds;
+      if (seconds === 0) {
+        window.location.href = "/";
+      } else {
+        seconds--;
+        setTimeout(countdown, 1000);
+      }
+    }
+    window.onload = countdown;
+  </script>
+</head>
+<body>
+  <h1>Unauthorized Access</h1>
+  <h2>You Don't Have Permission or Credentials to View The Page. <br>This Page Will Redirected to Login Page in <span id="count">5</span> seconds...</h2>
+  <a href="/">Click here if not redirected</a>
+</body>
+</html>
