@@ -1,0 +1,26 @@
+<!-- public/unauthorized.html -->
+<html>
+<head>
+  <title>Logout success</title>
+</head>
+<script>
+    let seconds = 5;
+    function countdown() {
+      const el = document.getElementById("count");
+      el.textContent = seconds;
+      if (seconds === 0) {
+        window.location.href = "/";
+      } else {
+        seconds--;
+        setTimeout(countdown, 1000);
+      }
+    }
+    window.onload = countdown;
+  </script>
+</head>
+<body>
+  <h1>Logout Success</h1>
+  <h2>Now You Can Closed Or Wait Here. <br>This Page Will Redirected to Login Page in <span id="count">5</span> seconds...</h2>
+  <a href="/">Click here if not redirected</a>
+</body>
+</html>
