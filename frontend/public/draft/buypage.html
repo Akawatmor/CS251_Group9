@@ -65,9 +65,54 @@
                 <span>Account</span>
               </div>
             </header>
-      
-
-            </section>
+            <div class="store">
+                <div class="game-store">
+                  <!-- เนื้อหา Game Store ด้านซ้าย (75%) -->
+                  <h2 style="padding: 20px;">Featured Games</h2>
+                </div>
+                <div class="game-grid">
+                  <div class="game-card">
+                    <img src="https://placehold.co/300x150" alt="Game Thumbnail">
+                    <h3>Game Title 1</h3>
+                    <p>Short description about the game.</p>
+                    <button>Buy</button>
+                  </div>
+                  <div class="game-card">
+                    <img src="https://placehold.co/300x150" alt="Game Thumbnail">
+                    <h3>Game Title 2</h3>
+                    <p>Another cool game description.</p>
+                    <button>Buy</button>
+                  </div>
+                  <div class="game-card">
+                    <img src="https://placehold.co/300x150" alt="Game Thumbnail">
+                    <h3>Game Title 2</h3>
+                    <p>Another cool game description.</p>
+                    <button>Buy</button>
+                  </div>
+                    <div class="game-card">
+                      <img src="https://placehold.co/300x150" alt="Game Thumbnail">
+                      <h3>Game Title 1</h3>
+                      <p>Short description about the game.</p>
+                      <button>Buy</button>
+                    </div>
+                    <div class="game-card">
+                      <img src="https://placehold.co/300x150" alt="Game Thumbnail">
+                      <h3>Game Title 2</h3>
+                      <p>Another cool game description.</p>
+                      <button>Buy</button>
+                    </div>
+                    <div class="game-card">
+                      <img src="https://placehold.co/300x150" alt="Game Thumbnail">
+                      <h3>Game Title 2</h3>
+                      <p>Another cool game description.</p>
+                      <button>Buy</button>
+                    
+                  <!-- เพิ่มการ์ดเพิ่มได้ -->
+                </div>
+              </div>
+            </div>
+            
+            
           </main>
     </div>
     <style>
@@ -76,7 +121,7 @@
             padding: 0;
             font-family: 'Poppins', sans-serif;
             height: 100%;
-            background: linear-gradient(270deg, #471C1A 32%, #9F3E3A 70%, #C9A24E 99%);
+            background: #471C1A /*linear-gradient(270deg, #471C1A 32%, #9F3E3A 70%, #C9A24E 99%)*/;
         }
         .account {
             display: flex;
@@ -110,6 +155,7 @@
             color: white;
             padding: 0 30px;
             height: 60px;
+            flex-shrink: 0;
         }
         .nav-links {
             display: flex;
@@ -122,8 +168,74 @@
             color: white;
             font-size: 20px;
         }
-        
-        
+        .store {
+            display: flex;
+            width: 100%;
+            height: 100%;
+        }
+
+        .game-store {
+            width: 75%;
+            background-color: antiquewhite;
+            padding: 20px;
+            box-sizing: border-box;
+            height: 100%;
+        }
+
+        .game-grid {
+            width: 25%;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            padding: 20px;
+            box-sizing: border-box;
+            background-color: #3c0f0e;
+            overflow-y: auto;
+        }
+
+
+        .game-card {
+            background-color: #5E1F1B;
+            border-radius: 10px;
+            padding: 15px;
+            color: white;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+            transition: transform 0.2s;
+        }
+
+        .game-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .game-card img {
+            width: 100%;
+            border-radius: 8px;
+        }
+
+        .game-card h3 {
+            margin: 10px 0 5px;
+            font-size: 18px;
+        }
+
+        .game-card p {
+            font-size: 14px;
+            margin-bottom: 10px;
+        }
+
+        .game-card button {
+            background-color: #C9A24E;
+            border: none;
+            color: black;
+            padding: 10px 15px;
+            border-radius: 5px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .game-card button:hover {
+            background-color: #e7c55b;
+        }
+
     </style>
 </body>
 </html>
