@@ -5,7 +5,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.*;
 
-public interface CustomerRepository extends JpaRepository<Customer1x, Long> {
+public interface Customer1xRepository extends JpaRepository<Customer1x, Long> {
 	
 	//find by userID
 	Customer1x findByuserID(Long userID);

@@ -17,9 +17,23 @@ public class Customer1x {
     // Auto-generated 10-digit ID starting with 1
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "customer_seq")
-    @SequenceGenerator(name = "customer_seq", sequenceName = "customer_sequence", initialValue = 1000000001, allocationSize = 1)
+    @SequenceGenerator(
+        name = "customer_seq", 
+        sequenceName = "customer_sequence", 
+        initialValue = 1, 
+        allocationSize = 1
+    )
     @Column(length = 10)
     private Long userID;
+
+    /* Add a @PrePersist method to set the ID value
+     * This ensures we start from 1000000001 when creating new records
+    */
+    @PrePersist
+    public void prePersist() {
+        if (this.userID == null) this.userID = 1000000001L; // Get last ID from repository and add 1, or use 3000000001L if none exists
+    }
+    
 
     //Real Username - Must Be unique
     @Column(unique = true, nullable = false)

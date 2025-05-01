@@ -10,7 +10,7 @@ import org.springframework.stereotype.*;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import cs251.group9.backend.entity.Customer1X;
+import cs251.group9.backend.entity.Customer1x;
 import cs251.group9.backend.service.*;
 import jakarta.persistence.*;
 
@@ -19,7 +19,7 @@ import java.util.*;
 
 @RestController
 @RequestMapping("/api/customers")
-public class CustomerController {
+public class Customer1xController {
 	
     @Autowired
     private CustomerService customerService;
@@ -29,13 +29,13 @@ public class CustomerController {
 
     //To register User
     @PostMapping("/register")
-    public ResponseEntity<Customer1X> register(@RequestBody Customer1X customer) {
+    public ResponseEntity<Customer1x> register(@RequestBody Customer1X customer) {
         return ResponseEntity.ok(customerService.register(customer));
     }
     
     //To Login User
     @PostMapping("/login")
-    public ResponseEntity<Customer1X> login(@RequestParam String uName, @RequestParam String uEmail) {
+    public ResponseEntity<Customer1x> login(@RequestParam String uName, @RequestParam String uEmail) {
         return customerService.login(uName, uEmail)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.status(HttpStatus.UNAUTHORIZED).build());
@@ -43,7 +43,7 @@ public class CustomerController {
 
     //To update some part of user (Like deduct money)
     @PutMapping("/{userId}")
-    public ResponseEntity<Customer1X> updateProfile(@PathVariable Integer userId, @RequestBody Customer1X updated) {
+    public ResponseEntity<Customer1x> updateProfile(@PathVariable Integer userId, @RequestBody Customer1X updated) {
         return ResponseEntity.ok(customerService.updateProfile(userId, updated));
     }
 

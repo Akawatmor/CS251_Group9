@@ -12,7 +12,7 @@ import jakarta.persistence.*;
 @Table(name = "developer")
 public class Developer3x {
 	
-	// Auto-generated 10-digit ID starting with 1
+	// Auto-generated 10-digit ID starting with 3
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "developer_seq")
     @SequenceGenerator(
@@ -24,14 +24,12 @@ public class Developer3x {
     @Column(length = 10)
     private Long devID;
 
-    // Alternative approach: Add a @PrePersist method to set the ID value
+    /* Add a @PrePersist method to set the ID value
+     * This ensures we start from 3000000001 when creating new records
+    */
     @PrePersist
     public void prePersist() {
-        // This ensures we start from 3000000001 when creating new records
-        if (this.devID == null) {
-            // Get last ID from repository and add 1, or use 3000000001L if none exists
-            this.devID = 3000000001L;
-        }
+        if (this.devID == null) this.devID = 3000000001L; // Get last ID from repository and add 1, or use 3000000001L if none exists
     }
 	
 	@Column(unique = true, nullable = false)
