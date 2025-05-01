@@ -2,9 +2,9 @@ package cs251.group9.backend.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import cs251.group9.backend.entity.Developer;
+import cs251.group9.backend.entity.*;
 
-public interface DeveloperRepository extends JpaRepository<Developer, Integer> {
+public interface DeveloperRepository extends JpaRepository<Developer3x, Long> {
 	
 }
 

@@ -2,7 +2,7 @@ package cs251.group9.backend.entity;
 
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
-
+/*
 @Entity
 public class Wishlist {
     @EmbeddedId
@@ -20,4 +20,4 @@ public class Wishlist {
 
     private LocalDateTime date = LocalDateTime.now();
     // getters and setters
-}
+}*/

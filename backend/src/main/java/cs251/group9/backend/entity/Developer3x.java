@@ -9,12 +9,15 @@ import jakarta.persistence.*;
  * Entity Declaration
  */
 @Entity
-public class Developer {
+@Table(name = "developer")
+public class Developer3x {
 	
-	//Integer ID Developer 3X
-	@Id
+	// Auto-generated 10-digit ID starting with 1
+    @Id
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "developer_seq")
+    @SequenceGenerator(name = "developer_seq", sequenceName = "developer_sequence", initialValue = 3000000001, allocationSize = 1)
     @Column(length = 10)
-    private Integer devID;
+    private Long devID;
 	
 	@Column(unique = true, nullable = false)
     private String devName;
@@ -27,13 +30,11 @@ public class Developer {
     private String teamName;
 	
     
-    /*
-     * Getters and Setters
-     */
-    public Integer getDevID() {
+    //Getter and Setter
+    public Long getDevID() {
 		return devID;
 	}
-	public void setDevID(Integer devID) {
+	public void setDevID(Long devID) {
 		this.devID = devID;
 	}
 	public String getDevName() {

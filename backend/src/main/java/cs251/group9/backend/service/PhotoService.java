@@ -16,7 +16,7 @@ public class PhotoService {
     @Value("${file.upload-dir:./uploads/user/}")
     private String uploadDir;
 
-    public String storePhoto(Integer userId, MultipartFile file) throws IOException {
+    public String storePhoto(Long userId, MultipartFile file) throws IOException {
         // Create directory if it doesn't exist
         Path dirPath = Paths.get(uploadDir);
         if (!Files.exists(dirPath)) {
@@ -37,7 +37,7 @@ public class PhotoService {
         return targetPath.toString();
     }
     
-    public String getPhotoPath(Integer userId) {
+    public String getPhotoPath(Long userId) {
         Path dirPath = Paths.get(uploadDir);
         try {
             // Search for any file with the userId as prefix

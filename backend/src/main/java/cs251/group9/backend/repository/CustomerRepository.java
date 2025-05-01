@@ -5,12 +5,12 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.*;
 
-public interface CustomerRepository extends JpaRepository<Customer, Integer> {
+public interface CustomerRepository extends JpaRepository<Customer1x, Long> {
 	
 	//find by userID
-	Customer findByuserID(Integer userID);
+	Customer1x findByuserID(Long userID);
 	
 	
-    Optional<Customer> findByUNameAndUEmail(String UName, String UEmail);
+    Optional<Customer1x> findByUNameAndUEmail(String UName, String UEmail);
     
 }
