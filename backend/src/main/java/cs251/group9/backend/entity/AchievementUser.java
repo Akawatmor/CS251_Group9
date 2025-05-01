@@ -12,11 +12,11 @@ public class AchievementUser {
     @ManyToOne
     @MapsId("userID")
     @JoinColumn(name = "userID")
-    private Customer customer;
+    private Customer1x customer;
 
     @ManyToOne
     @MapsId("aid")
     @JoinColumn(name = "aid")
-    private Achievement achievement;
+    private Achievement4x achievement;
     // getters and setters
 }

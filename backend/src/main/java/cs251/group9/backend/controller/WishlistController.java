@@ -20,7 +20,7 @@ public class WishlistController {
     
     // Add to wishlist
     @PostMapping("/add")
-    public ResponseEntity<Wishlist> addToWishlist(@RequestParam Long userID, @RequestParam Integer gameID) {
+    public ResponseEntity<Wishlist> addToWishlist(@RequestParam Long userID, @RequestParam Long gameID) {
         try {
             Wishlist wishlist = wishlistService.addToWishlist(userID, gameID);
             return ResponseEntity.ok(wishlist);
@@ -37,7 +37,7 @@ public class WishlistController {
     
     // Remove from wishlist
     @DeleteMapping("/remove")
-    public ResponseEntity<Void> removeFromWishlist(@RequestParam Long userID, @RequestParam Integer gameID) {
+    public ResponseEntity<Void> removeFromWishlist(@RequestParam Long userID, @RequestParam Long gameID) {
         try {
             wishlistService.removeFromWishlist(userID, gameID);
             return ResponseEntity.noContent().build();

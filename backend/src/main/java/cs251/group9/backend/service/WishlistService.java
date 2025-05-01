@@ -25,7 +25,7 @@ public class WishlistService {
     private OrderService orderService;
     
     @Transactional
-    public Wishlist addToWishlist(Long userID, Integer gameID) {
+    public Wishlist addToWishlist(Long userID, Long gameID) {
         // Check if user already owns the game
         if (orderService.checkOwnership(userID, gameID)) {
             throw new RuntimeException("User already owns this game");
@@ -56,7 +56,7 @@ public class WishlistService {
         return wishlistRepo.findByUserId(userID);
     }
     
-    public void removeFromWishlist(Long userID, Integer gameID) {
+    public void removeFromWishlist(Long userID, Long gameID) {
         WishlistId wishlistId = new WishlistId(userID, gameID);
         wishlistRepo.deleteById(wishlistId);
     }

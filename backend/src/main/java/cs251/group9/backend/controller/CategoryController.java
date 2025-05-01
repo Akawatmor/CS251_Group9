@@ -66,7 +66,7 @@ public class CategoryController {
     
     // Get categories for a game
     @GetMapping("/game/{gameId}")
-    public List<Category5x> getCategoriesByGameId(@PathVariable Integer gameId) {
+    public List<Category5x> getCategoriesByGameId(@PathVariable Long gameId) {
         return categoryRepo.findCategoriesByGameId(gameId);
     }
 }

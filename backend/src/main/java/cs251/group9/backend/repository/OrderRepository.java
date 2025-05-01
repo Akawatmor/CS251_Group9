@@ -19,5 +19,5 @@ public interface OrderRepository extends JpaRepository<Order3x, Integer> {
     List<Order3x> findByGameGameID(@Param("gameID") Integer gameID);
     
     @Query(value = "SELECT COUNT(*) > 0 FROM orders WHERE userID = :userID AND gameID = :gameID", nativeQuery = true)
-    boolean existsByUserIDAndGameID(@Param("userID") Long userID, @Param("gameID") Integer gameID);
+    boolean existsByUserIDAndGameID(@Param("userID") Long userID, @Param("gameID") Long gameID);
 }

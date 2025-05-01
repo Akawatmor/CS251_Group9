@@ -27,7 +27,7 @@ public class ReviewController {
     // Add or update Game Review
     @PostMapping
     public ResponseEntity<Review> addReview(@RequestParam Long userID, 
-                                          @RequestParam Integer gameID,
+                                          @RequestParam Long gameID,
                                           @RequestParam String comment,
                                           @RequestParam Integer score) {
         try {
@@ -41,7 +41,7 @@ public class ReviewController {
     
     // Get all reviews for a game
     @GetMapping("/game/{gameId}")
-    public ResponseEntity<List<Review>> getGameReviews(@PathVariable Integer gameId) {
+    public ResponseEntity<List<Review>> getGameReviews(@PathVariable Long gameId) {
         return ResponseEntity.ok(reviewRepo.findByGameId(gameId));
     }
     
@@ -54,7 +54,7 @@ public class ReviewController {
     // Get specific review
     @GetMapping("/{userId}/{gameId}")
     public ResponseEntity<Review> getSpecificReview(@PathVariable Long userId, 
-                                                 @PathVariable Integer gameId) {
+                                                 @PathVariable Long gameId) {
         return reviewRepo.findByUserIdAndGameId(userId, gameId)
             .map(ResponseEntity::ok)
             .orElse(ResponseEntity.notFound().build());

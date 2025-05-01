@@ -4,4 +4,4 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import cs251.group9.backend.entity.*;
 
-public interface AchievementRepository extends JpaRepository<Achievement, String> {}
+public interface AchievementRepository extends JpaRepository<Achievement4x, Long> {}

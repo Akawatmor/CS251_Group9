@@ -8,12 +8,12 @@ import jakarta.persistence.*;
 @Embeddable
 public class ReviewId implements Serializable {
     private Long userID;
-    private Integer gameID;
+    private Long gameID;
     
     // Default constructor
     public ReviewId() {}
     
-    public ReviewId(Long userID, Integer gameID) {
+    public ReviewId(Long userID, Long gameID) {
         this.userID = userID;
         this.gameID = gameID;
     }
@@ -27,11 +27,11 @@ public class ReviewId implements Serializable {
         this.userID = userID;
     }
 
-    public Integer getGameID() {
+    public Long getGameID() {
         return gameID;
     }
 
-    public void setGameID(Integer gameID) {
+    public void setGameID(Long gameID) {
         this.gameID = gameID;
     }
     

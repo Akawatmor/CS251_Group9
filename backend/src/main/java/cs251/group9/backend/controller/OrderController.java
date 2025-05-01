@@ -28,7 +28,7 @@ public class OrderController {
     // Buy Game
     @PostMapping("/buy")
     public ResponseEntity<Order3x> buyGame(@RequestParam Long userID,
-                                       @RequestParam Integer gameID, 
+                                       @RequestParam Long gameID, 
                                        @RequestParam String receipt) {
         try {
             Order3x order = orderService.placeOrder(userID, gameID, receipt);
@@ -54,7 +54,7 @@ public class OrderController {
     
     // Check if user owns a game
     @GetMapping("/check")
-    public ResponseEntity<Boolean> checkGameOwnership(@RequestParam Long userID, @RequestParam Integer gameID) {
+    public ResponseEntity<Boolean> checkGameOwnership(@RequestParam Long userID, @RequestParam Long gameID) {
         boolean ownsGame = orderService.checkOwnership(userID, gameID);
         return ResponseEntity.ok(ownsGame);
     }

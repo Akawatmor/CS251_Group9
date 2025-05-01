@@ -11,11 +11,11 @@ public class GameDeveloper {
     @ManyToOne
     @MapsId("gameID")
     @JoinColumn(name = "gameID")
-    private Game game;
+    private Game2x game;
 
     @ManyToOne
     @MapsId("devID")
     @JoinColumn(name = "devID")
-    private Developer developer;
+    private Developer3x developer;
     // getters and setters
 }

@@ -12,11 +12,11 @@ public class ModDeveloper {
     @ManyToOne
     @MapsId("modID")
     @JoinColumn(name = "modID")
-    private ModDLC mod;
+    private ModDLC7x mod;
 
     @ManyToOne
     @MapsId("devID")
     @JoinColumn(name = "devID")
-    private Developer developer;
+    private Developer3x developer;
     // getters and setters
 }

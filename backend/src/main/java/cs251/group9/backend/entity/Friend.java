@@ -12,11 +12,11 @@ public class Friend {
     @ManyToOne
     @MapsId("userID1")
     @JoinColumn(name = "userID1")
-    private Customer user1;
+    private Customer1x user1;
 
     @ManyToOne
     @MapsId("userID2")
     @JoinColumn(name = "userID2")
-    private Customer user2;
+    private Customer1x user2;
     // getters and setters
 }

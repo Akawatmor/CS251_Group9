@@ -24,7 +24,7 @@ public class ReviewService {
     private OrderService orderService;
     
     @Transactional
-    public Review addOrUpdateReview(Long userID, Integer gameID, String comment, Integer score) {
+    public Review addOrUpdateReview(Long userID, Long gameID, String comment, Integer score) {
         // Validate score
         if (score < 1 || score > 5) {
             throw new IllegalArgumentException("Score must be between 1 and 5");
@@ -64,7 +64,7 @@ public class ReviewService {
         return savedReview;
     }
     
-    private void updateGameRating(Integer gameID) {
+    private void updateGameRating(Long gameID) {
         Float avgRating = reviewRepo.calculateAverageRatingByGameId(gameID);
         if (avgRating != null) {
             Game2x game = gameRepo.findBygameID(gameID)

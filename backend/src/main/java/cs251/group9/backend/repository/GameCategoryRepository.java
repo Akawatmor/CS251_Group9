@@ -4,4 +4,4 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import cs251.group9.backend.entity.*;
 
-public interface GameCategoryRepository extends JpaRepository<GameCategory, String> {}
+public interface GameCategoryRepository extends JpaRepository<GameCategory, Long> {}

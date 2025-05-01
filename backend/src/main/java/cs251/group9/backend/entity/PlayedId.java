@@ -7,31 +7,31 @@ import jakarta.persistence.*;
 
 @Embeddable
 public class PlayedId implements Serializable {
-    private Integer userID;
-    private Integer gameID;
+    private Long userID;
+    private Long gameID;
     
     // Default constructor
     public PlayedId() {}
     
-    public PlayedId(Integer userID, Integer gameID) {
+    public PlayedId(Long userID, Long gameID) {
         this.userID = userID;
         this.gameID = gameID;
     }
     
     // Getters and setters
-    public Integer getUserID() {
+    public Long getUserID() {
         return userID;
     }
     
-    public void setUserID(Integer userID) {
+    public void setUserID(Long userID) {
         this.userID = userID;
     }
     
-    public Integer getGameID() {
+    public Long getGameID() {
         return gameID;
     }
     
-    public void setGameID(Integer gameID) {
+    public void setGameID(Long gameID) {
         this.gameID = gameID;
     }
     

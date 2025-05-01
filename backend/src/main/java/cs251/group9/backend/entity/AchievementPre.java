@@ -13,11 +13,11 @@ public class AchievementPre {
     @ManyToOne
     @MapsId("aid")
     @JoinColumn(name = "aid")
-    private Achievement achievement;
+    private Achievement4x achievement;
 
     @ManyToOne
     @MapsId("prerequisiteAID")
     @JoinColumn(name = "prerequisiteAID")
-    private Achievement prerequisite;
+    private Achievement4x prerequisite;
     // getters and setters
 }

@@ -22,7 +22,7 @@ public class PlayedController {
     
     // Get Players that play a Game
     @GetMapping("/game/{gameID}")
-    public List<String> getPlayers(@PathVariable Integer gameID) {
+    public List<String> getPlayers(@PathVariable Long gameID) {
         return playedRepo.findByGameGameID(gameID).stream()
                 .map(p -> p.getCustomer().getuName())
                 .collect(Collectors.toList());
@@ -30,14 +30,14 @@ public class PlayedController {
     
     // Get games played by a user
     @GetMapping("/user/{userID}")
-    public List<Played> getUserGames(@PathVariable Integer userID) {
+    public List<Played> getUserGames(@PathVariable Long userID) {
         return playedRepo.findByUserID(userID);
     }
     
     // Update play time for a game
     @PutMapping("/update-time")
-    public ResponseEntity<Played> updatePlayTime(@RequestParam Integer userID, 
-                                             @RequestParam Integer gameID,
+    public ResponseEntity<Played> updatePlayTime(@RequestParam Long userID, 
+                                             @RequestParam Long gameID,
                                              @RequestParam Long additionalMinutes) {
         return playedRepo.findByUserIDAndGameID(userID, gameID)
             .map(played -> {

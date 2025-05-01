@@ -215,15 +215,15 @@ public class GameController {
     // Add category to game
     @PostMapping("/{gameId}/category/{categoryId}")
     public ResponseEntity<GameCategory> addCategoryToGame(@PathVariable Long gameId, 
-                                                         @PathVariable String categoryId) {
+                                                         @PathVariable Long categoryId) {
         Game2x game = gameRepo.findById(gameId).orElse(null);
-        Category5x category = categoryRepo.findById(categoryId).orElse(null);
+        Category5x category = categoryRepo.findCategoriesByGameId(categoryId).orElse(null);
         
         if (game == null || category == null) {
             return ResponseEntity.notFound().build();
         }
         
-        GameCategoryId id = new GameCategoryId(gameId.intValue(), categoryId);
+        GameCategoryId id = new GameCategoryId(gameId, categoryId);
         GameCategory gameCategory = new GameCategory();
         gameCategory.setId(id);
         gameCategory.setGame(game);
@@ -235,8 +235,8 @@ public class GameController {
     // Remove category from game
     @DeleteMapping("/{gameId}/category/{categoryId}")
     public ResponseEntity<Void> removeCategoryFromGame(@PathVariable Long gameId, 
-                                                     @PathVariable String categoryId) {
-        GameCategoryId id = new GameCategoryId(gameId.intValue(), categoryId);
+                                                     @PathVariable Long categoryId) {
+        GameCategoryId id = new GameCategoryId(gameId, categoryId);
         
         if (!gameCategoryRepo.existsById(id)) {
             return ResponseEntity.notFound().build();
@@ -248,7 +248,7 @@ public class GameController {
     
     // Get games by category
     @GetMapping("/category/{categoryId}")
-    public List<Game2x> getGamesByCategory(@PathVariable String categoryId) {
+    public List<Game2x> getGamesByCategory(@PathVariable Long categoryId) {
         return gameRepo.findByCategoryId(categoryId);
     }
     

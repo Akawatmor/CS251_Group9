@@ -26,7 +26,7 @@ public class OrderService {
     private PlayedRepository playedRepo;
 
     @Transactional
-    public Order3x placeOrder(Long userID, Integer gameID, String receiptText) {
+    public Order3x placeOrder(Long userID, Long gameID, String receiptText) {
         // Find customer and game
         Customer1x customer = customerRepo.findByuserID(userID);
         Game2x game = gameRepo.findBygameID(gameID)
@@ -56,7 +56,7 @@ public class OrderService {
         
         // Add game to user's played games
         PlayedId playedId = new PlayedId();
-        playedId.setUserID(userID.intValue());
+        playedId.setUserID(userID);
         playedId.setGameID(gameID);
         
         Played played = new Played();
@@ -68,7 +68,7 @@ public class OrderService {
         return order;
     }
     
-    public boolean checkOwnership(Long userID, Integer gameID) {
+    public boolean checkOwnership(Long userID, Long gameID) {
         return orderRepo.existsByUserIDAndGameID(userID, gameID);
     }
 }
