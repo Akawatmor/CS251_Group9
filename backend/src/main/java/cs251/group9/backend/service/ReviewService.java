@@ -1,0 +1,76 @@
+package cs251.group9.backend.service;
+
+import cs251.group9.backend.entity.*;
+import cs251.group9.backend.repository.*;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.time.LocalDateTime;
+
+@Service
+public class ReviewService {
+    @Autowired
+    private ReviewRepository reviewRepo;
+    
+    @Autowired
+    private GameRepository gameRepo;
+    
+    @Autowired
+    private Customer1xRepository customerRepo;
+    
+    @Autowired
+    private OrderService orderService;
+    
+    @Transactional
+    public Review addOrUpdateReview(Long userID, Integer gameID, String comment, Integer score) {
+        // Validate score
+        if (score < 1 || score > 5) {
+            throw new IllegalArgumentException("Score must be between 1 and 5");
+        }
+        
+        // Check if user owns the game
+        if (!orderService.checkOwnership(userID, gameID)) {
+            throw new RuntimeException("User must own the game to review it");
+        }
+        
+        // Get customer and game
+        Customer1x customer = customerRepo.findByuserID(userID);
+        Game game = gameRepo.findBygameID(gameID)
+            .orElseThrow(() -> new RuntimeException("Game not found"));
+        
+        // Create or update review
+        ReviewId reviewId = new ReviewId(userID, gameID);
+        Review review = reviewRepo.findById(reviewId)
+            .orElse(new Review());
+        
+        if (review.getId() == null) {
+            review.setId(reviewId);
+            review.setCustomer(customer);
+            review.setGame(game);
+        }
+        
+        review.setComment(comment);
+        review.setScore(score);
+        review.setReviewDate(LocalDateTime.now());
+        
+        // Save review
+        Review savedReview = reviewRepo.save(review);
+        
+        // Update game rating
+        updateGameRating(gameID);
+        
+        return savedReview;
+    }
+    
+    private void updateGameRating(Integer gameID) {
+        Float avgRating = reviewRepo.calculateAverageRatingByGameId(gameID);
+        if (avgRating != null) {
+            Game game = gameRepo.findBygameID(gameID)
+                .orElseThrow(() -> new RuntimeException("Game not found"));
+            game.setRating(avgRating);
+            gameRepo.save(game);
+        }
+    }
+}

@@ -12,71 +12,69 @@ import jakarta.persistence.*;
  * Entity Declaration
  */
 
-/*
 @Entity
+@Table(name = "orders")
 public class Order {
 	
-	//Integer ID Order XX
+    // Integer ID Order XX
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer orderID;
     
-    //Join 2 Column (User and Game to make relation)
+    // Join 2 Column (User and Game to make relation)
     @ManyToOne
     @JoinColumn(name = "userID")
-    private Customer customer;
+    private Customer1x customer;
 
     @ManyToOne
     @JoinColumn(name = "gameID")
     private Game game;
     
-    //Auto Generated Date from object created
+    // Auto Generated Date from object created
     private LocalDateTime date = LocalDateTime.now();
     
-    //Receipt Info
+    // Receipt Info
     private String receipt;
 
     
-    //Getters and Setters
-	public Integer getOrderID() {
-		return orderID;
-	}
+    // Getters and Setters
+    public Integer getOrderID() {
+        return orderID;
+    }
 
-	public void setOrderID(Integer orderID) {
-		this.orderID = orderID;
-	}
+    public void setOrderID(Integer orderID) {
+        this.orderID = orderID;
+    }
 
-	public Customer getCustomer() {
-		return customer;
-	}
+    public Customer1x getCustomer() {
+        return customer;
+    }
 
-	public void setCustomer(Customer customer) {
-		this.customer = customer;
-	}
+    public void setCustomer(Customer1x customer) {
+        this.customer = customer;
+    }
 
-	public Game getGame() {
-		return game;
-	}
+    public Game getGame() {
+        return game;
+    }
 
-	public void setGame(Game game) {
-		this.game = game;
-	}
+    public void setGame(Game game) {
+        this.game = game;
+    }
 
-	public LocalDateTime getDate() {
-		return date;
-	}
+    public LocalDateTime getDate() {
+        return date;
+    }
 
-	public void setDate(LocalDateTime date) {
-		this.date = date;
-	}
+    public void setDate(LocalDateTime date) {
+        this.date = date;
+    }
 
-	public String getReceipt() {
-		return receipt;
-	}
+    public String getReceipt() {
+        return receipt;
+    }
 
-	public void setReceipt(String receipt) {
-		this.receipt = receipt;
-	}
-    
-    
+    public void setReceipt(String receipt) {
+        this.receipt = receipt;
+    }
 }
-*/

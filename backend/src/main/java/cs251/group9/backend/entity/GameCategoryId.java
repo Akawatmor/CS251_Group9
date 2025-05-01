@@ -6,27 +6,19 @@ import java.util.Objects;
 import jakarta.persistence.*;
 
 @Embeddable
-public class PlayedId implements Serializable {
-    private Integer userID;
+public class GameCategoryId implements Serializable {
     private Integer gameID;
+    private String cid;
     
     // Default constructor
-    public PlayedId() {}
+    public GameCategoryId() {}
     
-    public PlayedId(Integer userID, Integer gameID) {
-        this.userID = userID;
+    public GameCategoryId(Integer gameID, String cid) {
         this.gameID = gameID;
+        this.cid = cid;
     }
     
     // Getters and setters
-    public Integer getUserID() {
-        return userID;
-    }
-    
-    public void setUserID(Integer userID) {
-        this.userID = userID;
-    }
-    
     public Integer getGameID() {
         return gameID;
     }
@@ -35,17 +27,25 @@ public class PlayedId implements Serializable {
         this.gameID = gameID;
     }
     
+    public String getCid() {
+        return cid;
+    }
+    
+    public void setCid(String cid) {
+        this.cid = cid;
+    }
+    
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        PlayedId playedId = (PlayedId) o;
-        return Objects.equals(userID, playedId.userID) &&
-               Objects.equals(gameID, playedId.gameID);
+        GameCategoryId that = (GameCategoryId) o;
+        return Objects.equals(gameID, that.gameID) && 
+               Objects.equals(cid, that.cid);
     }
-
+    
     @Override
     public int hashCode() {
-        return Objects.hash(userID, gameID);
+        return Objects.hash(gameID, cid);
     }
 }

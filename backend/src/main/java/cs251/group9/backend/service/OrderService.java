@@ -5,60 +5,70 @@ package cs251.group9.backend.service;
 
 import cs251.group9.backend.entity.*;
 import cs251.group9.backend.repository.*;
-import cs251.group9.backend.service.*;
 
 import org.springframework.beans.factory.annotation.*;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-/*
+import org.springframework.transaction.annotation.Transactional;
+
 @Service
 public class OrderService {
-    @Autowired public OrderRepository orderRepo;
-    @Autowired private CustomerRepository customerRepo;
-    @Autowired private GameRepository gameRepo;
-    @Autowired private PlayedRepository playedRepo;
+    @Autowired 
+    private OrderRepository orderRepo;
     
-    //Repository Entity Search
+    @Autowired 
+    private Customer1xRepository customerRepo;
+    
+    @Autowired 
+    private GameRepository gameRepo;
+    
     @Autowired
-    private CustomerRepository CR;
-    private GameRepository GR;
-    private PlayedRepository PR;
-    private OrderRepository OR;
+    private PlayedRepository playedRepo;
 
-    public Order placeOrder(Integer orderID, Integer userID, Integer gameID, String receiptText) {
-    	
-    	Customer CS = CR.findByuserID(userID);
-    	Game GM = GR.findBygameID(gameID).orElse(null);
-    	
-    	//Not Enought Money To Buy Game
-    	if(CS.getMoney() < GM.getgPrice()) {
-    		throw new RuntimeException("User Money is not Enough");
-    		//return null;
-    	}
-    	
-    	//User Having Enough money -> deduct the money from the user
-    	Integer RemainMoney = CS.getMoney() - GM.getgPrice();
-    	
-    	//Resave money to user
-    	CS.setMoney(RemainMoney);
-    	CR.save(CS);
-    	
-    	//Making New Order Information
-    	Order OD = new Order();
-    	OD.setCustomer(CS);
-    	OD.setGame(GM);
-    	OD.setReceipt(receiptText);
-    	OD.setOrderID(orderID); //TODO -> Find the way to auto generate ID
-    	OR.save(OD);
-    	
-    	
-    	//Played Repo
-    	//TODO -> Find the way to add played game
-    	
-    	
-    	
-    	
-    	return OD;
+    @Transactional
+    public Order placeOrder(Long userID, Integer gameID, String receiptText) {
+        // Find customer and game
+        Customer1x customer = customerRepo.findByuserID(userID);
+        Game game = gameRepo.findBygameID(gameID)
+            .orElseThrow(() -> new RuntimeException("Game not found"));
+        
+        // Check if user already owns the game
+        if (orderRepo.existsByUserIDAndGameID(userID, gameID)) {
+            throw new RuntimeException("User already owns this game");
+        }
+        
+        // Check if user has enough money
+        if (customer.getMoney() < game.getgPrice()) {
+            throw new RuntimeException("User does not have enough money");
+        }
+        
+        // Deduct money from user
+        Integer remainingMoney = customer.getMoney() - game.getgPrice();
+        customer.setMoney(remainingMoney);
+        customerRepo.save(customer);
+        
+        // Create order
+        Order order = new Order();
+        order.setCustomer(customer);
+        order.setGame(game);
+        order.setReceipt(receiptText);
+        orderRepo.save(order);
+        
+        // Add game to user's played games
+        PlayedId playedId = new PlayedId();
+        playedId.setUserID(userID.intValue());
+        playedId.setGameID(gameID);
+        
+        Played played = new Played();
+        played.setId(playedId);
+        played.setCustomer(customer);
+        played.setGame(game);
+        playedRepo.save(played);
+        
+        return order;
     }
     
-}*/
+    public boolean checkOwnership(Long userID, Integer gameID) {
+        return orderRepo.existsByUserIDAndGameID(userID, gameID);
+    }
+}
