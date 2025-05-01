@@ -5,6 +5,7 @@
 package cs251.group9.backend.entity;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Pattern;
 import lombok.*;
 
 /*
@@ -20,8 +21,10 @@ import lombok.*;
 @Table(name = "customer")
 public class Customer {
 	
-	//Integer ID Customer 1X
+    // Auto-generated 10-digit ID starting with 1
     @Id
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "customer_seq")
+    @SequenceGenerator(name = "customer_seq", sequenceName = "customer_sequence", initialValue = 1000000001, allocationSize = 1)
     @Column(length = 10)
     private Integer userID;
 
@@ -48,10 +51,15 @@ public class Customer {
     //User Age -> Might Use The Birthday Instead
     private Integer age;
     
-    //Country Number
+    // Country Number - ISO 3 digit numeric code
+    @Pattern(regexp = "^\\d{3}$", message = "Country must be a 3-digit numeric ISO code")
     private String country;
 
     //Money of the User
     private Integer money = 0;
+
+    // Profile photo path (not stored in database)
+    @Transient
+    private String profilePhotoPath;
     
 }
