@@ -10,7 +10,12 @@ import lombok.*;
 /*
  * Entity Declaration
  */
-@Data
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@ToString
+@EqualsAndHashCode
 @Entity
 @Table(name = "customer")
 public class Customer {
