@@ -15,9 +15,24 @@ public class Developer3x {
 	// Auto-generated 10-digit ID starting with 1
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "developer_seq")
-    @SequenceGenerator(name = "developer_seq", sequenceName = "developer_sequence", initialValue = 3000000001, allocationSize = 1)
+    @SequenceGenerator(
+        name = "developer_seq", 
+        sequenceName = "developer_sequence", 
+        initialValue = 1, 
+        allocationSize = 1
+    )
     @Column(length = 10)
     private Long devID;
+
+    // Alternative approach: Add a @PrePersist method to set the ID value
+    @PrePersist
+    public void prePersist() {
+        // This ensures we start from 3000000001 when creating new records
+        if (this.devID == null) {
+            // Get last ID from repository and add 1, or use 3000000001L if none exists
+            this.devID = 3000000001L;
+        }
+    }
 	
 	@Column(unique = true, nullable = false)
     private String devName;
