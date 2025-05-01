@@ -1,25 +1,40 @@
+/*
+ * Game Entity
+ */
 package cs251.group9.backend.entity;
 
 import java.time.*;
 
 import jakarta.persistence.*;
 
+/*
+ * Entity Declaration
+ */
 @Entity
 public class Game {
+	
+	//Integer ID Developer 2X
     @Id
-    private String gameID;
+    @Column(length = 10)
+    private Integer gameID;
     
-    private String gName;
-    private Integer gPrice;
-    private String gDesc;
-    private LocalDateTime gPublishDate;
+    //Game Basic Info
+    private String gName; //Name
+    private String gDesc; //Description (Text)
+    private Integer gPrice; //Game Fixed Price
+    private LocalDateTime gPublishDate; //Game Datetime publish
+    
+    //Calculate Automatically
     private Float rating;
 	
-    // getters and setters
-    public String getGameID() {
+	
+    /*
+     * Getters and setters
+     */
+    public Integer getGameID() {
 		return gameID;
 	}
-	public void setGameID(String gameID) {
+	public void setGameID(Integer gameID) {
 		this.gameID = gameID;
 	}
 	public String getgName() {

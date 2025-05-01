@@ -1,33 +1,64 @@
+/*
+ * Customer Entity
+ */
+
 package cs251.group9.backend.entity;
 
 import jakarta.persistence.*;
 
-
+/*
+ * Entity Declaration
+ */
 @Entity
 public class Customer {
+	
+	//Integer ID Customer 1X
     @Id
     @Column(length = 10)
-    private String userID;
+    private Integer userID;
 
+    //Real Username - Must Be unique
     @Column(unique = true, nullable = false)
     private String UName;
+    
+    //Displayname
+    private String DName;
+    
+    //Real Name
+    private String name;
+    
+    //Real Surname
+    private String surname;
 
+    //Contactable User Email
     @Column(unique = true, nullable = false)
     private String UEmail;
-
+    
+    //User Phone Number
     private String UNumber;
+    
+    //User Age -> Might Use The Birthday Instead
     private Integer age;
+    
+    //Country Number
     private String country;
-    private String DName;
-    private String name;
-    private String surname;
+
+    //Money of the User
     private Integer money = 0;
-	public String getUserID() {
+    
+    
+    /*
+     * Getters and Setters
+     */
+    
+	public Integer getUserID() {
 		return userID;
 	}
-	public void setUserID(String userID) {
+	public void setUserID(Integer userID) {
 		this.userID = userID;
 	}
+	
+	
 	public String getUName() {
 		return UName;
 	}

@@ -1,3 +1,6 @@
+/*
+ * Service For Order
+ */
 package cs251.group9.backend.service;
 
 import cs251.group9.backend.entity.*;
@@ -13,37 +16,48 @@ public class OrderService {
     @Autowired private CustomerRepository customerRepo;
     @Autowired private GameRepository gameRepo;
     @Autowired private PlayedRepository playedRepo;
+    
+    //Repository Entity Search
+    @Autowired
+    private CustomerRepository CR;
+    private GameRepository GR;
+    private PlayedRepository PR;
+    private OrderRepository OR;
 
-    public Order placeOrder(String orderID, String userID, String gameID, String receipt) {
-        Customer customer = customerRepo.findById(userID).orElseThrow();
-        Game game = gameRepo.findById(gameID).orElseThrow();
-
-        //Not Enough Money
-        if (customer.getMoney().compareTo(game.getgPrice()) < 0) {
-            throw new RuntimeException("Insufficient funds");
-        }
-        
-        //Deduct Money
-        Integer Moneyset = customer.getMoney() - game.getgPrice();
-        customer.setMoney(Moneyset);
-        customerRepo.save(customer);
-
-        Order order = new Order();
-        order.setOrderID(orderID);
-        order.setCustomer(customer);
-        order.setGame(game);
-        order.setReceipt(receipt);
-        orderRepo.save(order);
-
-        Played played = new Played();
-        PlayedId pid = new PlayedId();
-        pid.setUserID(userID);
-        pid.setGameID(gameID);
-        played.setId(pid);
-        played.setCustomer(customer);
-        played.setGame(game);
-        playedRepo.save(played);
-
-        return order;
+    public Order placeOrderV(Integer orderID, Integer userID, Integer gameID, String receiptText) {
+    	
+    	Customer CS = CR.findByuserID(userID);
+    	Game GM = GR.findBygameID(gameID);
+    	
+    	//Not Enought Money To Buy Game
+    	if(CS.getMoney() < GM.getgPrice()) {
+    		throw new RuntimeException("User Money is not Enough");
+    		//return null;
+    	}
+    	
+    	//User Having Enough money -> deduct the money from the user
+    	Integer RemainMoney = CS.getMoney() - GM.getgPrice();
+    	
+    	//Resave money to user
+    	CS.setMoney(RemainMoney);
+    	CR.save(CS);
+    	
+    	//Making New Order Information
+    	Order OD = new Order();
+    	OD.setCustomer(CS);
+    	OD.setGame(GM);
+    	OD.setReceipt(receiptText);
+    	OD.setOrderID(orderID); //TODO -> Find the way to auto generate ID
+    	OR.save(OD);
+    	
+    	
+    	//Played Repo
+    	//TODO -> Find the way to add played game
+    	
+    	
+    	
+    	
+    	return OD;
     }
+    
 }
