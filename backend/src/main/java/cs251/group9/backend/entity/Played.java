@@ -18,7 +18,7 @@ public class Played {
     @ManyToOne
     @MapsId("gameID")
     @JoinColumn(name = "gameID")
-    private Game game;
+    private Game2x game;
     
     private LocalDateTime lastPlayed = LocalDateTime.now();
     private Long playTime = 0L; // Play time in minutes
@@ -40,11 +40,11 @@ public class Played {
         this.customer = customer;
     }
 
-    public Game getGame() {
+    public Game2x getGame() {
         return game;
     }
 
-    public void setGame(Game game) {
+    public void setGame(Game2x game) {
         this.game = game;
     }
     

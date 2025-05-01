@@ -12,7 +12,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-/*
+
 @RestController
 @RequestMapping("/api/friends")
 public class FriendController {
@@ -25,4 +25,4 @@ public class FriendController {
     public ResponseEntity<Friend> addFriend(@RequestBody Friend f) {
         return ResponseEntity.ok(repo.save(f));
     }
-}*/
+}

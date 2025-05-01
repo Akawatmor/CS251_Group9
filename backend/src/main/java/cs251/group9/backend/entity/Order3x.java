@@ -14,7 +14,7 @@ import jakarta.persistence.*;
 
 @Entity
 @Table(name = "orders")
-public class Order {
+public class Order3x {
 	
     // Integer ID Order XX
     @Id
@@ -28,7 +28,7 @@ public class Order {
 
     @ManyToOne
     @JoinColumn(name = "gameID")
-    private Game game;
+    private Game2x game;
     
     // Auto Generated Date from object created
     private LocalDateTime date = LocalDateTime.now();
@@ -54,11 +54,11 @@ public class Order {
         this.customer = customer;
     }
 
-    public Game getGame() {
+    public Game2x getGame() {
         return game;
     }
 
-    public void setGame(Game game) {
+    public void setGame(Game2x game) {
         this.game = game;
     }
 

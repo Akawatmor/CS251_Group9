@@ -4,11 +4,10 @@ import java.io.Serializable;
 
 import jakarta.persistence.*;
 
-/*
+
 @Embeddable
 public class ModDeveloperId implements Serializable {
     private String modID;
     private String devID;
     // equals and hashCode
 }
-*/

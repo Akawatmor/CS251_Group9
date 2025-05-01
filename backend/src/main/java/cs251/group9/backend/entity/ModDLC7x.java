@@ -6,7 +6,7 @@ import jakarta.persistence.*;
  * Entity Declaration
  */
 @Entity
-public class ModDLC {
+public class ModDLC7x {
 	
 	//Integer ID ModDLC XX
     @Id
@@ -15,7 +15,7 @@ public class ModDLC {
     //Join 1 Column (GameID)
     @ManyToOne
     @JoinColumn(name = "gameID")
-    private Game game;
+    private Game2x game;
     
     //Fixed Info
     private String modName;
@@ -31,10 +31,10 @@ public class ModDLC {
 	public void setModID(Integer modID) {
 		this.modID = modID;
 	}
-	public Game getGame() {
+	public Game2x getGame() {
 		return game;
 	}
-	public void setGame(Game game) {
+	public void setGame(Game2x game) {
 		this.game = game;
 	}
 	public String getModName() {

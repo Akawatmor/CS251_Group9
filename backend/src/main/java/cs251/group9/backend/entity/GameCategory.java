@@ -11,12 +11,12 @@ public class GameCategory {
     @ManyToOne
     @MapsId("gameID")
     @JoinColumn(name = "gameID")
-    private Game game;
+    private Game2x game;
 
     @ManyToOne
     @MapsId("cid")
     @JoinColumn(name = "cid")
-    private Category category;
+    private Category5x category;
     
     // Getters and setters
     public GameCategoryId getId() {
@@ -27,19 +27,19 @@ public class GameCategory {
         this.id = id;
     }
 
-    public Game getGame() {
+    public Game2x getGame() {
         return game;
     }
 
-    public void setGame(Game game) {
+    public void setGame(Game2x game) {
         this.game = game;
     }
 
-    public Category getCategory() {
+    public Category5x getCategory() {
         return category;
     }
 
-    public void setCategory(Category category) {
+    public void setCategory(Category5x category) {
         this.category = category;
     }
 }

@@ -4,7 +4,7 @@ import jakarta.persistence.*;
 
 @Entity
 @Table(name = "category")
-public class Category {
+public class Category5x {
     @Id
     @Column(length = 10)
     private String cid;

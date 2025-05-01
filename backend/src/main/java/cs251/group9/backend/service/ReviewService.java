@@ -37,7 +37,7 @@ public class ReviewService {
         
         // Get customer and game
         Customer1x customer = customerRepo.findByuserID(userID);
-        Game game = gameRepo.findBygameID(gameID)
+        Game2x game = gameRepo.findBygameID(gameID)
             .orElseThrow(() -> new RuntimeException("Game not found"));
         
         // Create or update review
@@ -67,7 +67,7 @@ public class ReviewService {
     private void updateGameRating(Integer gameID) {
         Float avgRating = reviewRepo.calculateAverageRatingByGameId(gameID);
         if (avgRating != null) {
-            Game game = gameRepo.findBygameID(gameID)
+            Game2x game = gameRepo.findBygameID(gameID)
                 .orElseThrow(() -> new RuntimeException("Game not found"));
             game.setRating(avgRating);
             gameRepo.save(game);

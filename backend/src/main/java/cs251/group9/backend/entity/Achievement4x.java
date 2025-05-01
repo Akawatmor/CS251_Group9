@@ -4,7 +4,7 @@ import java.io.Serializable;
 
 import jakarta.persistence.*;
 
-/*
+
 @Entity
 public class Achievement {
     @Id
@@ -13,4 +13,3 @@ public class Achievement {
     private String aDesc;
     // getters and setters
 }
-*/

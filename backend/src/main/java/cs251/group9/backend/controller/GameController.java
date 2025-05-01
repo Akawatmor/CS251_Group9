@@ -9,7 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.*;
 import org.springframework.web.bind.annotation.*;
 
-import cs251.group9.backend.entity.Game;
+import cs251.group9.backend.entity.Game2x;
 import cs251.group9.backend.repository.GameRepository;
 import cs251.group9.backend.service.*;
 import jakarta.persistence.*;

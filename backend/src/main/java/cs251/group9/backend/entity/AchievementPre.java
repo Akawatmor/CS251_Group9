@@ -4,7 +4,7 @@ import java.io.Serializable;
 
 import jakarta.persistence.*;
 
-/*
+
 @Entity
 public class AchievementPre {
     @EmbeddedId
@@ -21,4 +21,3 @@ public class AchievementPre {
     private Achievement prerequisite;
     // getters and setters
 }
-*/

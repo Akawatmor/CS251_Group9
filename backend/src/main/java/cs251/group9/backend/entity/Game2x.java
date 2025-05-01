@@ -11,7 +11,7 @@ import jakarta.persistence.*;
  * Entity Declaration
  */
 @Entity
-public class Game {
+public class Game2x {
 	
 	//Integer ID Developer 2X
     @Id

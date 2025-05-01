@@ -39,7 +39,7 @@ public class WishlistService {
         
         // Get customer and game
         Customer1x customer = customerRepo.findByuserID(userID);
-        Game game = gameRepo.findBygameID(gameID)
+        Game2x game = gameRepo.findBygameID(gameID)
             .orElseThrow(() -> new RuntimeException("Game not found"));
         
         // Create wishlist entry

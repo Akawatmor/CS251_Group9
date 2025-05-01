@@ -27,11 +27,11 @@ public class OrderController {
     
     // Buy Game
     @PostMapping("/buy")
-    public ResponseEntity<Order> buyGame(@RequestParam Long userID,
+    public ResponseEntity<Order3x> buyGame(@RequestParam Long userID,
                                        @RequestParam Integer gameID, 
                                        @RequestParam String receipt) {
         try {
-            Order order = orderService.placeOrder(userID, gameID, receipt);
+            Order3x order = orderService.placeOrder(userID, gameID, receipt);
             return ResponseEntity.ok(order);
         } catch (RuntimeException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
@@ -48,7 +48,7 @@ public class OrderController {
     
     // Get all user orders
     @GetMapping("/user/{userId}")
-    public ResponseEntity<List<Order>> getUserOrders(@PathVariable Long userId) {
+    public ResponseEntity<List<Order3x>> getUserOrders(@PathVariable Long userId) {
         return ResponseEntity.ok(orderRepo.findByCustomerUserID(userId));
     }
     

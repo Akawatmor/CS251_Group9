@@ -26,10 +26,10 @@ public class OrderService {
     private PlayedRepository playedRepo;
 
     @Transactional
-    public Order placeOrder(Long userID, Integer gameID, String receiptText) {
+    public Order3x placeOrder(Long userID, Integer gameID, String receiptText) {
         // Find customer and game
         Customer1x customer = customerRepo.findByuserID(userID);
-        Game game = gameRepo.findBygameID(gameID)
+        Game2x game = gameRepo.findBygameID(gameID)
             .orElseThrow(() -> new RuntimeException("Game not found"));
         
         // Check if user already owns the game
@@ -48,7 +48,7 @@ public class OrderService {
         customerRepo.save(customer);
         
         // Create order
-        Order order = new Order();
+        Order3x order = new Order3x();
         order.setCustomer(customer);
         order.setGame(game);
         order.setReceipt(receiptText);

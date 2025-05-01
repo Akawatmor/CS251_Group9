@@ -17,7 +17,7 @@ public class Wishlist {
     @ManyToOne
     @MapsId("gameID")
     @JoinColumn(name = "gameID")
-    private Game game;
+    private Game2x game;
 
     private LocalDateTime date = LocalDateTime.now();
     
@@ -38,11 +38,11 @@ public class Wishlist {
         this.customer = customer;
     }
 
-    public Game getGame() {
+    public Game2x getGame() {
         return game;
     }
 
-    public void setGame(Game game) {
+    public void setGame(Game2x game) {
         this.game = game;
     }
 
