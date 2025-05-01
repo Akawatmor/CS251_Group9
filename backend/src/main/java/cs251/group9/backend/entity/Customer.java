@@ -5,7 +5,7 @@
 package cs251.group9.backend.entity;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Pattern;
+import javax.validation.constraints.Pattern;
 import lombok.*;
 
 /*
@@ -61,5 +61,29 @@ public class Customer {
     // Profile photo path (not stored in database)
     @Transient
     private String profilePhotoPath;
+
+    // Explicit getter and setter for UName
+    public String getUName() {
+        return UName;
+    }
+    public void setUName(String UName) {
+        this.UName = UName;
+    }
+
+    // Explicit getter and setter for UEmail
+    public String getUEmail() {
+        return UEmail;
+    }
+    public void setUEmail(String UEmail) {
+        this.UEmail = UEmail;
+    }
+
+    // Explicit getter and setter for money
+    public Integer getMoney() {
+        return money;
+    }
+    public void setMoney(Integer money) {
+        this.money = money;
+    }
     
 }
