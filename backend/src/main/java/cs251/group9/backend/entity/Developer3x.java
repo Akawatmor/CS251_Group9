@@ -29,7 +29,7 @@ public class Developer3x {
     */
     @PrePersist
     public void prePersist() {
-        if (this.devID == null) this.devID = 3000000001L; // Get last ID from repository and add 1, or use 3000000001L if none exists
+        if (this.devID == null) this.devID = 3000000001L;
     }
 	
 	@Column(unique = true, nullable = false)

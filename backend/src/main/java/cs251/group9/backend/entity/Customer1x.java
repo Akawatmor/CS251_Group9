@@ -31,7 +31,7 @@ public class Customer1x {
     */
     @PrePersist
     public void prePersist() {
-        if (this.userID == null) this.userID = 1000000001L; // Get last ID from repository and add 1, or use 1000000001L if none exists
+        if (this.userID == null) this.userID = 1000000001L;
     }
     
     // Real Username - Must Be unique
