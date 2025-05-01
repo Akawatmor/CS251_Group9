@@ -5,7 +5,7 @@
 package cs251.group9.backend.entity;
 
 import jakarta.persistence.*;
-import javax.validation.constraints.Pattern;
+import jakarta.validation.constraints.Pattern;
 import lombok.*;
 
 /*
