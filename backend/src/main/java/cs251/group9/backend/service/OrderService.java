@@ -8,6 +8,7 @@ import cs251.group9.backend.repository.*;
 import cs251.group9.backend.service.*;
 
 import org.springframework.beans.factory.annotation.*;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -24,10 +25,10 @@ public class OrderService {
     private PlayedRepository PR;
     private OrderRepository OR;
 
-    public Order placeOrderV(Integer orderID, Integer userID, Integer gameID, String receiptText) {
+    public Order placeOrder(Integer orderID, Integer userID, Integer gameID, String receiptText) {
     	
     	Customer CS = CR.findByuserID(userID);
-    	Game GM = GR.findBygameID(gameID);
+    	Game GM = GR.findBygameID(gameID).orElse(null);
     	
     	//Not Enought Money To Buy Game
     	if(CS.getMoney() < GM.getgPrice()) {

@@ -1,3 +1,6 @@
+/*
+ * ModDLC Controller
+ */
 package cs251.group9.backend.controller;
 
 import cs251.group9.backend.entity.*;
@@ -14,8 +17,10 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/api/mods")
 public class ModDLCController {
-    @Autowired private ModDLCRepository repo;
-
+    @Autowired
+    private ModDLCRepository repo;
+    
+    //findby Gameid
     @GetMapping("/game/{gameID}")
     public List<ModDLC> getModsByGame(@PathVariable String gameID) {
         return repo.findByGameGameID(gameID);

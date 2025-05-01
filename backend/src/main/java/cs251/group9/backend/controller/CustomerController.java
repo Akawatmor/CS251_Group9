@@ -1,3 +1,6 @@
+/*
+ * Customer Controller
+ */
 package cs251.group9.backend.controller;
 
 import org.springframework.beans.factory.annotation.*;
@@ -15,15 +18,17 @@ import java.util.*;
 @RestController
 @RequestMapping("/api/customers")
 public class CustomerController {
-
+	
     @Autowired
     private CustomerService customerService;
 
+    //To register User
     @PostMapping("/register")
     public ResponseEntity<Customer> register(@RequestBody Customer customer) {
         return ResponseEntity.ok(customerService.register(customer));
     }
-
+    
+    //To Login User
     @PostMapping("/login")
     public ResponseEntity<Customer> login(@RequestParam String uName, @RequestParam String uEmail) {
         return customerService.login(uName, uEmail)
@@ -31,8 +36,9 @@ public class CustomerController {
                 .orElse(ResponseEntity.status(HttpStatus.UNAUTHORIZED).build());
     }
 
+    //To update some part of user (Like deduct money)
     @PutMapping("/{userId}")
-    public ResponseEntity<Customer> updateProfile(@PathVariable String userId, @RequestBody Customer updated) {
+    public ResponseEntity<Customer> updateProfile(@PathVariable Integer userId, @RequestBody Customer updated) {
         return ResponseEntity.ok(customerService.updateProfile(userId, updated));
     }
 }

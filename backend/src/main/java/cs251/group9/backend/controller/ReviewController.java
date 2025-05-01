@@ -1,3 +1,6 @@
+/*
+ * Review Game
+ */
 package cs251.group9.backend.controller;
 
 import cs251.group9.backend.entity.*;
@@ -12,8 +15,10 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/api/reviews")
 public class ReviewController {
-    @Autowired private ReviewRepository repo;
-
+    @Autowired 
+    private ReviewRepository repo;
+    
+    //Add Game Review
     @PostMapping
     public ResponseEntity<Review> addReview(@RequestBody Review r) {
         return ResponseEntity.ok(repo.save(r));

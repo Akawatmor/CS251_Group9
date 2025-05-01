@@ -1,3 +1,6 @@
+/*
+ * Order Controller
+ */
 package cs251.group9.backend.controller;
 
 
@@ -14,11 +17,13 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/api/orders")
 public class OrderController {
-    @Autowired private OrderService orderService;
-
+    @Autowired
+    private OrderService orderService;
+    
+    //Buy Game
     @PostMapping("/buy")
-    public ResponseEntity<Order> buyGame(@RequestParam String orderID, @RequestParam String userID,
-                                         @RequestParam String gameID, @RequestParam String receipt) {
+    public ResponseEntity<Order> buyGame(@RequestParam Integer orderID, @RequestParam Integer userID,
+                                         @RequestParam Integer gameID, @RequestParam String receipt) {
         try {
             Order order = orderService.placeOrder(orderID, userID, gameID, receipt);
             return ResponseEntity.ok(order);
@@ -27,6 +32,7 @@ public class OrderController {
         }
     }
 
+    //Make Receipt
     @GetMapping("/receipt")
     public ResponseEntity<String> getReceipt(@RequestParam String userID, @RequestParam String orderID) {
         return orderService.orderRepo.findByCustomerUserIDAndOrderID(userID, orderID)

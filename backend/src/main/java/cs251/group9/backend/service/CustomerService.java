@@ -26,8 +26,8 @@ public class CustomerService {
         return customerRepository.findByUNameAndUEmail(uName, uEmail);
     }
 
-    public Customer updateProfile(String userId, Customer updated) {
-        Customer existing = customerRepository.findById(userId).orElseThrow();
+    public Customer updateProfile(Integer userId, Customer updated) {
+        Customer existing = customerRepository.findByuserID(userId);
         existing.setUName(updated.getUName());
         existing.setUEmail(updated.getUEmail());
         existing.setUNumber(updated.getUNumber());

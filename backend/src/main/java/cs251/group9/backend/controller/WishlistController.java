@@ -13,7 +13,8 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api/wishlist")
 public class WishlistController {
     @Autowired private WishlistRepository repo;
-
+    
+    //Add Wishlist
     @PostMapping
     public ResponseEntity<Wishlist> addToWishlist(@RequestBody Wishlist w) {
         return ResponseEntity.ok(repo.save(w));
