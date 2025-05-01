@@ -4,26 +4,21 @@ import java.io.Serializable;
 
 import jakarta.persistence.*;
 
-/*
 @Embeddable
 public class PlayedId implements Serializable {
-    private String userID;
-    private String gameID;
+    private Integer userID;
+    private Integer gameID;
     // equals and hashCode
-    
-	public String getUserID() {
-		return userID;
-	}
-	public void setUserID(String userID) {
-		this.userID = userID;
-	}
-	public String getGameID() {
-		return gameID;
-	}
-	public void setGameID(String gameID) {
-		this.gameID = gameID;
-	}
-    
-    
+    public Integer getUserID() {
+        return userID;
+    }
+    public void setUserID(Integer userID) {
+        this.userID = userID;
+    }
+    public Integer getGameID() {
+        return gameID;
+    }
+    public void setGameID(Integer gameID) {
+        this.gameID = gameID;
+    }
 }
-*/

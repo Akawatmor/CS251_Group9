@@ -9,6 +9,6 @@ import java.util.*;
 
 public interface GameRepository extends JpaRepository<Game, Integer> {
 	
-    List<Game> findByGNameContainingIgnoreCase(Integer gName);
+    List<Game> findByGNameContainingIgnoreCase(String gName);
     Optional<Game> findBygameID(Integer gameID);
 }
