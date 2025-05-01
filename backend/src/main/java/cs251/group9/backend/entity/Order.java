@@ -11,6 +11,8 @@ import jakarta.persistence.*;
 /*
  * Entity Declaration
  */
+
+/*
 @Entity
 public class Order {
 	
@@ -34,9 +36,7 @@ public class Order {
     private String receipt;
 
     
-    /*
-     * Getters and Setters
-     */
+    //Getters and Setters
 	public Integer getOrderID() {
 		return orderID;
 	}
@@ -79,3 +79,4 @@ public class Order {
     
     
 }
+*/

@@ -2,6 +2,7 @@ package cs251.group9.backend.entity;
 
 import jakarta.persistence.*;
 
+/*
 @Entity
 public class GameDeveloper {
     @EmbeddedId
@@ -18,3 +19,4 @@ public class GameDeveloper {
     private Developer developer;
     // getters and setters
 }
+*/

@@ -4,6 +4,7 @@ import java.time.*;
 
 import jakarta.persistence.*;
 
+/*
 @Entity
 public class Played {
     @EmbeddedId
@@ -46,4 +47,4 @@ public class Played {
     
     
     
-}
+}*/

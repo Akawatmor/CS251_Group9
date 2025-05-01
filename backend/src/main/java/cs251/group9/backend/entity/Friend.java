@@ -3,7 +3,7 @@ package cs251.group9.backend.entity;
 import java.time.*;
 
 import jakarta.persistence.*;
-
+/*
 @Entity
 public class Friend {
     @EmbeddedId
@@ -19,4 +19,4 @@ public class Friend {
     @JoinColumn(name = "userID2")
     private Customer user2;
     // getters and setters
-}
+}*/

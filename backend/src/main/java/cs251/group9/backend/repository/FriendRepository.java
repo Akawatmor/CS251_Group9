@@ -6,6 +6,4 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import cs251.group9.backend.entity.*;
 
-public interface FriendRepository extends JpaRepository<Friend, FriendId> {
-    
-}
+//public interface FriendRepository extends JpaRepository<Friend, FriendId> {}

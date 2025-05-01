@@ -10,7 +10,7 @@ public class ModDLC {
 	
 	//Integer ID ModDLC XX
     @Id
-    private String modID;
+    private Integer modID;
     
     //Join 1 Column (GameID)
     @ManyToOne
@@ -25,10 +25,10 @@ public class ModDLC {
     /*
      * Getters and Setters
      */
-	public String getModID() {
+	public Integer getModID() {
 		return modID;
 	}
-	public void setModID(String modID) {
+	public void setModID(Integer modID) {
 		this.modID = modID;
 	}
 	public Game getGame() {

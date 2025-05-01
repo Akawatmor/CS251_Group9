@@ -6,7 +6,11 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.*;
 
 public interface CustomerRepository extends JpaRepository<Customer, Integer> {
+	
+	//find by userID
+	Customer findByuserID(Integer userID);
+	
+	
     Optional<Customer> findByUNameAndUEmail(String UName, String UEmail);
     
-    Customer findByuserID(Integer userID);
 }

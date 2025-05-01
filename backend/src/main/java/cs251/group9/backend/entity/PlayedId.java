@@ -4,6 +4,7 @@ import java.io.Serializable;
 
 import jakarta.persistence.*;
 
+/*
 @Embeddable
 public class PlayedId implements Serializable {
     private String userID;
@@ -25,4 +26,4 @@ public class PlayedId implements Serializable {
     
     
 }
-
+*/

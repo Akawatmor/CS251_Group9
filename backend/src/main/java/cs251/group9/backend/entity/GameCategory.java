@@ -3,7 +3,7 @@ package cs251.group9.backend.entity;
 import java.io.Serializable;
 
 import jakarta.persistence.*;
-
+/*
 @Entity
 public class GameCategory {
     @Id
@@ -16,3 +16,4 @@ public class GameCategory {
     private String cName;
     // getters and setters
 }
+*/

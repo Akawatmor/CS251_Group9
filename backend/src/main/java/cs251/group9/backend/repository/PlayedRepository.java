@@ -5,6 +5,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.*;
 
+/*
 public interface PlayedRepository extends JpaRepository<Played, PlayedId> {
     List<Played> findByGameGameID(Integer gameId);
-}
+}*/

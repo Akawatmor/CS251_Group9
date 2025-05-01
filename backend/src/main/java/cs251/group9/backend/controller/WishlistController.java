@@ -9,6 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+/*
 @RestController
 @RequestMapping("/api/wishlist")
 public class WishlistController {
@@ -20,3 +21,4 @@ public class WishlistController {
         return ResponseEntity.ok(repo.save(w));
     }
 }
+*/

@@ -10,7 +10,7 @@ import cs251.group9.backend.service.*;
 import org.springframework.beans.factory.annotation.*;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-
+/*
 @Service
 public class OrderService {
     @Autowired public OrderRepository orderRepo;
@@ -61,4 +61,4 @@ public class OrderService {
     	return OD;
     }
     
-}
+}*/

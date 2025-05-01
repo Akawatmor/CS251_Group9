@@ -3,7 +3,7 @@ package cs251.group9.backend.entity;
 import java.io.Serializable;
 
 import jakarta.persistence.*;
-
+/*
 @Entity
 public class AchievementUser {
     @EmbeddedId
@@ -19,4 +19,4 @@ public class AchievementUser {
     @JoinColumn(name = "aid")
     private Achievement achievement;
     // getters and setters
-}
+}*/

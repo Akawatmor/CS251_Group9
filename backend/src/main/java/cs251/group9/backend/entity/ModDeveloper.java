@@ -3,7 +3,7 @@ package cs251.group9.backend.entity;
 import java.io.Serializable;
 
 import jakarta.persistence.*;
-
+/*
 @Entity
 public class ModDeveloper {
     @EmbeddedId
@@ -20,3 +20,4 @@ public class ModDeveloper {
     private Developer developer;
     // getters and setters
 }
+*/

@@ -15,7 +15,7 @@ import cs251.group9.backend.service.*;
 import jakarta.persistence.*;
 
 import java.util.*;
-
+/*
 @RestController
 @RequestMapping("/api/games")
 public class GameController {
@@ -49,4 +49,4 @@ public class GameController {
     
     //Delete Game?
 }
-
+*/

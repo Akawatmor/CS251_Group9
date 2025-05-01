@@ -13,7 +13,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-
+/*
 @RestController
 @RequestMapping("/api/orders")
 public class OrderController {
@@ -34,9 +34,9 @@ public class OrderController {
 
     //Make Receipt
     @GetMapping("/receipt")
-    public ResponseEntity<String> getReceipt(@RequestParam String userID, @RequestParam String orderID) {
+    public ResponseEntity<String> getReceipt(@RequestParam Integer userID, @RequestParam Integer orderID) {
         return orderService.orderRepo.findByCustomerUserIDAndOrderID(userID, orderID)
                 .map(order -> ResponseEntity.ok(order.getReceipt()))
                 .orElse(ResponseEntity.notFound().build());
     }
-}
+}*/
