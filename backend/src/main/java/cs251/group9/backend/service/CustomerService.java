@@ -20,6 +20,12 @@ public class CustomerService {
     private CustomerRepository customerRepository;
 
     public Customer register(Customer customer) {
+        if (customer.getUName() == null || customer.getUName().isEmpty()) {
+            throw new IllegalArgumentException("Username (UName) must not be null or empty");
+        }
+        if (customer.getUEmail() == null || customer.getUEmail().isEmpty()) {
+            throw new IllegalArgumentException("Email (UEmail) must not be null or empty");
+        }
         customer.setMoney(0);
         return customerRepository.save(customer);
     }
