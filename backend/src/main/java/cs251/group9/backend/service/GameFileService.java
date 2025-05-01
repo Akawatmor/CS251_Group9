@@ -12,17 +12,16 @@ import java.nio.file.StandardCopyOption;
 import java.util.UUID;
 
 @Service
-public class PhotoService {
+public class GameFileService {
 
     @Value("${file.upload-dir:./uploads/}")
     private String baseUploadDir;
     
-    private final String userPicturesDir = "user/";
-    private final String gamePicturesDir = "games/pictures/";
+    private final String gameFilesDir = "games/";
+    private final String gamePicturesDir = "game-pictures/";
     
-    // Store a user profile photo
-    public String storePhoto(Long userId, MultipartFile file) throws IOException {
-        String uploadDir = baseUploadDir + userPicturesDir;
+    public String storeGameFile(Long gameId, MultipartFile file) throws IOException {
+        String uploadDir = baseUploadDir + gameFilesDir;
         
         // Create directory if it doesn't exist
         Path dirPath = Paths.get(uploadDir);
@@ -34,8 +33,8 @@ public class PhotoService {
         String originalFilename = file.getOriginalFilename();
         String extension = originalFilename.substring(originalFilename.lastIndexOf("."));
         
-        // Create the file path
-        String filename = userId + extension;
+        // Create the file path with a unique name
+        String filename = gameId + "_" + UUID.randomUUID().toString() + extension;
         Path targetPath = dirPath.resolve(filename);
         
         // Save the file
@@ -44,23 +43,7 @@ public class PhotoService {
         return uploadDir + filename;
     }
     
-    // Get a user profile photo path
-    public String getPhotoPath(Long userId) {
-        Path dirPath = Paths.get(baseUploadDir + userPicturesDir);
-        try {
-            // Search for any file with the userId as prefix
-            return Files.list(dirPath)
-                .filter(path -> path.getFileName().toString().startsWith(userId.toString()))
-                .findFirst()
-                .map(Path::toString)
-                .orElse(null);
-        } catch (IOException e) {
-            return null;
-        }
-    }
-    
-    // Store a game picture
-    public String storeGamePicture(Long gameId, int pictureNumber, MultipartFile file) throws IOException {
+    public String storeGamePicture(Long gameId, MultipartFile file, int pictureNumber) throws IOException {
         String uploadDir = baseUploadDir + gamePicturesDir;
         
         // Create directory if it doesn't exist
@@ -83,7 +66,6 @@ public class PhotoService {
         return uploadDir + filename;
     }
     
-    // Delete a file
     public boolean deleteFile(String filePath) {
         try {
             Path path = Paths.get(filePath);

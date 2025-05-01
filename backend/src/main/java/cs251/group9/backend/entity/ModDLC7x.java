@@ -6,11 +6,28 @@ import jakarta.persistence.*;
  * Entity Declaration
  */
 @Entity
+@Table(name = "mod_dlc")
 public class ModDLC7x {
 	
-	//Integer ID ModDLC XX
+	//Long ID ModDLC 7X
     @Id
-    private Integer modID;
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "mod_seq")
+    @SequenceGenerator(
+        name = "mod_seq", 
+        sequenceName = "mod_sequence", 
+        initialValue = 1, 
+        allocationSize = 1
+    )
+    @Column(length = 10)
+    private Long modID;
+    
+    /* Add a @PrePersist method to set the ID value
+     * This ensures we start from 7000000001 when creating new records
+    */
+    @PrePersist
+    public void prePersist() {
+        if (this.modID == null) this.modID = 7000000001L;
+    }
     
     //Join 1 Column (GameID)
     @ManyToOne
@@ -19,16 +36,22 @@ public class ModDLC7x {
     
     //Fixed Info
     private String modName;
+    
+    @Column(columnDefinition = "TEXT")
     private String modInfo;
+    
     private String modType;
+    
+    // File path
+    private String downloadPath;
     
     /*
      * Getters and Setters
      */
-	public Integer getModID() {
+	public Long getModID() {
 		return modID;
 	}
-	public void setModID(Integer modID) {
+	public void setModID(Long modID) {
 		this.modID = modID;
 	}
 	public Game2x getGame() {
@@ -55,8 +78,10 @@ public class ModDLC7x {
 	public void setModType(String modType) {
 		this.modType = modType;
 	}
-
-    
-    
-    
+	public String getDownloadPath() {
+		return downloadPath;
+	}
+	public void setDownloadPath(String downloadPath) {
+		this.downloadPath = downloadPath;
+	}
 }
