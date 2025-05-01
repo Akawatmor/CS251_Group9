@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Separated Layout</title>
+    <style>
+        body {
+            margin: 0;
+            background: white;
+            overflow: hidden;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .sidebar {
+            width: 465px;
+            height: 1080px;
+            position: absolute;
+            left: 0;
+            top: 0;
+            background: #471C1A;
+        }
+
+        .rotated-bg {
+            width: 1455px;
+            height: 1080px;
+            position: absolute;
+            left: 1920px;
+            top: 1080px;
+            transform: rotate(180deg);
+            transform-origin: top left;
+            background: white;
+        }
+
+        .icon-button {
+            width: 48px;
+            height: 48px;
+            position: absolute;
+            overflow: hidden;
+        }
+
+        .icon-button-inner {
+            width: 28px;
+            height: 28px;
+            position: absolute;
+            left: 10px;
+            top: 10px;
+            outline: 4px white solid;
+            outline-offset: -2px;
+        }
+
+        .menu-bar {
+            height: 79px;
+            position: absolute;
+            background: #6A3C3A;
+        }
+
+        .menu-text {
+            height: 34px;
+            position: absolute;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            font-size: 32px;
+            font-weight: 400;
+            word-wrap: break-word;
+        }
+
+        .table-area {
+            width: 1268px;
+            height: 720px;
+            position: absolute;
+            left: 549px;
+            top: 176px;
+            background: #D9D9D9;
+        }
+
+        .table-header {
+            width: 1268px;
+            height: 100px;
+            position: absolute;
+            left: 549px;
+            top: 178px;
+            background: #B0B0B0;
+        }
+
+        .table-line {
+            width: 717px;
+            height: 0px;
+            position: absolute;
+            transform: rotate(90deg);
+            transform-origin: top left;
+            outline: 1px black solid;
+            outline-offset: -0.5px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="sidebar"></div>
+    <div class="rotated-bg"></div>
+
+    <div class="icon-button" style="left: 48px; top: 48px;">
+        <div class="icon-button-inner"></div>
+    </div>
+
+    <div class="menu-bar" style="width: 365px; left: 48px; top: 149px;"></div>
+    <div class="icon-button" style="left: 348px; top: 164px;">
+        <div class="icon-button-inner" style="width: 36px; height: 36px; left: 6px; top: 6px;"></div>
+    </div>
+    <div class="menu-text" style="width: 261px; left: 68px; top: 171px;">search table</div>
+
+    <div class="menu-bar" style="width: 486px; left: 549px; top: 41px;"></div>
+    <div class="icon-button" style="left: 969px; top: 56px;">
+        <div class="icon-button-inner" style="width: 36px; height: 36px; left: 6px; top: 6px;"></div>
+    </div>
+    <div class="menu-text" style="width: 261px; left: 569px; top: 63px;">search word</div>
+
+    <div class="menu-bar" style="width: 365px; left: 1062px; top: 41px;"></div>
+    <div class="menu-text" style="width: 261px; left: 1082px; top: 63px;">delete row</div>
+
+    <div class="menu-bar" style="width: 365px; left: 1452px; top: 41px;"></div>
+    <div class="menu-text" style="width: 261px; left: 1472px; top: 63px;">delete column</div>
+
+    <div class="table-area"></div>
+    <div class="table-header"></div>
+
+    <div class="table-line" style="left: 549px; top: 178px;"></div>
+    <div class="table-line" style="left: 886px; top: 178px;"></div>
+    <div class="table-line" style="left: 1192px; top: 178px;"></div>
+    <div class="table-line" style="left: 1518px; top: 178px;"></div>
+    <div class="table-line" style="left: 1817px; top: 178px;"></div>
+
+    <script>
+        // ตอนนี้ยังไม่มีฟังก์ชันอะไร แต่ถ้ามี event เช่นคลิก ก็เพิ่มที่นี่ได้
+        console.log("Page Loaded!");
+    </script>
+
+</body>
+</html>
