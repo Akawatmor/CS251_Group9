@@ -30,7 +30,7 @@ public class Customer {
 
     //Real Username - Must Be unique
     @Column(unique = true, nullable = false)
-    private String UName;
+    private String uName; // Changed from UName to uName
     
     //Displayname
     private String DName;
@@ -43,7 +43,7 @@ public class Customer {
 
     //Contactable User Email
     @Column(unique = true, nullable = false)
-    private String UEmail;
+    private String uEmail; // Changed from UEmail to uEmail
     
     //User Phone Number
     private String UNumber;
@@ -64,18 +64,18 @@ public class Customer {
 
     // Explicit getter and setter for UName
     public String getUName() {
-        return UName;
+        return uName; // Return the renamed field
     }
     public void setUName(String UName) {
-        this.UName = UName;
+        this.uName = UName; // Set the renamed field
     }
 
     // Explicit getter and setter for UEmail
     public String getUEmail() {
-        return UEmail;
+        return uEmail; // Return the renamed field
     }
     public void setUEmail(String UEmail) {
-        this.UEmail = UEmail;
+        this.uEmail = UEmail; // Set the renamed field
     }
 
     // Explicit getter and setter for money
