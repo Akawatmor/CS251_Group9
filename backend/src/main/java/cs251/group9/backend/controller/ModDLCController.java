@@ -16,13 +16,10 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 @RestController
-@RequestMapping("/api/mods")
+@RequestMapping("/api/moddlc")
 public class ModDLCController {
     @Autowired
     private ModDLCRepository modRepo;
-    
-    @Autowired
-    private GameRepository gameRepo;
     
     @Autowired
     private GameFileService fileService;

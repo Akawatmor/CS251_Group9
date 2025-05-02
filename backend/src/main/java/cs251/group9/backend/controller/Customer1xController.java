@@ -12,8 +12,6 @@ import org.springframework.web.multipart.MultipartFile;
 import cs251.group9.backend.entity.Customer1x;
 import cs251.group9.backend.service.*;
 
-import java.util.*;
-
 
 @RestController
 @RequestMapping("/api/customers")

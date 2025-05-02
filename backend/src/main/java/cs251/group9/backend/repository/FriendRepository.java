@@ -1,6 +1,5 @@
 package cs251.group9.backend.repository;
 
-import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 

@@ -6,7 +6,7 @@ import jakarta.persistence.*;
 
 @Embeddable
 public class FriendId implements Serializable {
-    private String userID1;
-    private String userID2;
+    private Long userID1;
+    private Long userID2;
     // equals and hashCode
 }

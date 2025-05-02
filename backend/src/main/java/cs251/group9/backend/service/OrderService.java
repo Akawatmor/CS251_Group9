@@ -7,7 +7,6 @@ import cs251.group9.backend.entity.*;
 import cs251.group9.backend.repository.*;
 
 import org.springframework.beans.factory.annotation.*;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

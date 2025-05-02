@@ -4,7 +4,7 @@ import cs251.group9.backend.entity.Category5x;
 import cs251.group9.backend.repository.CategoryRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -20,7 +20,7 @@ public class CategoryController {
     // Get all categories
     @GetMapping
     public List<Category5x> getAllCategories() {
-        return categoryRepo.findAll();
+        return (List<Category5x>) categoryRepo.findAll();
     }
     
     // Get category by ID
@@ -58,7 +58,7 @@ public class CategoryController {
         Optional<Category5x> categoryData = categoryRepo.findById(id);
         return categoryData.map(category -> {
             categoryRepo.delete(category);
-            return ResponseEntity.noContent().<Void>build();
+            return ResponseEntity.ok(HttpStatus.NO_CONTENT);
         }).orElse(ResponseEntity.notFound().build());
     }
     
