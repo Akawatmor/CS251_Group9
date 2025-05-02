@@ -7,17 +7,17 @@ import jakarta.persistence.*;
 public class Category5x {
     @Id
     @Column(length = 10)
-    private String cid;
+    private Long cid;
     
     @Column(nullable = false)
     private String cName;
     
     // Getters and setters
-    public String getCid() {
+    public Long getCid() {
         return cid;
     }
     
-    public void setCid(String cid) {
+    public void setCid(Long cid) {
         this.cid = cid;
     }
     

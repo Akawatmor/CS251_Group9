@@ -32,6 +32,9 @@ public class PhotoService {
         
         // Get file extension
         String originalFilename = file.getOriginalFilename();
+        if (originalFilename == null) {
+            throw new IOException("File name is null");
+        }
         String extension = originalFilename.substring(originalFilename.lastIndexOf("."));
         
         // Create the file path
@@ -71,6 +74,9 @@ public class PhotoService {
         
         // Get file extension
         String originalFilename = file.getOriginalFilename();
+        if (originalFilename == null) {
+            throw new IOException("File name is null");
+        }
         String extension = originalFilename.substring(originalFilename.lastIndexOf("."));
         
         // Create the file path

@@ -15,4 +15,7 @@ public interface CountryRepository extends JpaRepository<Country, String> {
     
     @Query(value = "SELECT * FROM country WHERE region = :region", nativeQuery = true)
     List<Country> findByRegion(@Param("region") String region);
+
+    @Query("SELECT c FROM Country c WHERE c.countryName LIKE %:keyword%")
+    List<Country> searchCountries(@Param("keyword") String keyword);
 }

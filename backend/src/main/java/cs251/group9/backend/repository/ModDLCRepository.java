@@ -7,7 +7,6 @@ import org.springframework.data.repository.query.Param;
 
 import java.util.*;
 
-
 public interface ModDLCRepository extends JpaRepository<ModDLC7x, Long> {
     
     @Query(value = "SELECT * FROM mod_dlc WHERE gameID = :gameId", nativeQuery = true)
@@ -15,5 +14,8 @@ public interface ModDLCRepository extends JpaRepository<ModDLC7x, Long> {
     
     @Query(value = "SELECT * FROM mod_dlc WHERE modName LIKE %:name%", nativeQuery = true)
     List<ModDLC7x> findByModNameContaining(@Param("name") String name);
+
+    @Query("SELECT m FROM ModDLC m WHERE m.modName LIKE %:keyword%")
+    List<ModDLC> searchModDLCByName(@Param("keyword") String keyword);
 }
 

@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/categories")
@@ -24,10 +25,9 @@ public class CategoryController {
     
     // Get category by ID
     @GetMapping("/{id}")
-    public ResponseEntity<Category5x> getCategoryById(@PathVariable String id) {
-        return categoryRepo.findById(id)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+    public ResponseEntity<Category5x> getCategoryById(@PathVariable Long id) {
+        Optional<Category5x> category = categoryRepo.findById(id);
+        return category.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
     
     // Create new category
@@ -44,24 +44,22 @@ public class CategoryController {
     
     // Update category
     @PutMapping("/{id}")
-    public ResponseEntity<Category5x> updateCategory(@PathVariable String id, @RequestBody Category5x category) {
-        return categoryRepo.findById(id)
-                .map(existingCategory -> {
-                    category.setCid(id);
-                    return ResponseEntity.ok(categoryRepo.save(category));
-                })
-                .orElse(ResponseEntity.notFound().build());
+    public ResponseEntity<Category5x> updateCategory(@PathVariable Long id, @RequestBody Category5x categoryDetails) {
+        Optional<Category5x> categoryData = categoryRepo.findById(id);
+        return categoryData.map(existingCategory -> {
+            categoryDetails.setCid(id);
+            return ResponseEntity.ok(categoryRepo.save(categoryDetails));
+        }).orElse(ResponseEntity.notFound().build());
     }
     
     // Delete category
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteCategory(@PathVariable String id) {
-        return categoryRepo.findById(id)
-                .map(category -> {
-                    categoryRepo.delete(category);
-                    return ResponseEntity.noContent().<Void>build();
-                })
-                .orElse(ResponseEntity.notFound().build());
+    public ResponseEntity<HttpStatus> deleteCategory(@PathVariable Long id) {
+        Optional<Category5x> categoryData = categoryRepo.findById(id);
+        return categoryData.map(category -> {
+            categoryRepo.delete(category);
+            return ResponseEntity.noContent().<Void>build();
+        }).orElse(ResponseEntity.notFound().build());
     }
     
     // Get categories for a game

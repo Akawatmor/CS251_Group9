@@ -6,7 +6,7 @@ import jakarta.persistence.*;
 
 @Embeddable
 public class AchievementUserId implements Serializable {
-    private String userID;
-    private String aid;
+    private Long userID;
+    private Long aid;
     // equals and hashCode
 }

@@ -7,7 +7,7 @@ import jakarta.persistence.*;
 
 @Embeddable
 public class ModDeveloperId implements Serializable {
-    private String modID;
-    private String devID;
+    private Long modID;
+    private Long devID;
     // equals and hashCode
 }

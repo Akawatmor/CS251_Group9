@@ -217,7 +217,7 @@ public class GameController {
     public ResponseEntity<GameCategory> addCategoryToGame(@PathVariable Long gameId, 
                                                          @PathVariable Long categoryId) {
         Game2x game = gameRepo.findById(gameId).orElse(null);
-        Category5x category = categoryRepo.findCategoriesByGameId(categoryId).orElse(null);
+        Category5x category = categoryRepo.findCategoriesByGameId(categoryId).stream().findFirst().orElse(null);
         
         if (game == null || category == null) {
             return ResponseEntity.notFound().build();
@@ -262,5 +262,28 @@ public class GameController {
     @GetMapping("/rating/{minRating}")
     public List<Game2x> getGamesByRating(@PathVariable Float minRating) {
         return gameRepo.findByRatingGreaterThanEqual(minRating);
+    }
+    
+    @GetMapping("/{id}/categories")
+    public ResponseEntity<List<Category5x>> getGameCategories(@PathVariable Long id) {
+        List<Category5x> categories = categoryRepo.findCategoriesByGameId(id);
+        if (categories == null || categories.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+        if (categories.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(categories);
+    }
+
+    @DeleteMapping("/{id}/categories/{categoryId}")
+    public ResponseEntity<HttpStatus> removeGameCategory(@PathVariable Long id, @PathVariable Long categoryId) {
+        GameCategoryId gameCategoryId = new GameCategoryId();
+        if (gameCategoryRepo.existsById(gameCategoryId)) {
+            gameCategoryRepo.deleteById(gameCategoryId);
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        } else {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
     }
 }

@@ -6,7 +6,7 @@ import jakarta.persistence.*;
 
 @Embeddable
 public class GameDeveloperId implements Serializable {
-    private String gameID;
-    private String devID;
+    private Long gameID;
+    private Long devID;
     // equals and hashCode
 }

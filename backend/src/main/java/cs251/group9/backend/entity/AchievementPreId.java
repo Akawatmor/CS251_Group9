@@ -6,7 +6,7 @@ import jakarta.persistence.*;
 
 @Embeddable
 public class AchievementPreId implements Serializable {
-    private String aid;
-    private String prerequisiteAID;
+    private Long aid;
+    private Long prerequisiteAID;
     // equals and hashCode
 }

@@ -1,7 +1,11 @@
 package cs251.group9.backend.repository;
 
-import org.springframework.data.jpa.repository.JpaRepository;
+import cs251.group9.backend.entity.GameCategory;
+import cs251.group9.backend.entity.GameCategoryId;
+import org.springframework.data.repository.CrudRepository;
+import org.springframework.stereotype.Repository;
 
-import cs251.group9.backend.entity.*;
-
-public interface GameCategoryRepository extends JpaRepository<GameCategory, Long> {}
+@Repository
+public interface GameCategoryRepository extends CrudRepository<GameCategory, GameCategoryId> {
+    // Your existing methods
+}
