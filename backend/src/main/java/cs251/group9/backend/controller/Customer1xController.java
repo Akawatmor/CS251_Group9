@@ -57,7 +57,7 @@ public class Customer1xController {
      */
     @PostMapping("/register")
     public ResponseEntity<String> register(@RequestBody Customer1x customer) {
-        if (customer1xService.isUsernameTaken(customer.getUName())) {
+        if (customer1xService.isUsernameTaken(customer.getuName())) {
             return ResponseEntity.badRequest().body("Username is already taken");
         }
         try {

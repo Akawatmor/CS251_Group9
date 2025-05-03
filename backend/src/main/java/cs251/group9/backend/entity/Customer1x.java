@@ -146,14 +146,6 @@ public class Customer1x {
         this.uName = uName;
     }
 
-    public String getUName() {
-        return uName;
-    }
-
-    public void setUName(String uName) {
-        this.uName = uName;
-    }
-
     public String getdName() {
         return dName;
     }
