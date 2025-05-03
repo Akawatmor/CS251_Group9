@@ -21,9 +21,9 @@ public interface Customer1xRepository extends JpaRepository<Customer1x, Long> {
     @Query(value = "SELECT * FROM customer WHERE u_name = :uName AND u_email = :uEmail LIMIT 1", nativeQuery = true)
     Optional<Customer1x> findByUNameAndUEmail(@Param("uName") String uName, @Param("uEmail") String uEmail);
     
-    // Find by username and password (for authentication)
-    //@Query(value = "SELECT * FROM customer WHERE u_name = :uName AND password = :password LIMIT 1", nativeQuery = true)
-    //Optional<Customer1x> findByUNameAndPassword(@Param("uName") String uName, @Param("password") String password);
+    // Find by username
+    @Query("SELECT c FROM Customer1x c WHERE c.uName = :uName") // Use the correct attribute name
+    Optional<Customer1x> findByUName(@Param("uName") String uName);
     
     // Check if email already exists - fixed to return boolean
     @Query(value = "SELECT CASE WHEN COUNT(*) > 0 THEN true ELSE false END FROM customer WHERE u_email = :uEmail", nativeQuery = true)
