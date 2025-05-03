@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import cs251.group9.backend.entity.Customer1x;
+import cs251.group9.backend.repository.Customer1xRepository;
 import cs251.group9.backend.service.Customer1xService;
 import cs251.group9.backend.service.PhotoService;
 
@@ -19,6 +20,8 @@ import java.util.Map;
 @RestController
 @RequestMapping("/api/customers")
 public class Customer1xController {
+
+    private final Customer1xRepository customer1xRepository;
     
     @Autowired
     private Customer1xService customer1xService;
@@ -26,35 +29,30 @@ public class Customer1xController {
     @Autowired
     private PhotoService photoService;
 
-    /**
-     * Authenticate a customer
-     * @param uName Username
-     * @param password Password
-     * @return Boolean indicating authentication success
-     */
-    @PostMapping("/login")
-    public ResponseEntity<Map<String, Object>> login(@RequestParam String uName, @RequestParam String password) {
-        Map<String, Object> response = new HashMap<>();
-        
-        return customer1xService.login(uName, password)
-                .map(customer -> {
-                    response.put("success", true);
-                    response.put("message", "Login successful");
-                    response.put("user", customer);
-                    return ResponseEntity.ok(response);
-                })
-                .orElseGet(() -> {
-                    response.put("success", false);
-                    response.put("message", "Invalid credentials");
-                    return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
-                });
+    Customer1xController(Customer1xRepository customer1xRepository) {
+        this.customer1xRepository = customer1xRepository;
     }
 
-    /**
-     * Register a new customer
-     * @param customer The customer entity to register
-     * @return ResponseEntity with registered customer or error message
-     */
+/////////////////////// DTO ///////////////////
+
+    //Login Request Body
+    static class amountRequest {
+        private int amount;
+        
+        public int getAmount() {
+            return amount;
+        }
+        
+        public void setAmount(int amount) {
+            this.amount = amount;
+        }
+    }
+
+
+////////////////////// Login //////////////
+    // Move to AuthenticationController
+
+///////////////////// Register /////////////
     @PostMapping("/register")
     public ResponseEntity<String> register(@RequestBody Customer1x customer) {
         if (customer1xService.isUsernameTaken(customer.getuName())) {
@@ -68,33 +66,49 @@ public class Customer1xController {
         }
     }
 
-    /**
-     * Delete a customer account
-     * @param userId ID of the customer to delete
-     * @return ResponseEntity with status
-     */
-    @DeleteMapping("/{userId}")
-    public ResponseEntity<Map<String, Object>> deleteCustomer(@PathVariable Long userId) {
+///////////////////// Check Customer by ID /////////////////////
+    public Customer1x findCustomer1xById(Long userId) {
+        return customer1xRepository.findByuserID(userId);
+    }
+
+///////////////////////// Get Customer by ID /////////////////////////
+    @GetMapping("/{userId}")
+    public ResponseEntity<Map<String, Object>> getCustomerById(@PathVariable Long userId) {
         Map<String, Object> response = new HashMap<>();
         
         try {
-            customer1xService.deleteCustomer(userId);
+            Customer1x customer = customer1xService.getCustomerById(userId);
             response.put("success", true);
-            response.put("message", "Customer deleted successfully");
+            response.put("user", customer);
             return ResponseEntity.ok(response);
-        } catch (Exception e) {
+        } catch (RuntimeException e) {
             response.put("success", false);
             response.put("message", e.getMessage());
             return ResponseEntity.badRequest().body(response);
         }
     }
 
-    /**
-     * Update customer profile
-     * @param userId ID of the customer to update
-     * @param updated Updated customer information
-     * @return ResponseEntity with updated customer or error message
-     */
+///////////////////////// Delete Customer by CustomerID /////////////////////////
+    @DeleteMapping("/{userId}")
+    public ResponseEntity<Map<String, Object>> deleteCustomer(@PathVariable Long userId) {
+        Map<String, Object> response = new HashMap<>();
+    
+        // Check if the customer exists
+        if(findCustomer1xById(userId) == null) {
+            response.put("success", false);
+            response.put("message", "User not found");
+            return ResponseEntity.badRequest().body(response);
+        }
+        else{
+            customer1xService.deleteCustomer(userId);
+            response.put("success", true);
+            response.put("message", "Customer deleted successfully");
+            return ResponseEntity.ok(response);
+        }
+    
+    }
+
+///////////////////////// Update Customer Profile by CustomerID /////////////////////////
     @PutMapping("/{userId}")
     public ResponseEntity<Map<String, Object>> updateProfile(@PathVariable Long userId, @RequestBody Customer1x updated) {
         Map<String, Object> response = new HashMap<>();
@@ -112,28 +126,37 @@ public class Customer1xController {
         }
     }
 
-    /**
-     * Add money to customer account
-     * @param userId ID of the customer
-     * @param amount Amount to add
-     * @return ResponseEntity with updated customer or error message
-     */
+////////////////////// Add Money to Customer Account /////////////////////////
     @PostMapping("/{userId}/add-money")
-    public ResponseEntity<Map<String, Object>> addMoney(@PathVariable Long userId, @RequestParam Integer amount) {
+    public ResponseEntity<Map<String, Object>> addMoney(@PathVariable Long userId, @RequestBody amountRequest am) {
         Map<String, Object> response = new HashMap<>();
         
         try {
-            customer1xService.addMoney(userId, amount);
-            Customer1x customer = customer1xService.getCustomerById(userId);
+            // Validate amount is positive
+            if (am.getAmount() <= 0) {
+                response.put("success", false);
+                response.put("message", "Amount must be greater than 0");
+                return ResponseEntity.badRequest().body(response);
+            }
             
-            response.put("success", true);
-            response.put("message", String.format("Added %d to account balance", amount));
-            response.put("user", customer);
-            return ResponseEntity.ok(response);
-        } catch (Exception e) {
+            Customer1x customer = customer1xService.getCustomerById(userId);
+            if (customer != null) {
+                customer.setMoney(customer.getMoney() + am.getAmount());
+                customer1xRepository.save(customer);
+                
+                response.put("success", true);
+                response.put("message", "Money added successfully");
+                response.put("money", customer.getMoney());
+                return ResponseEntity.ok(response);
+            } else {
+                response.put("success", false);
+                response.put("message", "User not found");
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
+            }
+        } catch (RuntimeException e) {
             response.put("success", false);
-            response.put("message", e.getMessage());
-            return ResponseEntity.badRequest().body(response);
+            response.put("message", "Error adding money: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
         }
     }
 
