@@ -229,6 +229,7 @@ public class GameController {
             return ResponseEntity.notFound().build();
         }
         
+        Category5x category = categories.get(0); // Use the first category from the list
         GameCategoryId id = new GameCategoryId(gameId, categoryId);
         GameCategory gameCategory = new GameCategory();
         gameCategory.setId(id);
