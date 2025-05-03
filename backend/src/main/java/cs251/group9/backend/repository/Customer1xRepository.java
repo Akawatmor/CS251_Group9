@@ -25,9 +25,8 @@ public interface Customer1xRepository extends JpaRepository<Customer1x, Long> {
     @Query("SELECT c FROM Customer1x c WHERE c.uName = :uName") // Use the correct attribute name
     Optional<Customer1x> findByUName(@Param("uName") String uName);
     
-    // Check if email already exists - fixed to return boolean
-    @Query(value = "SELECT COUNT(*) > 0 FROM customer WHERE u_email = :uEmail", nativeQuery = true)
-    boolean existsByUEmail(@Param("uEmail") String uEmail);
+    // Check if email already exists
+    boolean existsByUEmail(String uEmail);
     
     // Check if username already exists - fixed to return boolean
     Boolean existsByUName(String uName);
