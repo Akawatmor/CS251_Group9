@@ -5,74 +5,131 @@
 package cs251.group9.backend.entity;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Size;
 
-/*
- * Entity Declaration
+/**
+ * Customer entity class representing a customer in the system
  */
 @Entity
 @Table(name = "customer")
 public class Customer1x {
 	
-    // Auto-generated 10-digit ID starting with 1
+    /**
+     * Auto-generated 10-digit ID starting with 1
+     * This is the primary key for the customer
+     */
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "customer_seq")
     @SequenceGenerator(
         name = "customer_seq", 
         sequenceName = "customer_sequence", 
-        initialValue = 1, 
+        initialValue = 1000000001,
         allocationSize = 1
     )
-    @Column(length = 10)
+    @Column(nullable = false, updatable = false, length = 10)
     private Long userID;
 
-    /* Add a @PrePersist method to set the ID value
-     * This ensures we start from 1000000001 when creating new records
-    */
-    @PrePersist
-    public void prePersist() {
-        if (this.userID == null) this.userID = 1000000001L;
-    }
-    
-    // Real Username - Must Be unique
-    @Column(unique = true, nullable = false)
+    /**
+     * Username - Must be unique
+     * This is used for authentication and identification
+     */
+    @NotBlank(message = "Username is required")
+    @Size(min = 3, max = 50, message = "Username must be between 3 and 50 characters")
+    @Column(name = "u_name", unique = true, nullable = false)
     private String uName;
     
-    // Displayname
+    /**
+     * Display name
+     * This is shown publicly to other users
+     */
+    @Column(name = "d_name")
     private String dName;
     
-    // Real Name
+    /**
+     * Real first name
+     */
+    @Column(name = "name")
     private String name;
     
-    // Real Surname
+    /**
+     * Real last name
+     */
+    @Column(name = "surname")
     private String surname;
 
-    // Contactable User Email
-    @Column(unique = true, nullable = false)
+    /**
+     * User email
+     * Must be unique and valid email format
+     */
+    @NotBlank(message = "Email is required")
+    @Email(message = "Email must be valid")
+    @Column(name = "u_email", unique = true, nullable = false)
     private String uEmail;
     
-    // User Phone Number
+    /**
+     * User phone number
+     */
+    @Column(name = "u_number")
     private String uNumber;
     
-    // User Age -> Might Use The Birthday Instead
+    /**
+     * User age
+     * May be replaced with birthday in the future
+     */
+    @Column(name = "age")
     private Integer age;
     
-    // Country Number - ISO 3 digit numeric code
+    /**
+     * Country ISO code
+     * Must be a 3-digit numeric ISO code
+     */
     @Pattern(regexp = "^\\d{3}$", message = "Country must be a 3-digit numeric ISO code")
+    @Column(name = "country")
     private String country;
 
-    // Money of the User
+    /**
+     * Account balance
+     * Initialized to 0 when account is created
+     */
+    @Column(name = "money", nullable = false)
     private Integer money = 0;
     
-    // Password for login
-    @Column(nullable = false)
+    /**
+     * Password for authentication
+     */
+    @NotBlank(message = "Password is required")
+    @Size(min = 6, message = "Password must be at least 6 characters long")
+    @Column(name = "password", nullable = false)
     private String password;
 
-    // Profile photo path (not stored in database)
+    /**
+     * Profile photo path
+     * Not stored in database, retrieved from file system
+     */
     @Transient
     private String profilePhotoPath;
     
-    // Getter and Setter
+    /**
+     * Default constructor required by JPA
+     */
+    public Customer1x() {
+    }
+    
+    /**
+     * Constructor with essential fields
+     */
+    public Customer1x(String uName, String uEmail, String password) {
+        this.uName = uName;
+        this.uEmail = uEmail;
+        this.password = password;
+        this.money = 0;
+    }
+
+    // Getter and Setter methods
+    
     public Long getUserID() {
         return userID;
     }
@@ -167,5 +224,14 @@ public class Customer1x {
 
     public void setProfilePhotoPath(String profilePhotoPath) {
         this.profilePhotoPath = profilePhotoPath;
+    }
+    
+    @Override
+    public String toString() {
+        return "Customer{" +
+                "userID=" + userID +
+                ", username='" + uName + '\'' +
+                ", email='" + uEmail + '\'' +
+                '}';
     }
 }

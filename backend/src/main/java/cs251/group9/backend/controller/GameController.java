@@ -35,36 +35,42 @@ public class GameController {
     @Autowired
     private GameCategoryRepository gameCategoryRepo;
     
-    // Add new game
-    @PostMapping
+    ///////////////////// Add new Game ////////////////////////
+    @PostMapping("/add")
     public ResponseEntity<Game2x> addGame(@RequestBody Game2x game) {
         game.setRating(0.0f);
         game.setgPublishDate(LocalDateTime.now());
         return ResponseEntity.ok(gameRepo.save(game));
     }
     
-    // Search game by name
-    @GetMapping("/search")
+    ///////////////////// Search Game All ////////////////////////
+    @GetMapping("/search/all")
+    public List<Game2x> getAllGames() {
+        return gameRepo.findAll();
+    }
+
+    ///////////////////// Search Game by Name ////////////////////////
+    @GetMapping("/search/name?{name}")
     public List<Game2x> search(@RequestParam String name) {
         return gameRepo.findByGNameContainingIgnoreCase(name);
     }
     
-    // Get all games
-    @GetMapping
-    public List<Game2x> getAllGames() {
-        return gameRepo.findAll();
-    }
-    
-    // Retrieve game data
-    @GetMapping("/{id}")
+    ///////////////////// Search Game by GameId (gid) ////////////////////////
+    @GetMapping("/search/gameid?{id}")
     public ResponseEntity<Game2x> getGame(@PathVariable Long id) {
         return gameRepo.findById(id)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
+
+    ///////////////////// Search Game All by Category ////////////////////////
+    @GetMapping("/search/category?{cid}")
+    public List<Game2x> getGamesByCategory(@PathVariable Long categoryId) {
+        return gameRepo.findByCategoryId(categoryId);
+    }
     
-    // Update game info
-    @PutMapping("/{id}")
+    ///////////////////// Update Game Data ////////////////////////
+    @PutMapping("/update/id?{id}")
     public ResponseEntity<Game2x> updateGame(@PathVariable Long id, @RequestBody Game2x updatedGame) {
         return gameRepo.findById(id)
                 .map(game -> {
@@ -93,8 +99,8 @@ public class GameController {
                 .orElse(ResponseEntity.notFound().build());
     }
     
-    // Delete game
-    @DeleteMapping("/{id}")
+    ////////////////// Delete Game ////////////////////////
+    @DeleteMapping("/delete/gameid?{id}")
     public ResponseEntity<Void> deleteGame(@PathVariable Long id) {
         return gameRepo.findById(id)
                 .map(game -> {
@@ -105,8 +111,8 @@ public class GameController {
                 .orElse(ResponseEntity.notFound().build());
     }
     
-    // Upload game picture
-    @PostMapping("/{id}/picture/{position}")
+    /////////////////// Upload Game Picture ////////////////////////
+    @PostMapping("/id?{id}/picture/{position}")
     public ResponseEntity<String> uploadPicture(@PathVariable Long id, 
                                                @PathVariable int position,
                                                @RequestParam("file") MultipartFile file) {
@@ -144,7 +150,7 @@ public class GameController {
     }
     
     // Delete game picture
-    @DeleteMapping("/{id}/picture/{position}")
+    @DeleteMapping("/id?{id}/picture/{position}")
     public ResponseEntity<String> deletePicture(@PathVariable Long id, @PathVariable int position) {
         if (position < 1 || position > 5) {
             return ResponseEntity.badRequest().body("Position must be between 1 and 5");
@@ -189,7 +195,7 @@ public class GameController {
     }
     
     // Upload game executable file
-    @PostMapping("/{id}/executable")
+    @PostMapping("/id?{id}/executable")
     public ResponseEntity<String> uploadExecutable(@PathVariable Long id, 
                                                  @RequestParam("file") MultipartFile file) {
         try {
@@ -246,11 +252,7 @@ public class GameController {
         return ResponseEntity.noContent().build();
     }
     
-    // Get games by category
-    @GetMapping("/category/{categoryId}")
-    public List<Game2x> getGamesByCategory(@PathVariable Long categoryId) {
-        return gameRepo.findByCategoryId(categoryId);
-    }
+
     
     // Get games by price range
     @GetMapping("/price/{maxPrice}")

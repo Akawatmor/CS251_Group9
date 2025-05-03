@@ -12,54 +12,49 @@ import java.util.HashMap;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/api/auth")
+@RequestMapping("/api/authentication")
 public class AuthenticationController {
     
-    @Autowired
-    private Customer1xService customerService;
-    
-    @PostMapping("/login")
-    public ResponseEntity<Map<String, Object>> login(@RequestParam String username, 
-                                                   @RequestParam String password) {
-        return customerService.login(username, password)
-            .map(customer -> {
-                Map<String, Object> response = new HashMap<>();
-                response.put("success", true);
-                response.put("message", "Login successful");
-                response.put("user", customer);
-                return ResponseEntity.ok(response);
-            })
-            .orElseGet(() -> {
-                Map<String, Object> response = new HashMap<>();
-                response.put("success", false);
-                response.put("message", "Invalid credentials");
-                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
-            });
+    /////////////////// DTO ////////////////////
+    //Login Request Body
+    class LoginRequest {
+        private String username;
+        private String password;
+        
+        // Getters and Setters
+        public String getUsername() {return username;}
+        public String getPassword()  {return password;}
+
+        public void setUsername(String uName) {this.username = uName;}
+        public void setPassword(String password) {this.password = password;}
+
     }
     
-    @PostMapping("/register")
-    public ResponseEntity<Map<String, Object>> register(@RequestBody Customer1x customer) {
+    /////////////////// Login Authentication Check ////////////////////////
+    @PostMapping("/login")
+    public ResponseEntity<Map<String, Object>> login(@RequestBody String username, @RequestBody String password) {
         Map<String, Object> response = new HashMap<>();
         
-        try {
-            Customer1x registered = customerService.register(customer);
+        // Check if username and password are provided
+            Customer1xController C1xC = new Customer1xController();
+            if (C1xC.findByUNameAndPassword(username, password).isPresent()) {
+                System.out.print("TEST");
+
+            return null;
+            
+            /*
+            
+            throw new IllegalArgumentException("Invalid username or password");
+
+            //return type user if find true
             response.put("success", true);
-            response.put("message", "Registration successful");
-            response.put("user", registered);
+            response.put("message", "Login successful");
+            response.put("type", "user");
             return ResponseEntity.ok(response);
-        } catch (IllegalArgumentException e) {
+
             response.put("success", false);
             response.put("message", e.getMessage());
             return ResponseEntity.badRequest().body(response);
-        }
-    }
-    
-    @PostMapping("/logout")
-    public ResponseEntity<Map<String, Object>> logout() {
-        Map<String, Object> response = new HashMap<>();
-        response.put("success", true);
-        response.put("message", "Logged out successfully");
-        
-        return ResponseEntity.ok(response);
+            */
     }
 }
