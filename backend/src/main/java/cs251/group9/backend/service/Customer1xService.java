@@ -78,6 +78,16 @@ public class Customer1xService {
     }
 
     /**
+     * Expose findByUNameAndPassword method
+     * @param username Username
+     * @param password Password
+     * @return Optional containing the customer if found
+     */
+    public Optional<Customer1x> findByUNameAndPassword(String username, String password) {
+        return customerRepo.findByUNameAndPassword(username, password);
+    }
+
+    /**
      * Update customer profile
      * @param userId ID of the customer to update
      * @param updated Updated customer information

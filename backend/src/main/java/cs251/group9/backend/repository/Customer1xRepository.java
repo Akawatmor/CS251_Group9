@@ -11,7 +11,7 @@ public interface Customer1xRepository extends JpaRepository<Customer1x, Long> {
 	
     //Find by Username and Password
 
-    Customer1x findByUNameAndPassword(String uName, String password);
+    Optional<Customer1x> findByUNameAndPassword(String username, String password);
 
     // Find by userID
     @Query(value = "SELECT * FROM customer WHERE userID = :userID", nativeQuery = true)

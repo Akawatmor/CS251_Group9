@@ -15,6 +15,9 @@ import java.util.Map;
 @RequestMapping("/api/authentication")
 public class AuthenticationController {
     
+    @Autowired
+    private Customer1xService customer1xService;
+
     /////////////////// DTO ////////////////////
     //Login Request Body
     class LoginRequest {
@@ -32,29 +35,23 @@ public class AuthenticationController {
     
     /////////////////// Login Authentication Check ////////////////////////
     @PostMapping("/login")
-    public ResponseEntity<Map<String, Object>> login(@RequestBody String username, @RequestBody String password) {
+    public ResponseEntity<Map<String, Object>> login(@RequestBody LoginRequest loginRequest) {
         Map<String, Object> response = new HashMap<>();
         
-        // Check if username and password are provided
-            Customer1xController C1xC = new Customer1xController();
-            if (C1xC.findByUNameAndPassword(username, password).isPresent()) {
-                System.out.print("TEST");
+        // Extract username and password from the request body
+        String username = loginRequest.getUsername();
+        String password = loginRequest.getPassword();
 
-            return null;
-            
-            /*
-            
-            throw new IllegalArgumentException("Invalid username or password");
-
-            //return type user if find true
+        // Use the service to authenticate
+        if (customer1xService.findByUNameAndPassword(username, password).isPresent()) {
             response.put("success", true);
             response.put("message", "Login successful");
             response.put("type", "user");
             return ResponseEntity.ok(response);
-
+        } else {
             response.put("success", false);
-            response.put("message", e.getMessage());
-            return ResponseEntity.badRequest().body(response);
-            */
+            response.put("message", "Invalid username or password");
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
+        }
     }
 }

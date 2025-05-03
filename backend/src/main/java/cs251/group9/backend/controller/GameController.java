@@ -223,9 +223,9 @@ public class GameController {
     public ResponseEntity<GameCategory> addCategoryToGame(@PathVariable Long gameId, 
                                                          @PathVariable Long categoryId) {
         Game2x game = gameRepo.findById(gameId).orElse(null);
-        Category5x category = categoryRepo.findCategoriesByGameId(categoryId).stream().findFirst().orElse(null);
+        List<Category5x> categories = categoryRepo.findCategoriesByGameId(categoryId); // Define categories properly
         
-        if (game == null || category == null) {
+        if (game == null || categories.isEmpty()) { // Check if the list is empty
             return ResponseEntity.notFound().build();
         }
         
