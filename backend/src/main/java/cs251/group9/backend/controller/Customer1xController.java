@@ -21,7 +21,7 @@ import java.util.Map;
 public class Customer1xController {
     
     @Autowired
-    private Customer1xService customerService;
+    private Customer1xService customer1xService;
     
     @Autowired
     private PhotoService photoService;
@@ -36,7 +36,7 @@ public class Customer1xController {
     public ResponseEntity<Map<String, Object>> login(@RequestParam String uName, @RequestParam String password) {
         Map<String, Object> response = new HashMap<>();
         
-        return customerService.login(uName, password)
+        return customer1xService.login(uName, password)
                 .map(customer -> {
                     response.put("success", true);
                     response.put("message", "Login successful");
@@ -56,19 +56,15 @@ public class Customer1xController {
      * @return ResponseEntity with registered customer or error message
      */
     @PostMapping("/register")
-    public ResponseEntity<Map<String, Object>> register(@RequestBody Customer1x customer) {
-        Map<String, Object> response = new HashMap<>();
-        
+    public ResponseEntity<String> register(@RequestBody Customer1x customer) {
+        if (customer1xService.isUsernameTaken(customer.getUName())) {
+            return ResponseEntity.badRequest().body("Username is already taken");
+        }
         try {
-            Customer1x registered = customerService.register(customer);
-            response.put("success", true);
-            response.put("message", "Registration successful");
-            response.put("user", registered);
-            return ResponseEntity.ok(response);
+            customer1xService.register(customer);
+            return ResponseEntity.ok("Customer registered successfully");
         } catch (IllegalArgumentException e) {
-            response.put("success", false);
-            response.put("message", e.getMessage());
-            return ResponseEntity.badRequest().body(response);
+            return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
 
@@ -82,7 +78,7 @@ public class Customer1xController {
         Map<String, Object> response = new HashMap<>();
         
         try {
-            customerService.deleteCustomer(userId);
+            customer1xService.deleteCustomer(userId);
             response.put("success", true);
             response.put("message", "Customer deleted successfully");
             return ResponseEntity.ok(response);
@@ -104,7 +100,7 @@ public class Customer1xController {
         Map<String, Object> response = new HashMap<>();
         
         try {
-            Customer1x updatedCustomer = customerService.updateProfile(userId, updated);
+            Customer1x updatedCustomer = customer1xService.updateProfile(userId, updated);
             response.put("success", true);
             response.put("message", "Profile updated successfully");
             response.put("user", updatedCustomer);
@@ -127,8 +123,8 @@ public class Customer1xController {
         Map<String, Object> response = new HashMap<>();
         
         try {
-            customerService.addMoney(userId, amount);
-            Customer1x customer = customerService.getCustomerById(userId);
+            customer1xService.addMoney(userId, amount);
+            Customer1x customer = customer1xService.getCustomerById(userId);
             
             response.put("success", true);
             response.put("message", String.format("Added %d to account balance", amount));

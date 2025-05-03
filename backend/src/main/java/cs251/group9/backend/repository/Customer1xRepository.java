@@ -30,8 +30,6 @@ public interface Customer1xRepository extends JpaRepository<Customer1x, Long> {
     boolean existsByUEmail(@Param("uEmail") String uEmail);
     
     // Check if username already exists - fixed to return boolean
-    @Query(value = "SELECT CASE WHEN COUNT(*) > 0 THEN true ELSE false END FROM customer WHERE u_name = :uName", nativeQuery = true)
-    boolean existsByUName(@Param("uName") String uName);
-
+    Boolean existsByUName(String uName);
 
 }

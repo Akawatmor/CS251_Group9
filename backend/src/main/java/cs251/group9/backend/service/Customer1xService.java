@@ -28,7 +28,7 @@ public class Customer1xService {
         validateCustomer(customer);
         
         // Check if username or email already exists
-        if (customerRepo.existsByUName(customer.getuName())) {
+        if (isUsernameTaken(customer.getuName())) {
             throw new IllegalArgumentException("Username already exists");
         }
         
@@ -162,6 +162,15 @@ public class Customer1xService {
             throw new IllegalArgumentException("UserId cannot be null");
         }
         customerRepo.deleteById(userId);
+    }
+
+    /**
+     * Check if username is already taken
+     * @param uName Username
+     * @return true if username exists, false otherwise
+     */
+    public boolean isUsernameTaken(String uName) {
+        return customerRepo.existsByUName(uName);
     }
 }
 
