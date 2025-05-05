@@ -21,6 +21,7 @@ import java.util.Map;
 @RequestMapping("/api/customers")
 public class Customer1xController {
 
+////////////////// Autowired Services and Repositories /////////////
     @Autowired private Customer1xRepository customer1xRepository; // Repository for customer data access
     @Autowired private Customer1xService customer1xService; // Service for customer operations
     @Autowired private PhotoService photoService; // Service for photo operations
