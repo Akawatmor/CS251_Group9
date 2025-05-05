@@ -21,17 +21,9 @@ import java.util.Map;
 @RequestMapping("/api/customers")
 public class Customer1xController {
 
-    private final Customer1xRepository customer1xRepository;
-    
-    @Autowired
-    private Customer1xService customer1xService;
-    
-    @Autowired
-    private PhotoService photoService;
-
-    Customer1xController(Customer1xRepository customer1xRepository) {
-        this.customer1xRepository = customer1xRepository;
-    }
+    @Autowired private Customer1xRepository customer1xRepository; // Repository for customer data access
+    @Autowired private Customer1xService customer1xService; // Service for customer operations
+    @Autowired private PhotoService photoService; // Service for photo operations
 
 /////////////////////// DTO ///////////////////
 
@@ -72,7 +64,7 @@ public class Customer1xController {
     }
 
 ///////////////////////// Get Customer by ID /////////////////////////
-    @GetMapping("/{userId}")
+    @GetMapping("/id={userId}")
     public ResponseEntity<Map<String, Object>> getCustomerById(@PathVariable Long userId) {
         Map<String, Object> response = new HashMap<>();
         
@@ -89,7 +81,7 @@ public class Customer1xController {
     }
 
 ///////////////////////// Delete Customer by CustomerID /////////////////////////
-    @DeleteMapping("/{userId}")
+    @DeleteMapping("/id={userId}")
     public ResponseEntity<Map<String, Object>> deleteCustomer(@PathVariable Long userId) {
         Map<String, Object> response = new HashMap<>();
     
@@ -109,7 +101,7 @@ public class Customer1xController {
     }
 
 ///////////////////////// Update Customer Profile by CustomerID /////////////////////////
-    @PutMapping("/{userId}")
+    @PutMapping("/id={userId}")
     public ResponseEntity<Map<String, Object>> updateProfile(@PathVariable Long userId, @RequestBody Customer1x updated) {
         Map<String, Object> response = new HashMap<>();
         
@@ -127,7 +119,7 @@ public class Customer1xController {
     }
 
 ////////////////////// Add Money to Customer Account /////////////////////////
-    @PostMapping("/{userId}/add-money")
+    @PostMapping("/id={userId}/money")
     public ResponseEntity<Map<String, Object>> addMoney(@PathVariable Long userId, @RequestBody amountRequest am) {
         Map<String, Object> response = new HashMap<>();
         
@@ -160,13 +152,8 @@ public class Customer1xController {
         }
     }
 
-    /**
-     * Upload a profile photo
-     * @param userId ID of the customer
-     * @param file Photo file to upload
-     * @return ResponseEntity with file path or error message
-     */
-    @PostMapping("/{userId}/photo")
+/////////////////////// Upload and Get Customer Profile Photo /////////////////////////
+    @PostMapping("/id={userId}/photo")
     public ResponseEntity<Map<String, Object>> uploadPhoto(@PathVariable Long userId, 
                                               @RequestParam("file") MultipartFile file) {
         Map<String, Object> response = new HashMap<>();
@@ -184,25 +171,25 @@ public class Customer1xController {
         }
     }
     
-    /**
-     * Get customer's profile photo path
-     * @param userId ID of the customer
-     * @return ResponseEntity with photo path
-     */
-    @GetMapping("/{userId}/photo")
-    public ResponseEntity<Map<String, Object>> getPhotoPath(@PathVariable Long userId) {
-        Map<String, Object> response = new HashMap<>();
-        
+///////////////////// Get Customer Profile Photo /////////////////////////
+    @GetMapping("/id={userId}/photo")
+    public ResponseEntity<?> getPhotoPath(@PathVariable Long userId) {
         try {
-            String photoPath = photoService.getPhotoPath(userId);
-            response.put("success", true);
-            response.put("photoPath", photoPath);
-            return ResponseEntity.ok(response);
+            byte[] photoData = photoService.getPhotoData(userId);
+            return ResponseEntity
+                .ok()
+                .contentType(org.springframework.http.MediaType.IMAGE_JPEG)
+                .body(photoData);
         } catch (Exception e) {
+            Map<String, Object> response = new HashMap<>();
             response.put("success", false);
             response.put("message", e.getMessage());
             return ResponseEntity.badRequest().body(response);
         }
     }
+
+    
+
+    
 }
 

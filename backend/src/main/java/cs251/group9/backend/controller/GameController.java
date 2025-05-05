@@ -36,7 +36,7 @@ public class GameController {
     private GameCategoryRepository gameCategoryRepo;
     
     ///////////////////// Add new Game ////////////////////////
-    @PostMapping("/add")
+    @PostMapping("/")
     public ResponseEntity<Game2x> addGame(@RequestBody Game2x game) {
         game.setRating(0.0f);
         game.setgPublishDate(LocalDateTime.now());
@@ -50,13 +50,13 @@ public class GameController {
     }
 
     ///////////////////// Search Game by Name ////////////////////////
-    @GetMapping("/search/name?{name}")
-    public List<Game2x> search(@RequestParam String name) {
+    @GetMapping("/search/name={name}")
+    public List<Game2x> search(@PathVariable String name) {
         return gameRepo.findByGNameContainingIgnoreCase(name);
     }
     
     ///////////////////// Search Game by GameId (gid) ////////////////////////
-    @GetMapping("/search/gameid?{id}")
+    @GetMapping("/id={id}")
     public ResponseEntity<Game2x> getGame(@PathVariable Long id) {
         return gameRepo.findById(id)
                 .map(ResponseEntity::ok)
@@ -64,13 +64,13 @@ public class GameController {
     }
 
     ///////////////////// Search Game All by Category ////////////////////////
-    @GetMapping("/search/category?{cid}")
+    @GetMapping("/search/category={cid}")
     public List<Game2x> getGamesByCategory(@PathVariable Long categoryId) {
         return gameRepo.findByCategoryId(categoryId);
     }
     
     ///////////////////// Update Game Data ////////////////////////
-    @PutMapping("/update/id?{id}")
+    @PutMapping("/id={id}")
     public ResponseEntity<Game2x> updateGame(@PathVariable Long id, @RequestBody Game2x updatedGame) {
         return gameRepo.findById(id)
                 .map(game -> {
@@ -100,7 +100,7 @@ public class GameController {
     }
     
     ////////////////// Delete Game ////////////////////////
-    @DeleteMapping("/delete/gameid?{id}")
+    @DeleteMapping("/id={id}")
     public ResponseEntity<Void> deleteGame(@PathVariable Long id) {
         return gameRepo.findById(id)
                 .map(game -> {
@@ -149,8 +149,8 @@ public class GameController {
         }
     }
     
-    // Delete game picture
-    @DeleteMapping("/id?{id}/picture/{position}")
+/////////////////// Delete Game Picture ////////////////////////
+    @DeleteMapping("/id={id}/picture={position}")
     public ResponseEntity<String> deletePicture(@PathVariable Long id, @PathVariable int position) {
         if (position < 1 || position > 5) {
             return ResponseEntity.badRequest().body("Position must be between 1 and 5");
@@ -194,8 +194,8 @@ public class GameController {
                 .orElse(ResponseEntity.notFound().build());
     }
     
-    // Upload game executable file
-    @PostMapping("/id?{id}/executable")
+//////////////////// Upload Game Executable ////////////////////////
+    @PostMapping("/id={id}/file")
     public ResponseEntity<String> uploadExecutable(@PathVariable Long id, 
                                                  @RequestParam("file") MultipartFile file) {
         try {

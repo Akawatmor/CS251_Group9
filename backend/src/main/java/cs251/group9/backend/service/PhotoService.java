@@ -97,4 +97,23 @@ public class PhotoService {
             return false;
         }
     }
+
+    public byte[] getPhotoData(Long userId) throws Exception {
+        // Get the path to the photo using the existing method
+        String photoPath = getPhotoPath(userId);
+        
+        // Read the photo file into a byte array
+        java.nio.file.Path path = java.nio.file.Paths.get(photoPath);
+        if (!java.nio.file.Files.exists(path)) {
+            throw new Exception("Photo does not exist");
+        }
+        
+        try {
+            return java.nio.file.Files.readAllBytes(path);
+        } catch (java.io.IOException e) {
+            throw new Exception("Failed to read photo: " + e.getMessage());
+        }
+    }
+
+    
 }

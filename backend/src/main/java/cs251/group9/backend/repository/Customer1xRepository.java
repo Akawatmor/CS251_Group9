@@ -18,7 +18,7 @@ public interface Customer1xRepository extends JpaRepository<Customer1x, Long> {
     Customer1x findByuserID(@Param("userID") Long userID);
     
     // Find by username and email (for login)
-    @Query(value = "SELECT * FROM customer WHERE u_name = :uName AND u_email = :uEmail LIMIT 1", nativeQuery = true)
+    @Query(value = "SELECT * FROM customer WHERE uName = :uName AND uEmail = :uEmail LIMIT 1", nativeQuery = true)
     Optional<Customer1x> findByUNameAndUEmail(@Param("uName") String uName, @Param("uEmail") String uEmail);
     
     // Find by username
@@ -28,7 +28,7 @@ public interface Customer1xRepository extends JpaRepository<Customer1x, Long> {
     // Check if email already exists
     boolean existsByUEmail(String uEmail);
     
-    // Check if username already exists - fixed to return boolean
+    // Check if username already exists
     Boolean existsByUName(String uName);
 
 }
