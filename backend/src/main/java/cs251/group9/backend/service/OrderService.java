@@ -45,20 +45,28 @@ public class OrderService {
         // Find customer
         Customer1x customer = customerRepo.findByuserID(userID);
         if (customer == null) {
+            System.out.println("Customer not found");
             throw new RuntimeException("Customer not found");
         }
         
         // Find game
-        Game2x game = gameRepo.findBygameID(gameID)
-            .orElseThrow(() -> new RuntimeException("Game not found"));
+        Game2x game = gameRepo.findBygameID(gameID).orElse(null);
+
+        if (game == null) {
+            System.out.println("Game not found");
+            throw new RuntimeException("Game not found");
+        }
         
         // Check if user already owns the game
         if (checkOwnership(userID, gameID)) {
+            System.out.println("User already owns this game");
             throw new RuntimeException("User already owns this game");
+            
         }
         
         // Check if user has enough money
         if (customer.getMoney() < game.getgPrice()) {
+            System.out.println("Not enough money to purchase the game");
             throw new RuntimeException("Insufficient funds: Need " + 
                 (game.getgPrice() - customer.getMoney()) + " more to purchase");
         }
@@ -91,7 +99,10 @@ public class OrderService {
         if (userID == null || gameID == null) {
             return false;
         }
-        return orderRepo.existsByUserIDAndGameID(userID, gameID);
+        // Make sure the repository method returns a boolean
+        // If the query actually returns a Long count, we convert it to boolean
+        Long count = orderRepo.countByUserIDAndGameID(userID, gameID);
+        return count != null && count > 0;
     }
     
     /**
@@ -112,7 +123,7 @@ public class OrderService {
      * @param orderID Order's ID
      * @return Optional containing the order if found
      */
-    public Optional<Order3x> getOrderById(Long userID, Integer orderID) {
+    public Optional<Order3x> getOrderById(Long userID, Long orderID) {
         if (userID == null || orderID == null) {
             return Optional.empty();
         }

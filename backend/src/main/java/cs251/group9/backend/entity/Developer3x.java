@@ -41,6 +41,7 @@ public class Developer3x {
     private String devDesc;
     private String socialMedia;
     private String teamName;
+    private String teamPicture;
 	
     
     //Getter and Setter
@@ -80,6 +81,10 @@ public class Developer3x {
 	public void setTeamName(String teamName) {
 		this.teamName = teamName;
 	}
-    
-    
+    public String getTeamPicture() {
+        return teamPicture;
+    }
+    public void setTeamPicture(String teamPicture) {
+        this.teamPicture = teamPicture;
+    }
 }

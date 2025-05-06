@@ -254,14 +254,13 @@ public class GameController {
     }
     
 
-    
-    // Get games by price range
+/////////////////////////// Get Games by Max Price ////////////////////////////
     @GetMapping("/price/{maxPrice}")
     public List<Game2x> getGamesByPrice(@PathVariable Integer maxPrice) {
         return gameRepo.findByPriceLessThanEqual(maxPrice);
     }
     
-    // Get games by rating
+/////////////////////////   Get Games by Rating ////////////////////////////
     @GetMapping("/rating/{minRating}")
     public List<Game2x> getGamesByRating(@PathVariable Float minRating) {
         return gameRepo.findByRatingGreaterThanEqual(minRating);
@@ -279,6 +278,7 @@ public class GameController {
         return ResponseEntity.ok(categories);
     }
 
+    
     @DeleteMapping("/{id}/categories/{categoryId}")
     public ResponseEntity<HttpStatus> removeGameCategory(@PathVariable Long id, @PathVariable Long categoryId) {
         GameCategoryId gameCategoryId = new GameCategoryId();

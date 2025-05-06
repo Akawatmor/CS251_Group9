@@ -19,7 +19,7 @@ public class Order3x {
     // Integer ID Order XX
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer orderID;
+    private Long orderID;
     
     // Join 2 Column (User and Game to make relation)
     @ManyToOne
@@ -38,11 +38,11 @@ public class Order3x {
 
     
     // Getters and Setters
-    public Integer getOrderID() {
+    public Long getOrderID() {
         return orderID;
     }
 
-    public void setOrderID(Integer orderID) {
+    public void setOrderID(Long orderID) {
         this.orderID = orderID;
     }
 

@@ -25,11 +25,12 @@ public class OrderController {
     @Autowired
     private OrderRepository orderRepo;
     
-    // Buy Game
-    @PostMapping("/buy")
-    public ResponseEntity<Order3x> buyGame(@RequestParam Long userID,
-                                       @RequestParam Long gameID, 
-                                       @RequestParam String receipt) {
+/////////////////// Create Receipt ////////////////////
+/// Todo -> Handle Game and Customer Money be Null
+    @PostMapping("/user={userID}/game={gameID}/receipt={receipt}")
+    public ResponseEntity<Order3x> buyGame(@PathVariable Long userID,
+                                       @PathVariable Long gameID, 
+                                       @PathVariable String receipt) {
         try {
             Order3x order = orderService.placeOrder(userID, gameID, receipt);
             return ResponseEntity.ok(order);
@@ -38,23 +39,23 @@ public class OrderController {
         }
     }
 
-    // Get receipt
-    @GetMapping("/receipt")
-    public ResponseEntity<String> getReceipt(@RequestParam Long userID, @RequestParam Integer orderID) {
-        return orderRepo.findByCustomerUserIDAndOrderID(userID, orderID)
+///////////////////// Get Receipt ////////////////////
+    @GetMapping("/user={userID}/order={OrderID}")
+    public ResponseEntity<String> getReceipt(@PathVariable Long userID, @PathVariable Long OrderID) {
+        return orderRepo.findByCustomerUserIDAndOrderID(userID, OrderID)
                 .map(order -> ResponseEntity.ok(order.getReceipt()))
                 .orElse(ResponseEntity.notFound().build());
     }
     
-    // Get all user orders
-    @GetMapping("/user/{userId}")
+///////////////////// Get All Orders ////////////////////
+    @GetMapping("/user={userId}")
     public ResponseEntity<List<Order3x>> getUserOrders(@PathVariable Long userId) {
         return ResponseEntity.ok(orderRepo.findByCustomerUserID(userId));
     }
     
-    // Check if user owns a game
-    @GetMapping("/check")
-    public ResponseEntity<Boolean> checkGameOwnership(@RequestParam Long userID, @RequestParam Long gameID) {
+  //////////////////// Check if user owns game ////////////////////
+    @GetMapping("/user={userID}/game={gameID}/own")
+    public ResponseEntity<Boolean> checkGameOwnership(@PathVariable Long userID, @PathVariable Long gameID) {
         boolean ownsGame = orderService.checkOwnership(userID, gameID);
         return ResponseEntity.ok(ownsGame);
     }
