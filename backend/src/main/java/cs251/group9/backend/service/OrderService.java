@@ -27,6 +27,9 @@ public class OrderService {
     @Autowired
     private PlayedRepository playedRepo;
 
+    @Autowired
+    private WishlistRepository wishlistRepo;
+
     /**
      * Place a new order for a game
      * @param userID Customer's ID
@@ -101,7 +104,7 @@ public class OrderService {
         }
         // Make sure the repository method returns a boolean
         // If the query actually returns a Long count, we convert it to boolean
-        Long count = orderRepo.countByUserIDAndGameID(userID, gameID);
+        Long count = wishlistRepo.countByUserIdAndGameId(userID, gameID);
         return count != null && count > 0;
     }
     

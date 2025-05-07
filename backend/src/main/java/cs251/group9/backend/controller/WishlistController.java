@@ -17,26 +17,27 @@ public class WishlistController {
     @Autowired 
     private WishlistService wishlistService;
     
-    // Add to wishlist
-    @PostMapping("/add")
-    public ResponseEntity<Wishlist> addToWishlist(@RequestParam Long userID, @RequestParam Long gameID) {
+///////////////////// Add to wishlist //////////////////////
+    @PostMapping("/user={userID}/game={gameID}")
+    public ResponseEntity<?> addToWishlist(@PathVariable Long userID, @PathVariable Long gameID) {
         try {
             Wishlist wishlist = wishlistService.addToWishlist(userID, gameID);
             return ResponseEntity.ok(wishlist);
         } catch (RuntimeException e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body(new ErrorResponse(e.getMessage()));
         }
     }
     
-    // Get user's wishlist
-    @GetMapping("/user/{userId}")
+///////////////////// Get all games in wishlist //////////////////////
+    @GetMapping("/user={userId}")
     public ResponseEntity<List<Wishlist>> getUserWishlist(@PathVariable Long userId) {
         return ResponseEntity.ok(wishlistService.getUserWishlist(userId));
     }
     
-    // Remove from wishlist
-    @DeleteMapping("/remove")
-    public ResponseEntity<Void> removeFromWishlist(@RequestParam Long userID, @RequestParam Long gameID) {
+///////////////////// Get all users who wishlisted a game //////////////////////
+    @DeleteMapping("/user={userID}/game={gameID}")
+    public ResponseEntity<Void> removeFromWishlist(@PathVariable Long userID, @PathVariable Long gameID) {
         try {
             wishlistService.removeFromWishlist(userID, gameID);
             return ResponseEntity.noContent().build();

@@ -63,12 +63,20 @@ public class WishlistService {
         
         // Create wishlist entry
         Wishlist wishlist = new Wishlist();
-        wishlist.setId(wishlistId);
+        // Ensure ID is properly set with both userID and gameID
+        WishlistId newWishlistId = new WishlistId();
+        newWishlistId.setUserID(userID);
+        newWishlistId.setGameID(gameID);
+        wishlist.setId(newWishlistId);
         wishlist.setCustomer(customer);
         wishlist.setGame(game);
         wishlist.setDate(LocalDateTime.now());
         
-        return wishlistRepo.save(wishlist);
+        try {
+            return wishlistRepo.save(wishlist);
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to save wishlist: " + e.getMessage(), e);
+        }
     }
     
     /**

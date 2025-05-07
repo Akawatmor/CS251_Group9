@@ -24,12 +24,12 @@ public class ReviewController {
     @Autowired
     private ReviewService reviewService;
     
-    // Add or update Game Review
-    @PostMapping
-    public ResponseEntity<Review> addReview(@RequestParam Long userID, 
-                                          @RequestParam Long gameID,
-                                          @RequestParam String comment,
-                                          @RequestParam Integer score) {
+////////////////////// Add review //////////////////////
+    @PostMapping("/user={userID}/game={gameID}/comment={comment}/score={score}")
+    public ResponseEntity<Review> addReview(@PathVariable Long userID, 
+                                          @PathVariable Long gameID,
+                                          @PathVariable String comment,
+                                          @PathVariable Integer score) {
         try {
             Review review = reviewService.addOrUpdateReview(userID, gameID, comment, score);
             return ResponseEntity.ok(review);
@@ -39,20 +39,20 @@ public class ReviewController {
         }
     }
     
-    // Get all reviews for a game
-    @GetMapping("/game/{gameId}")
+  ///////////////////// Get all reviews for a game //////////////////////
+    @GetMapping("/game={gameId}")
     public ResponseEntity<List<Review>> getGameReviews(@PathVariable Long gameId) {
         return ResponseEntity.ok(reviewRepo.findByGameId(gameId));
     }
     
-    // Get all reviews by a user
-    @GetMapping("/user/{userId}")
+////////////////////// Get all reviews by a user //////////////////////
+    @GetMapping("/user={userId}")
     public ResponseEntity<List<Review>> getUserReviews(@PathVariable Long userId) {
         return ResponseEntity.ok(reviewRepo.findByUserId(userId));
     }
     
-    // Get specific review
-    @GetMapping("/{userId}/{gameId}")
+////////////////////// Get specific review by user and game //////////////////////
+    @GetMapping("/user={userId}/game={gameId}")
     public ResponseEntity<Review> getSpecificReview(@PathVariable Long userId, 
                                                  @PathVariable Long gameId) {
         return reviewRepo.findByUserIdAndGameId(userId, gameId)

@@ -20,7 +20,7 @@ public interface WishlistRepository extends JpaRepository<Wishlist, WishlistId> 
     Optional<Wishlist> findByUserIdAndGameId(@Param("userID") Long userID, @Param("gameID") Long gameID);
     
     @Query(value = "SELECT COUNT(*) FROM wishlist WHERE userID = :userID AND gameID = :gameID", nativeQuery = true)
-    int countByUserIdAndGameId(@Param("userID") Long userID, @Param("gameID") Long gameID);
+    Long countByUserIdAndGameId(@Param("userID") Long userID, @Param("gameID") Long gameID);
     
     @Query(value = "DELETE FROM wishlist WHERE userID = :userID AND gameID = :gameID", nativeQuery = true)
     void deleteByUserIdAndGameId(@Param("userID") Long userID, @Param("gameID") Long gameID);

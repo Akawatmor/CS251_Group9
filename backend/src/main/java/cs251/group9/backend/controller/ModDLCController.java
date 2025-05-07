@@ -24,14 +24,24 @@ public class ModDLCController {
     @Autowired
     private GameFileService fileService;
     
-    // Get all mods
+
+/////////////////////// Add mod //////////////////////
+/// TODO: Add GameID to the request body
+    @PostMapping
+    public ResponseEntity<ModDLC7x> createMod(@RequestBody ModDLC7x mod) {
+        return ResponseEntity.ok(modRepo.save(mod));
+    }
+
+/////////////////////// TODO: Update Game to the mod //////////////////////
+
+//////////////// Get all mods //////////////////////
     @GetMapping
     public List<ModDLC7x> getAllMods() {
         return modRepo.findAll();
     }
     
-    // Get mod by ID
-    @GetMapping("/{id}")
+///////////////// Get mod by ID //////////////////////
+    @GetMapping("/id={id}")
     public ResponseEntity<ModDLC7x> getModById(@PathVariable Long id) {
         return modRepo.findById(id)
                 .map(ResponseEntity::ok)
@@ -39,16 +49,12 @@ public class ModDLCController {
     }
     
     // Find mods by game
-    @GetMapping("/game/{gameId}")
+    @GetMapping("/game={gameId}")
     public List<ModDLC7x> getModsByGame(@PathVariable Long gameId) {
         return modRepo.findByGame(gameId);
     }
     
-    // Add new mod
-    @PostMapping
-    public ResponseEntity<ModDLC7x> createMod(@RequestBody ModDLC7x mod) {
-        return ResponseEntity.ok(modRepo.save(mod));
-    }
+
     
     // Update mod
     @PutMapping("/{id}")
@@ -77,7 +83,7 @@ public class ModDLCController {
     }
     
     // Upload mod file
-    @PostMapping("/{id}/file")
+    @PostMapping("/id={id}/file")
     public ResponseEntity<String> uploadModFile(@PathVariable Long id, 
                                              @RequestParam("file") MultipartFile file) {
         try {

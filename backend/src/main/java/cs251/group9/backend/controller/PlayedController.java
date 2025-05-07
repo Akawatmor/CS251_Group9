@@ -20,25 +20,25 @@ public class PlayedController {
     @Autowired 
     private PlayedRepository playedRepo;
     
-    // Get Players that play a Game
-    @GetMapping("/game/{gameID}")
+////////////// Get all games played by a user //////////////////////
+    @GetMapping("/game={gameID}")
     public List<String> getPlayers(@PathVariable Long gameID) {
         return playedRepo.findByGameGameID(gameID).stream()
                 .map(p -> p.getCustomer().getuName())
                 .collect(Collectors.toList());
     }
     
-    // Get games played by a user
-    @GetMapping("/user/{userID}")
+/////////////// Get all games played by a user //////////////////////
+    @GetMapping("/user={userID}")
     public List<Played> getUserGames(@PathVariable Long userID) {
         return playedRepo.findByUserID(userID);
     }
     
-    // Update play time for a game
-    @PutMapping("/update-time")
-    public ResponseEntity<Played> updatePlayTime(@RequestParam Long userID, 
-                                             @RequestParam Long gameID,
-                                             @RequestParam Long additionalMinutes) {
+///////////////// Get all games played by a user //////////////////////
+    @PutMapping("/user={userID}/game={gameID}/addtime={additionalMinutes}")
+    public ResponseEntity<Played> updatePlayTime(@PathVariable Long userID, 
+                                             @PathVariable Long gameID,
+                                             @PathVariable Long additionalMinutes) {
         return playedRepo.findByUserIDAndGameID(userID, gameID)
             .map(played -> {
                 played.setPlayTime(played.getPlayTime() + additionalMinutes);
