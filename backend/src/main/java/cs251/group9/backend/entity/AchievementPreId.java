@@ -8,5 +8,19 @@ import jakarta.persistence.*;
 public class AchievementPreId implements Serializable {
     private Long aid;
     private Long prerequisiteAID;
-    // equals and hashCode
+    
+    
+    //Getters and Setters
+    public Long getAid() {
+        return aid;
+    }
+    public void setAid(Long aid) {
+        this.aid = aid;
+    }
+    public Long getPrerequisiteAID() {
+        return prerequisiteAID;
+    }
+    public void setPrerequisiteAID(Long prerequisiteAID) {
+        this.prerequisiteAID = prerequisiteAID;
+    }
 }

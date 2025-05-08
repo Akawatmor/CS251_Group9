@@ -17,4 +17,27 @@ public class AchievementUser {
     @JoinColumn(name = "aid")
     private Achievement4x achievement;
     // getters and setters
+    public AchievementUserId getId() {
+        return id;
+    }
+
+    public void setId(AchievementUserId id) {
+        this.id = id;
+    }
+
+    public Customer1x getCustomer() {
+        return customer;
+    }
+
+    public void setCustomer(Customer1x customer) {
+        this.customer = customer;
+    }
+
+    public Achievement4x getAchievement() {
+        return achievement;
+    }
+    public void setAchievement(Achievement4x achievement) {
+        this.achievement = achievement;
+    }
+    
 }
