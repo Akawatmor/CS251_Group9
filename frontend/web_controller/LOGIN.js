@@ -2,34 +2,44 @@ const express = require('express');
 const router = express.Router();
 const path = require('path');
 const qrcode = require("qrcode");
+const LoginService = require('../springmiddleware/LOGIN');
 
 ///// Function Route /////
 
-const USER = "Example";
-const PASS = "Password";
+// Remove hardcoded credentials as they will now be verified by the backend
+// const USER = "Example";
+// const PASS = "Password";
 
-router.post("/authen", (requ, resp) => {
-    const {user, pass} =(requ.body);
+router.post("/authen", async (requ, resp) => {
+    const {user, pass} = requ.body;
     
-    //Match credential => redirect
-    if(user == USER && pass == PASS){
-        requ.session.user = user;
-        resp.json({ success: true });
-    }
-    else if (user == "" && pass == ""){
-        resp.json({ success: false, message: 'Blank Input' });
-    }
-    else if (user == USER && pass == ""){
-        resp.json({ success: false, message: 'Password Cannot be Blank!' });
-    }
-    else if (user == USER && pass != PASS){
-        resp.json({ success: false, message: 'Invalid Password!' });
-    }
-    //else Show on
-    else{
-        resp.json({ success: false, message: 'No Username Exist!' });
+    // Input validation
+    if (user == "" && pass == "") {
+        return resp.json({ success: false, message: 'Blank Input' });
     }
     
+    if (user && pass == "") {
+        return resp.json({ success: false, message: 'Password Cannot be Blank!' });
+    }
+    
+    // Call the authentication service
+    try {
+        const authResult = await LoginService.authenticate(user, pass);
+        
+        if (authResult.success) {
+            // Set session on successful login
+            requ.session.user = user;
+        }
+        
+        // Return the result from the authentication service
+        return resp.json(authResult);
+    } catch (error) {
+        console.error('Authentication error:', error);
+        return resp.json({ 
+            success: false, 
+            message: 'An error occurred during authentication.' 
+        });
+    }
 });
 
 router.get("/qrcode-login", (req, res) => {
@@ -49,7 +59,10 @@ router.get("/qrcode-login", (req, res) => {
   });
 });
 
-
+// Add a route to redirect to registration page
+router.get("/register", (req, res) => {
+    res.redirect("/register");
+});
 
 router.all("/", (requ, resp) =>{
     if(requ.method != "POST"){
@@ -59,6 +72,6 @@ router.all("/", (requ, resp) =>{
         `);
     }
 
-    });
+});
 
 module.exports = router;

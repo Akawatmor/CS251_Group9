@@ -1,0 +1,680 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TVaporr User Registration</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    body, html {
+      margin: 0;
+      padding: 0;
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(270deg, #471C1A 32%, #9F3E3A 70%, #C9A24E 99%);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+    }
+
+    .register-container {
+      background: #350B09;
+      padding: 40px;
+      border-radius: 12px;
+      width: 500px; /* Increased from 450px to make it wider */
+      color: white;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+      opacity: 0; /* Start with opacity 0 for fade-in effect */
+      animation: fadeIn 0.8s ease forwards, floatEffect 3s ease-in-out infinite;
+      transition: width 0.3s ease, height 0.3s ease; /* Smooth transition when resizing */
+    }
+    
+    /* Animation keyframes */
+    @keyframes fadeIn {
+      0% { opacity: 0; transform: translateY(-20px); }
+      100% { opacity: 1; transform: translateY(0); }
+    }
+    
+    @keyframes floatEffect {
+      0% { transform: translateY(0); }
+      50% { transform: translateY(-10px); }
+      100% { transform: translateY(0); }
+    }
+
+    /* Media query for responsive design */
+    @media (max-width: 600px) {
+      .register-container {
+        width: 90%;
+        padding: 30px;
+      }
+    }
+
+    .register-header {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+
+    .register-header h1 {
+      font-size: 32px;
+      margin-bottom: 10px;
+    }
+
+    .register-header p {
+      font-size: 16px;
+      opacity: 0.8;
+      margin: 0;
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    .form-group label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: 500;
+    }
+
+    .form-group input, .form-group select {
+      width: 100%;
+      padding: 12px;
+      border: none;
+      border-radius: 8px;
+      font-size: 14px;
+      box-sizing: border-box;
+    }
+
+    .form-group input {
+      background: #6A3C3A;
+      color: white;
+    }
+
+    .form-group select {
+      background: #6A3C3A;
+      color: white;
+    }
+
+    .form-group input:focus, .form-group select:focus {
+      outline: none;
+      box-shadow: 0 0 0 2px #CF514C;
+    }
+
+    .form-group input::placeholder {
+      color: rgba(255, 255, 255, 0.6);
+    }
+
+    .form-row {
+      display: flex;
+      gap: 15px;
+    }
+
+    .form-row .form-group {
+      flex: 1;
+    }
+
+    .register-btn {
+      width: 100%;
+      padding: 14px;
+      background: #CF514C;
+      border: none;
+      border-radius: 8px;
+      color: white;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      margin-top: 10px;
+      transition: background 0.2s;
+    }
+
+    .register-btn:hover {
+      background: #e76b6b;
+    }
+
+    .login-link {
+      text-align: center;
+      margin-top: 20px;
+      font-size: 14px;
+    }
+
+    .login-link a {
+      color: #CF514C;
+      text-decoration: none;
+    }
+
+    .login-link a:hover {
+      text-decoration: underline;
+    }
+
+    .error {
+      color: #FF6B6B;
+      font-size: 12px;
+      margin-top: 5px;
+      min-height: 15px;
+    }
+
+    .success-message {
+      background-color: rgba(76, 175, 80, 0.2);
+      color: #4CAF50;
+      padding: 15px;
+      margin: 20px 0;
+      border-radius: 8px;
+      text-align: center;
+      display: none;
+    }
+
+    .readonly-field {
+      background-color: rgba(106, 60, 58, 0.5) !important;
+      cursor: not-allowed;
+    }
+
+    /* Fixed styles for select2 customization */
+    .select2-container--default .select2-selection--single {
+      background-color: #471C1A !important;
+      border: none !important;
+      border-radius: 8px;
+      height: 44px;
+      display: flex;
+      align-items: center;
+      color: white !important;
+    }
+
+    .select2-container--default .select2-selection--single .select2-selection__rendered {
+      color: white !important;
+      line-height: normal;
+      padding: 6px 12px;
+      font-size: 14px;
+    }
+
+    .select2-container--default .select2-selection--single .select2-selection__arrow {
+      height: 44px;
+      right: 8px;
+    }
+
+    .select2-container--default .select2-selection--single .select2-selection__arrow b {
+      border-color: white transparent transparent transparent;
+    }
+
+    .select2-dropdown {
+      background-color: #471C1A !important;
+      border: none;
+      border-radius: 8px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+      color: white
+    }
+
+    .select2-container--default .select2-results__option {
+      color: rgba(255, 255, 255, 0.9);
+      padding: 10px 12px;
+      transition: background-color 0.2s;
+    }
+
+    .select2-container--default .select2-results__option--highlighted[aria-selected] {
+      background-color: #CF514C;
+      color: white;
+    }
+
+    .select2-container--default .select2-results__option[aria-selected=true] {
+      background-color: #350B09;
+      color: white;
+    }
+
+    .select2-container--default .select2-search--dropdown .select2-search__field {
+      background-color: #350B09;
+      color: rgba(255, 255, 255, 0.9);
+      border: 1px solid #6A3C3A;
+      border-radius: 4px;
+      padding: 8px;
+    }
+
+    .select2-container--default.select2-container--open .select2-selection--single .select2-selection__arrow b {
+      border-color: transparent transparent white transparent;
+    }
+
+    .select2-container--open .select2-dropdown {
+      margin-top: 4px;
+    }
+
+    .select2 {
+      width: 100% !important;
+    }
+
+    .phone-input-container {
+      display: flex;
+      gap: 10px;
+      width: 100%;
+    }
+
+    .phone-country-code {
+      width: 60px;  /* Made even smaller to match the screenshot */
+      flex-shrink: 0;
+      text-align: center;
+      font-weight: 500;
+    }
+
+    .phone-number {
+      flex-grow: 1;
+      width: calc(100% - 70px); /* Calculate width based on container minus code field and gap */
+    }
+  </style>
+  <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+</head>
+<body>
+  <div class="register-container">
+    <div class="register-header">
+      <h1>Create Account</h1>
+      <p>Join TVaporr community today</p>
+    </div>
+    <div class="success-message" id="successMessage">
+      Registration successful! You will be redirected to login page.
+    </div>
+    <form id="registerForm">
+      <div class="form-row">
+        <div class="form-group">
+          <label for="name">First Name</label>
+          <input type="text" id="name" placeholder="Enter your first name" required>
+        </div>
+        <div class="form-group">
+          <label for="surname">Last Name</label>
+          <input type="text" id="surname" placeholder="Enter your last name" required>
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="username">Username (Auto-generated)</label>
+        <input type="text" id="username" class="readonly-field" readonly>
+      </div>
+      
+      <div class="form-group">
+        <label for="password">Password</label>
+        <input type="password" id="password" placeholder="Create a password" required>
+        <div class="error" id="passwordError"></div>
+      </div>
+      <div class="form-group">
+        <label for="confirmPassword">Confirm Password</label>
+        <input type="password" id="confirmPassword" placeholder="Confirm your password" required>
+        <div class="error" id="confirmPasswordError"></div>
+      </div>
+      <div class="form-group">
+        <label for="displayname">Display Name</label>
+        <input type="text" id="displayname" placeholder="Choose a display name" required>
+      </div>
+      <div class="form-group">
+        <label for="email">Email Address</label>
+        <input type="email" id="email" placeholder="Enter your email address" required>
+        <div class="error" id="emailError"></div>
+      </div>
+      
+      <div class="form-group">
+        <label for="country">Country</label>
+        <select id="country" class="country-select" required>
+          <option value="">Select your country</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label for="telephone">Phone Number</label>
+        <div class="phone-input-container">
+          <input type="text" id="phoneCountryCode" class="phone-country-code" readonly>
+          <input type="tel" id="telephone" class="phone-number" placeholder="Phone number" required>
+        </div>
+        <div class="error" id="telephoneError"></div>
+      </div>
+      <div class="form-group">
+        <label for="birthday">Date of Birth</label>
+        <input type="date" id="birthday" required>
+        <div class="error" id="birthdayError"></div>
+      </div>
+      <button type="submit" class="register-btn">Create Account</button>
+      
+      <div class="login-link">
+        Already have an account? <a href="LOGIN.html">Log In</a>
+      </div>
+    </form>
+  </div>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+  <!-- <script src="REGISTER.js"></script> -->
+  <script>
+    // DOM Elements
+    const form = document.getElementById('registerForm');
+    const nameInput = document.getElementById('name');
+    const surnameInput = document.getElementById('surname');
+    const usernameInput = document.getElementById('username');
+    const passwordInput = document.getElementById('password');
+    const emailInput = document.getElementById('email');
+    const telephoneInput = document.getElementById('telephone');
+    const birthdayInput = document.getElementById('birthday');
+    const successMessage = document.getElementById('successMessage');
+    const countrySelect = document.getElementById('country');
+    const phoneCountryCode = document.getElementById('phoneCountryCode');
+
+    // Error elements
+    const emailError = document.getElementById('emailError');
+    const telephoneError = document.getElementById('telephoneError');
+    const passwordError = document.getElementById('passwordError');
+    const birthdayError = document.getElementById('birthdayError');
+
+    // Country data with ISO numeric codes and phone codes
+    const countries = [
+      { name: "Afghanistan", iso3: "004", phoneCode: "+93" },
+      { name: "Albania", iso3: "008", phoneCode: "+355" },
+      { name: "Algeria", iso3: "012", phoneCode: "+213" },
+      { name: "Andorra", iso3: "020", phoneCode: "+376" },
+      { name: "Angola", iso3: "024", phoneCode: "+244" },
+      { name: "Argentina", iso3: "032", phoneCode: "+54" },
+      { name: "Australia", iso3: "036", phoneCode: "+61" },
+      { name: "Austria", iso3: "040", phoneCode: "+43" },
+      { name: "Bahamas", iso3: "044", phoneCode: "+1-242" },
+      { name: "Belgium", iso3: "056", phoneCode: "+32" },
+      { name: "Brazil", iso3: "076", phoneCode: "+55" },
+      { name: "Canada", iso3: "124", phoneCode: "+1" },
+      { name: "China", iso3: "156", phoneCode: "+86" },
+      { name: "France", iso3: "250", phoneCode: "+33" },
+      { name: "Germany", iso3: "276", phoneCode: "+49" },
+      { name: "India", iso3: "356", phoneCode: "+91" },
+      { name: "Indonesia", iso3: "360", phoneCode: "+62" },
+      { name: "Italy", iso3: "380", phoneCode: "+39" },
+      { name: "Japan", iso3: "392", phoneCode: "+81" },
+      { name: "Malaysia", iso3: "458", phoneCode: "+60" },
+      { name: "Mexico", iso3: "484", phoneCode: "+52" },
+      { name: "Netherlands", iso3: "528", phoneCode: "+31" },
+      { name: "New Zealand", iso3: "554", phoneCode: "+64" },
+      { name: "Norway", iso3: "578", phoneCode: "+47" },
+      { name: "Philippines", iso3: "608", phoneCode: "+63" },
+      { name: "Portugal", iso3: "620", phoneCode: "+351" },
+      { name: "Russia", iso3: "643", phoneCode: "+7" },
+      { name: "Singapore", iso3: "702", phoneCode: "+65" },
+      { name: "South Korea", iso3: "410", phoneCode: "+82" },
+      { name: "Spain", iso3: "724", phoneCode: "+34" },
+      { name: "Sweden", iso3: "752", phoneCode: "+46" },
+      { name: "Switzerland", iso3: "756", phoneCode: "+41" },
+      { name: "Thailand", iso3: "764", phoneCode: "+66" },
+      { name: "United Kingdom", iso3: "826", phoneCode: "+44" },
+      { name: "United States", iso3: "840", phoneCode: "+1" },
+      { name: "Vietnam", iso3: "704", phoneCode: "+84" }
+    ];
+
+    // Populate country select dropdown
+    function populateCountries() {
+      countries.forEach(country => {
+        const option = document.createElement('option');
+        option.value = country.iso3;
+        option.textContent = country.name;
+        option.setAttribute('data-phone-code', country.phoneCode);
+        countrySelect.appendChild(option);
+      });
+    }
+
+    // Initialize select2 for searchable dropdown
+    $(document).ready(function() {
+      populateCountries();
+      $('.country-select').select2({
+        placeholder: 'Select a country',
+        width: '100%',
+        templateResult: formatCountry,
+        templateSelection: formatCountry,
+        dropdownParent: $('body'),
+        theme: 'classic' // Use classic theme which is easier to customize
+      });
+
+      // Set phone country code when country is selected
+      $('#country').on('change', function() {
+        const selectedOption = $(this).find(':selected');
+        const phoneCode = selectedOption.attr('data-phone-code') || '';
+        $('#phoneCountryCode').val(phoneCode);
+      });
+
+      // Force the background color after initialization
+      setTimeout(function() {
+        $('.select2-selection, .select2-selection__rendered').css({
+          'background-color': '#471C1A',
+          'color': 'white'
+        });
+        
+        // Ensure the text is white for the selected option and placeholder
+        $('.select2-selection__rendered').css('color', 'white !important');
+        
+        // Fix for search box
+        $(document).on('select2:open', function() {
+          setTimeout(function() {
+            $('.select2-search__field').css({
+              'background-color': '#350B09',
+              'color': 'white'
+            });
+          }, 0);
+        });
+      }, 100);
+
+      // Additional fix to ensure text remains white after selection
+      $('.country-select').on('select2:select', function() {
+        $('.select2-selection__rendered').css('color', 'white');
+      });
+    });
+    
+    function formatCountry(country) {
+      if (!country.id) {
+        return country.text;
+      }
+
+      const $country = $('<span>' + country.text + ' (' + country.id + ')</span>');
+      return $country;
+    }
+    
+    // Auto-generate username from name and surname
+    function generateUsername() {
+      const name = nameInput.value.trim().toLowerCase();
+      const surname = surnameInput.value.trim().toLowerCase();
+      
+      if (name && surname) {
+        const cleanName = name.replace(/[^a-z0-9]/g, '');
+        const cleanSurname = surname.replace(/[^a-z0-9]/g, '');
+        usernameInput.value = `${cleanName}.${cleanSurname}`;
+      } else {
+        usernameInput.value = '';
+      }
+    }
+    
+    // Event listeners for username generation
+    nameInput.addEventListener('input', generateUsername);
+    surnameInput.addEventListener('input', generateUsername);
+
+    // Validate password (min 8 chars, at least one number and one letter)
+    passwordInput.addEventListener('input', function() {
+      const password = this.value;
+      const hasNumber = /\d/.test(password);
+      const hasLetter = /[a-zA-Z]/.test(password);
+      const isLongEnough = password.length >= 8;
+
+      if (!isLongEnough || !hasNumber || !hasLetter) {
+        passwordError.textContent = 'Password must be at least 8 characters with at least one letter and one number';
+      } else {
+        passwordError.textContent = '';
+      }
+    });
+
+    // Validate email format
+    emailInput.addEventListener('input', function() {
+      if (this.validity.typeMismatch) {
+        emailError.textContent = 'Please enter a valid email address';
+      } else {
+        emailError.textContent = '';
+      }
+    });
+    
+    // Validate telephone
+    telephoneInput.addEventListener('input', function() {
+      const selectedCountry = countrySelect.value;
+      if (!selectedCountry) {
+        telephoneError.textContent = 'Please select a country first';
+        return;
+      }
+      
+      if (this.value.length < 5) {
+        telephoneError.textContent = 'Phone number is too short';
+      } else if (!/^\d+$/.test(this.value)) {
+        telephoneError.textContent = 'Phone number should contain only digits';
+      } else {
+        telephoneError.textContent = '';
+      }
+    });
+
+    // Update phone country code when country changes
+    countrySelect.addEventListener('change', function() {
+      const selectedOption = this.options[this.selectedIndex];
+      const phoneCode = selectedOption.getAttribute('data-phone-code') || '';
+      phoneCountryCode.value = phoneCode;
+    });
+    
+    // Validate birthday (must be in the past)
+    birthdayInput.addEventListener('change', function() {
+      const today = new Date();
+      const birthDate = new Date(this.value);
+
+      if (birthDate > today) {
+        birthdayError.textContent = 'Birth date cannot be in the future';
+      } else {
+        birthdayError.textContent = '';
+      }
+    });
+
+    // Confirm password validation
+    const confirmPasswordInput = document.getElementById('confirmPassword');
+    const confirmPasswordError = document.getElementById('confirmPasswordError');
+    passwordInput.addEventListener('input', validateConfirmPassword);
+    confirmPasswordInput.addEventListener('input', validateConfirmPassword);
+
+    function validateConfirmPassword() {
+      if (confirmPasswordInput.value !== passwordInput.value) {
+        confirmPasswordError.textContent = 'Passwords do not match';
+      } else {
+        confirmPasswordError.textContent = '';
+      }
+    }
+
+    // Registration logic (was in REGISTER.js)
+    document.addEventListener('DOMContentLoaded', function () {
+      const form = document.getElementById('registerForm');
+      const nameInput = document.getElementById('name');
+      const surnameInput = document.getElementById('surname');
+      const usernameInput = document.getElementById('username');
+      const passwordInput = document.getElementById('password');
+      const confirmPasswordInput = document.getElementById('confirmPassword');
+      const emailInput = document.getElementById('email');
+      const telephoneInput = document.getElementById('telephone');
+      const birthdayInput = document.getElementById('birthday');
+      const countrySelect = document.getElementById('country');
+      const phoneCountryCode = document.getElementById('phoneCountryCode');
+      const successMessage = document.getElementById('successMessage');
+
+      // Error elements
+      const emailError = document.getElementById('emailError');
+      const telephoneError = document.getElementById('telephoneError');
+      const passwordError = document.getElementById('passwordError');
+      const birthdayError = document.getElementById('birthdayError');
+      const confirmPasswordError = document.getElementById('confirmPasswordError');
+
+      form.addEventListener('submit', async function (e) {
+        e.preventDefault();
+
+        // Validate password
+        const password = passwordInput.value;
+        const confirmPassword = confirmPasswordInput.value;
+        const hasNumber = /\d/.test(password);
+        const hasLetter = /[a-zA-Z]/.test(password);
+        const isLongEnough = password.length >= 8;
+        let isValid = true;
+
+        if (!isLongEnough || !hasNumber || !hasLetter) {
+          passwordError.textContent = 'Password must be at least 8 characters with at least one letter and one number';
+          isValid = false;
+        } else {
+          passwordError.textContent = '';
+        }
+
+        if (password !== confirmPassword) {
+          confirmPasswordError.textContent = 'Passwords do not match';
+          isValid = false;
+        } else {
+          confirmPasswordError.textContent = '';
+        }
+
+        // Validate email
+        if (emailInput.validity.typeMismatch) {
+          emailError.textContent = 'Please enter a valid email address';
+          isValid = false;
+        } else {
+          emailError.textContent = '';
+        }
+
+        // Validate phone
+        if (telephoneInput.value.length < 5 || !/^\d+$/.test(telephoneInput.value)) {
+          telephoneError.textContent = 'Please enter a valid phone number';
+          isValid = false;
+        } else {
+          telephoneError.textContent = '';
+        }
+
+        // Validate birthday
+        const today = new Date();
+        const birthDate = new Date(birthdayInput.value);
+        if (birthDate > today) {
+          birthdayError.textContent = 'Birth date cannot be in the future';
+          isValid = false;
+        } else {
+          birthdayError.textContent = '';
+        }
+
+        if (!isValid) return;
+
+        // Calculate age
+        let age = today.getFullYear() - birthDate.getFullYear();
+        const m = today.getMonth() - birthDate.getMonth();
+        if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
+          age--;
+        }
+
+        // Phone number format: Number Code Prefix + Input Number + Number of digit of input (If it 10 will be 0)
+        let inputNumber = telephoneInput.value;
+        let digitCount = inputNumber.length;
+        if (digitCount === 10) digitCount = 0;
+        const phoneNumber = phoneCountryCode.value + inputNumber + digitCount;
+
+        // Prepare body
+        const body = {
+          uName: usernameInput.value,
+          name: nameInput.value,
+          surname: surnameInput.value,
+          uEmail: emailInput.value,
+          uNumber: phoneNumber,
+          age: age,
+          password: password
+        };
+
+        try {
+          const res = await fetch('http://localhost:8080/api/customers/register', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(body)
+          });
+
+          if (res.ok) {
+            successMessage.style.display = 'block';
+            form.reset();
+            $('.country-select').val('').trigger('change');
+            phoneCountryCode.value = '';
+            usernameInput.value = '';
+            setTimeout(() => {
+              window.location.href = 'LOGIN.html';
+            }, 3000);
+          } else {
+            const data = await res.json();
+            alert(data.message || 'Registration failed');
+          }
+        } catch (err) {
+          alert('Could not connect to registration service.');
+        }
+      });
+    });
+  </script>
+</body>
+</html>
