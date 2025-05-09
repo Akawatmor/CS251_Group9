@@ -7,6 +7,8 @@
     <title>TVaporr</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="styles.css">
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body>
     <div class="background-img"></div>
@@ -19,40 +21,69 @@
                 <a href="#">Library</a>
               </div>
               <div class="account">
-                <img src="https://placehold.co/30x30" alt="Profile Icon">
-                <span>Account</span>
+                <img src="https://placehold.co/30x30" alt="Profile Icon" style="width: 32px; height: 32px; object-fit: fill;">
+                <span id="user-display-name">Account</span>
               </div>
             </header>
             </section>
             <div class="payment">
-  <h1>Payment</h1>
+  <h1><i class="fas fa-credit-card"></i>Banking Payment</h1>
   <div class="payment-section">
-    <!-- ซ้าย: QR Code หรือ Placeholder -->
+    <!-- Left: QR Code with better styling -->
     <div class="payment-left">
-      <div class="qr-placeholder">
-        QR Code Placeholder
+      <div class="qr-container">
+        <div class="qr-header">Scan to Pay</div>
+        <div class="qr-placeholder">
+          <i class="fas fa-qrcode fa-5x"></i>
+          <div class="qr-text">QR Code Placeholder</div>
+        </div>
+        <div class="payment-details">
+          <p><strong>Bank:</strong> TVaporr Bank</p>
+          <p><strong>Account:</strong> 123-456-7890</p>
+          <p><strong>Total:</strong> ฿XXX.XX</p>
+        </div>
       </div>
     </div>
 
     <!-- ขวา: แบบฟอร์มกรอกข้อมูล -->
     <div class="payment-right">
       <form>
-        <label for="accountName">ชื่อบัญชีธนาคาร:</label>
-        <input type="text" id="accountName" name="accountName" required>
+        <label for="accountName">Bank Account Name:</label>
+        <input type="text" id="accountName" name="accountName" placeholder="Enter your bank account name" required>
 
-        <label for="bankType">เลือกธนาคาร:</label>
-        <select id="bankType" name="bankType" required>
-          <option value="">-- เลือกธนาคาร --</option>
-          <option value="kbank">กสิกรไทย</option>
-          <option value="scb">ไทยพาณิชย์</option>
-          <option value="bbl">กรุงเทพ</option>
-          <!-- เพิ่มได้ตามต้องการ -->
+        <label for="bankType">Select Bank:</label>
+        <div class="bank-options">
+          <div class="bank-option" data-bank="kbank">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/1/18/Logo_of_KASIKORNBANK.svg/150px-Logo_of_KASIKORNBANK.svg.png" alt="Kasikorn Bank">
+            <div class="bank-name">Kasikorn</div>
+          </div>
+          <div class="bank-option" data-bank="scb">
+            <img src="https://upload.wikimedia.org/wikipedia/en/thumb/0/01/Siam_Commercial_Bank_logo.svg/150px-Siam_Commercial_Bank_logo.svg.png" alt="SCB">
+            <div class="bank-name">SCB</div>
+          </div>
+          <div class="bank-option" data-bank="bbl">
+            <img src="https://upload.wikimedia.org/wikipedia/en/thumb/e/e0/Bangkok_Bank_logo.svg/150px-Bangkok_Bank_logo.svg.png" alt="Bangkok Bank">
+            <div class="bank-name">Bangkok Bank</div>
+          </div>
+        </div>
+        <!-- Hidden select for form submission -->
+        <select id="bankType" name="bankType" style="display: none;" required>
+          <option value="">-- Select Bank --</option>
+          <option value="kbank">Kasikorn Bank</option>
+          <option value="scb">Siam Commercial Bank</option>
+          <option value="bbl">Bangkok Bank</option>
         </select>
 
-        <label for="slipUpload">แนบสลิปการโอน:</label>
-        <input type="file" id="slipUpload" name="slipUpload" accept="image/*" required>
+        <label>Upload Payment Slip:</label>
+        <div class="file-upload">
+          <div class="file-upload-btn">
+            <i class="fas fa-upload"></i> Choose File
+          </div>
+          <input type="file" id="slipUpload" name="slipUpload" accept="image/*" required>
+          <div class="file-name">No file chosen</div>
+        </div>
 
-        <button type="submit">ยืนยันการชำระเงิน</button>
+        <button type="submit"><i class="fas fa-check-circle"></i> Confirm Payment</button>
       </form>
     </div>
   </div>
@@ -88,125 +119,343 @@
 
     .payment{
         color: white;
+        border-radius: 10px;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.3);
     }
 
     .payment h1{
         text-align: center;
+        margin-bottom: 25px;
+        font-size: 32px;
+        text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+    }
+
+    .payment h1 i {
+        margin-right: 10px;
+        color: #E6C000;
     }
 
     .payment-section {
-  display: flex;
-  justify-content: space-between;
-  margin-top: 30px;
-  gap: 20px;
-  flex-wrap: wrap;
-}
+        display: flex;
+        justify-content: space-between;
+        margin-top: 20px;
+        gap: 30px;
+        flex-wrap: wrap;
+    }
 
-.payment-left, .payment-right {
-  flex: 1;
-  min-width: 300px;
-}
+    .payment-left, .payment-right {
+        flex: 1;
+        min-width: 300px;
+    }
 
-.qr-placeholder {
-  width: 100%;
-  height: 300px;
-  background-color: #8A3A2F;
-  color: white;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  border: 2px dashed white;
-  font-size: 20px;
-}
+    /* Improved QR code container */
+    .qr-container {
+        background-color: rgba(138, 58, 47, 0.7);
+        border-radius: 10px;
+        overflow: hidden;
+        padding-bottom: 15px;
+    }
 
-.payment-right form {
-  display: flex;
-  flex-direction: column;
-  gap: 15px;
-}
+    .qr-header {
+        background-color: #E6C000;
+        color: #230706;
+        padding: 10px;
+        text-align: center;
+        font-size: 18px;
+        font-weight: bold;
+    }
 
-.payment-right label {
-  font-weight: bold;
-  color: white;
-}
+    .qr-placeholder {
+        height: 220px;
+        background-color: white;
+        margin: 20px;
+        border-radius: 8px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        color: #230706;
+    }
 
-.payment-right input,
-.payment-right select {
-  padding: 10px;
-  border-radius: 5px;
-  border: none;
-  font-size: 16px;
-}
+    .qr-placeholder i {
+        margin-bottom: 15px;
+    }
 
-.payment-right button {
-  padding: 12px;
-  background-color: #E6C000;
-  border: none;
-  border-radius: 8px;
-  font-weight: bold;
-  cursor: pointer;
-  transition: background-color 0.3s;
-}
+    .qr-text {
+        font-weight: bold;
+    }
 
-.payment-right button:hover {
-  background-color: #d4b000;
-}
+    .payment-details {
+        padding: 0 20px;
+        color: white;
+    }
 
-        .account {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
+    .payment-details p {
+        margin: 8px 0;
+    }
+    
+    .payment-right form {
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+        background-color: rgba(138, 58, 47, 0.7);
+        padding: 20px;
+        border-radius: 10px;
+    }
 
-        .main-content {
-            flex: 1;
-            display: flex;
+    .payment-right label {
+        font-weight: bold;
+        color: white;
+        display: block;
+        margin-bottom: 5px;
+    }
+
+    .payment-right input[type="text"],
+    .payment-right select {
+        padding: 12px 15px;
+        border-radius: 5px;
+        border: none;
+        font-size: 16px;
+        background-color: rgba(255, 255, 255, 0.9);
+        transition: all 0.3s ease;
+    }
+
+    .payment-right input[type="text"]:focus,
+    .payment-right select:focus {
+        box-shadow: 0 0 0 2px #E6C000;
+        outline: none;
+    }
+
+    /* Custom file upload styling */
+    .file-upload {
+        position: relative;
+        overflow: hidden;
+        margin-top: 10px;
+    }
+
+    .file-upload-btn {
+        background-color: #230706;
+        color: white;
+        padding: 12px 20px;
+        border-radius: 5px;
+        text-align: center;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        display: inline-block;
+        width: 100%;
+    }
+
+    .file-upload-btn:hover {
+        background-color: #340C0A;
+    }
+
+    .file-upload-btn i {
+        margin-right: 8px;
+    }
+
+    .file-upload input[type="file"] {
+        position: absolute;
+        top: 0;
+        right: 0;
+        min-width: 100%;
+        min-height: 100%;
+        font-size: 100px;
+        opacity: 0;
+        cursor: pointer;
+    }
+
+    .file-name {
+        margin-top: 5px;
+        font-size: 14px;
+        color: #E6C000;
+    }
+
+    .payment-right button[type="submit"] {
+        padding: 14px;
+        background-color: #E6C000;
+        border: none;
+        border-radius: 8px;
+        font-weight: bold;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        font-size: 16px;
+        margin-top: 10px;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+    }
+
+    .payment-right button[type="submit"]:hover {
+        background-color: #d4b000;
+        transform: translateY(-3px);
+        box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    }
+
+    .payment-right button[type="submit"]:active {
+        transform: translateY(0);
+        box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+    }
+
+    /* Bank selection with icons */
+    .bank-options {
+        display: flex;
+        gap: 10px;
+        margin-top: 5px;
+    }
+
+    .bank-option {
+        background-color: white;
+        border: 2px solid transparent;
+        border-radius: 5px;
+        padding: 8px 15px;
+        cursor: pointer;
+        flex: 1;
+        text-align: center;
+        transition: all 0.3s ease;
+    }
+
+    .bank-option.selected {
+        border-color: #E6C000;
+        background-color: rgba(230, 192, 0, 0.1);
+    }
+
+    .bank-option img {
+        height: 30px;
+        margin-bottom: 5px;
+    }
+
+    .bank-name {
+        font-size: 12px;
+        color: #230706;
+    }
+
+    .account {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .main-content {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        z-index: 2;
+    }
+
+    .main-content .payment{
+        background-color: rgba(71, 28, 26, 0.9);
+        width: 80%;
+        max-width: 1200px;
+        margin: 20px auto;
+        height: auto;
+        padding: 30px;
+        border-radius: 15px;
+    }
+
+    .layout {
+        display: flex;
+        height: 100vh;
+    }
+
+    .navbar {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        background-color: #230706;
+        color: white;
+        padding: 0 30px;
+        height: 60px;
+    }
+    
+    .nav-links {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        width: 100%;
+    }
+    
+    .nav-links a {
+        text-decoration: none;
+        color: white;
+        font-size: 20px;
+    }
+    
+    /* Responsive design improvements */
+    @media (max-width: 768px) {
+        .payment-section {
             flex-direction: column;
-            z-index: 2;
         }
-
-        .main-content .payment{
-            background-color: #471C1A;
-            width: 66%;
-            margin-left: 16.5%;
-            margin-right: 16.5%;
-            height: 100%;
+        
+        .main-content .payment {
+            width: 95%;
             padding: 20px;
         }
-        .layout {
-            display: flex;
-            height: 100vh;
-        }
-        .topbar {
-            width: 1920px;
-            height: 84px;
-            background: #350B09;
-            position: absolute;
-            top: 73px;
-            left: 0;
-        }
-        .navbar {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            background-color: #230706;
-            color: white;
-            padding: 0 30px;
-            height: 60px;
-        }
-        .nav-links {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            width: 100%;
-        }
-        .nav-links a {
-            text-decoration: none;
-            color: white;
-            font-size: 20px;
-        }
-        
+    }
         
     </style>
+
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Get user ID and name for account section
+        function getUserInfo() {
+            // Try to get from sessionStorage first
+            const userId = sessionStorage.getItem('userId') || localStorage.getItem('userId') || '1';
+            
+            // Update user display name
+            fetch(`http://localhost:8080/api/customers/id=${userId}`)
+                .then(response => response.json())
+                .then(userData => {
+                    if (userData && userData.dName) {
+                        document.getElementById('user-display-name').textContent = userData.dName;
+                    }
+                })
+                .catch(error => console.error('Error fetching user data:', error));
+            
+            // Update user profile photo
+            const userProfilePhoto = document.querySelector('.account img');
+            const photoUrl = `http://localhost:8080/api/customers/id=${userId}/photo`;
+            
+            // Test if image exists
+            fetch(photoUrl)
+                .then(response => {
+                    if (response.ok) {
+                        userProfilePhoto.src = photoUrl;
+                    }
+                })
+                .catch(error => console.error('Error loading profile photo:', error));
+        }
+        
+        // File upload preview
+        const fileInput = document.getElementById('slipUpload');
+        const fileNameDisplay = document.querySelector('.file-name');
+        
+        if (fileInput) {
+            fileInput.addEventListener('change', function() {
+                if (this.files && this.files[0]) {
+                    fileNameDisplay.textContent = this.files[0].name;
+                }
+            });
+        }
+        
+        // Bank selection
+        const bankOptions = document.querySelectorAll('.bank-option');
+        const bankSelect = document.getElementById('bankType');
+        
+        if (bankOptions.length && bankSelect) {
+            bankOptions.forEach(option => {
+                option.addEventListener('click', function() {
+                    // Remove selected class from all options
+                    bankOptions.forEach(opt => opt.classList.remove('selected'));
+                    // Add selected class to clicked option
+                    this.classList.add('selected');
+                    // Update hidden select value
+                    bankSelect.value = this.dataset.bank;
+                });
+            });
+        }
+        
+        // Initialize user info
+        getUserInfo();
+    });
+    </script>
 </body>
 </html>

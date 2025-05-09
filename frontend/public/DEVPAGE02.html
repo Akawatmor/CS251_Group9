@@ -13,14 +13,24 @@
         <aside class="sidebar">
           <div class="logo"><a href="#">&#8592;</a></div>
           <div class="tags">
-            <a href="#">1</a><hr>
-            <a href="#">2</a><hr>
-            <a href="#">3</a><hr>
-            <a href="#">4</a><hr>
+            <a href="#">Store</a><hr>
+            <a href="#">Game </a><hr>
+            <a href="#">Pricing</a><hr>
+            <a href="#">Contract us</a><hr>
           </div>
         </aside>
-      </div> 
-    
+        <div class="mainbar">
+          <form action="">
+            <p><label for="">upload game zip</label></p>
+            <input type="file" name="gamezip" accept="gamezip/*" multiple>
+            <br>
+          </form>
+          <br>
+          <div class="button-wrapper">
+            <button onclick="">Apply</button>
+          </div>
+        </div>
+      </div>
 </body>
 
 <style>
@@ -30,7 +40,7 @@ body, html {
   padding: 0;
   font-family: 'Poppins', sans-serif;
   height: 100%;
-  background: linear-gradient(270deg, #471C1A 32%, #9F3E3A 70%, #C9A24E 99%);
+  background: #6A3C3A;
 }
 
 .layout {
@@ -47,6 +57,46 @@ body, html {
   flex-direction: column;
   gap: 20px;
 }
+
+.mainbar {
+  color: white;
+  padding: 40px;
+  flex-direction: column;
+  gap: 20px;
+  text-decoration: none;
+  width: 75%;
+}
+
+.mainbar textarea{
+  background-color: #471C1A;
+  width: 100%;
+  height: 80px;
+}
+
+.mainbar input{
+  background-color: #471C1A;
+  color: white;
+  padding: 8px 16px;
+  display: inline-block;
+  cursor: pointer;
+}
+
+.button-wrapper {
+  display: flex;
+  justify-content: flex-end; 
+  margin-top: auto;
+}
+.mainbar button {
+  background-color: #471C1A;
+  color: white;
+  width: 150px;        
+  height: 45px;        
+  font-size: 18px;     
+  padding: 10px 20px;  
+  border: none;
+  cursor: pointer;
+}
+
 
 .logo {
   font-size: 32px;
