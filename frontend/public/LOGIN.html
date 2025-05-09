@@ -225,6 +225,11 @@ document.getElementById('loginBtn').addEventListener('click', async () => {
     const data = await res.json();
     
     if (data.success) {
+      // Store user ID in localStorage if it's returned in the response
+      if (data.id) {
+        localStorage.setItem('userId', data.id);
+      }
+      
       // Redirect based on user type
       window.location.href = data.redirectUrl || "/home";
     } else {

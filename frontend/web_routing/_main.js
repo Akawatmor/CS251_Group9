@@ -8,11 +8,13 @@ const LIBRARY = require("./LIBRARY");
 const LOGOUT = require("./LOGOUT");
 const LOGIN = require("./LOGIN");
 const REGISTER = require("./REGISTER");
+const CSETTING = require("./CSETTING");
 
 router.use("/home", HOMEPAGE);
 router.use("/library", LIBRARY);
 router.use("/logout", LOGOUT);
 router.use("/register", REGISTER);
+router.use("/csetting", CSETTING);
 router.use(LOGIN);
 
 
