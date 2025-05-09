@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TVaporr User Registration</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+  <style>
+    body, html {
+      margin: 0;
+      padding: 0;
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(270deg, #471C1A 32%, #9F3E3A 70%, #C9A24E 99%);
+      min-height: 100vh;
+      display: block;
+    }
+
+    .register-container {
+      background: #350B09;
+      padding: 40px;
+      border-radius: 12px;
+      width: 500px;
+      color: white;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+      margin: 40px auto;
+      max-height: none;
+      overflow-y: visible;
+    }
+
+    @media (max-width: 600px) {
+      .register-container {
+        width: 90%;
+        padding: 30px;
+      }
+    }
+
+    .register-header {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+
+    .register-header h1 {
+      font-size: 32px;
+      margin-bottom: 10px;
+    }
+
+    .register-header p {
+      font-size: 16px;
+      opacity: 0.8;
+      margin: 0;
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    .form-group label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: 500;
+    }
+
+    .form-group input, .form-group select {
+      width: 100%;
+      padding: 12px;
+      border: none;
+      border-radius: 8px;
+      font-size: 14px;
+      box-sizing: border-box;
+    }
+
+    .form-group input {
+      background: #6A3C3A;
+      color: white;
+    }
+
+    .form-group select {
+      background: #6A3C3A;
+      color: white;
+    }
+
+    .form-group input:focus, .form-group select:focus {
+      outline: none;
+      box-shadow: 0 0 0 2px #CF514C;
+    }
+
+    .form-group input::placeholder {
+      color: rgba(255, 255, 255, 0.6);
+    }
+
+    .form-row {
+      display: flex;
+      gap: 15px;
+    }
+
+    .form-row .form-group {
+      flex: 1;
+    }
+
+    .register-btn {
+      width: 100%;
+      padding: 14px;
+      background: #CF514C;
+      border: none;
+      border-radius: 8px;
+      color: white;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      margin-top: 10px;
+      transition: background 0.2s;
+    }
+
+    .register-btn:hover {
+      background: #e76b6b;
+    }
+
+    .login-link {
+      text-align: center;
+      margin-top: 20px;
+      font-size: 14px;
+    }
+
+    .login-link a {
+      color: #CF514C;
+      text-decoration: none;
+    }
+
+    .login-link a:hover {
+      text-decoration: underline;
+    }
+
+    .error {
+      color: #FF6B6B;
+      font-size: 12px;
+      margin-top: 5px;
+      min-height: 15px;
+    }
+
+    .success-message {
+      background-color: rgba(76, 175, 80, 0.2);
+      color: #4CAF50;
+      padding: 15px;
+      margin: 20px 0;
+      border-radius: 8px;
+      text-align: center;
+      display: none;
+    }
+
+    .readonly-field {
+      background-color: rgba(106, 60, 58, 0.5) !important;
+      cursor: not-allowed;
+    }
+
+    .select2-container--default .select2-selection--single {
+      background-color: #6A3C3A !important;
+      border: none !important;
+      border-radius: 8px;
+      height: 44px;
+      display: flex;
+      align-items: center;
+      padding: 0;
+      color: white !important;
+    }
+
+    .select2-container--default .select2-selection--single .select2-selection__rendered {
+      color: rgba(255, 255, 255, 0.6) !important; /* Match placeholder color of email input */
+      background-color: transparent !important;
+      line-height: normal;
+      padding: 12px;
+      font-size: 14px;
+      width: calc(100% - 44px);
+    }
+
+    .select2-container--default .select2-selection--single .select2-selection__placeholder {
+      color: rgba(255, 255, 255, 0.6) !important; /* Match placeholder color of email input */
+      font-size: 14px;
+    }
+
+    .select2-container--default .select2-selection--single .select2-selection__arrow {
+      height: 44px;
+      width: 44px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background-color: #6A3C3A !important;
+      border-color: white transparent transparent transparent !important;
+      border-width: 6px 4px 0 4px; /* Adjust arrow size */
+    }
+
+    .select2-dropdown {
+      background-color: #6A3C3A !important;
+      border: none;
+      border-radius: 8px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+      color: white;
+    }
+
+    .select2-container--default .select2-results__option {
+      font-size: 14px;
+      padding: 8px 12px;
+      color: rgba(255, 255, 255, 0.9);
+    }
+
+    .select2-container--default .select2-results__option--highlighted[aria-selected] {
+      background-color: #CF514C;
+      color: white;
+    }
+
+    .select2-container--default .select2-search--dropdown .select2-search__field {
+      background-color: #350B09;
+      color: white;
+      border: 1px solid #6A3C3A;
+      border-radius: 4px;
+      padding: 10px;
+      font-size: 14px;
+    }
+
+    .select2-container--default .select2-search--dropdown .select2-search__field::placeholder {
+      color: rgba(255, 255, 255, 0.6);
+    }
+
+    .phone-input-container {
+      display: flex;
+      gap: 10px;
+      width: 100%;
+      align-items: center;
+    }
+
+    .country-code-box {
+      background-color: #6A3C3A;
+      height: 44px; /* Match height of other form inputs */
+      border-radius: 8px;
+      color: white;
+      width: 10%; /* Adjust width for country code box */
+      text-align: center;
+      white-space: nowrap;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+    }
+
+    .phone-number {
+      flex-grow: 1;
+      height: 44px; /* Match height of other form inputs */
+      border: none;
+      border-radius: 8px;
+      background-color: #6A3C3A;
+      color: white;
+      padding: 12px;
+      font-size: 14px;
+      box-sizing: border-box;
+    }
+
+    .phone-number:focus {
+      outline: none;
+      box-shadow: 0 0 0 2px #CF514C;
+    }
+
+    .phone-number::placeholder {
+      color: rgba(255, 255, 255, 0.6);
+    }
+  </style>
+</head>
+<body>
+  <div class="register-container">
+    <div class="register-header">
+      <h1>Create Account</h1>
+      <p>Join TVaporr community today</p>
+    </div>
+    <div class="success-message" id="successMessage">
+      Registration successful! You will be redirected to login page.
+    </div>
+    <form id="registerForm">
+      <div class="form-row">
+        <div class="form-group">
+          <label for="name">First Name</label>
+          <input type="text" id="name" placeholder="Enter your first name" required>
+        </div>
+        <div class="form-group">
+          <label for="surname">Last Name</label>
+          <input type="text" id="surname" placeholder="Enter your last name" required>
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="username">Username (Auto-generated)</label>
+        <input type="text" id="username" class="readonly-field" readonly>
+      </div>
+      <div class="form-group">
+        <label for="password">Password</label>
+        <input type="password" id="password" placeholder="Create a password" required>
+        <div class="error" id="passwordError"></div>
+      </div>
+      <div class="form-group">
+        <label for="confirmPassword">Confirm Password</label>
+        <input type="password" id="confirmPassword" placeholder="Confirm your password" required>
+        <div class="error" id="confirmPasswordError"></div>
+      </div>
+      <div class="form-group">
+        <label for="displayname">Display Name</label>
+        <input type="text" id="displayname" placeholder="Choose a display name" required>
+      </div>
+      <div class="form-group">
+        <label for="email">Email Address</label>
+        <input type="email" id="email" placeholder="Enter your email address" required>
+        <div class="error" id="emailError"></div>
+      </div>
+      <div class="form-group">
+        <label for="country">Country</label>
+        <select id="country" class="country-select" required>
+          <option value=""></option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label for="telephone">Phone Number</label>
+        <div class="phone-input-container">
+          <div class="country-code-box">
+            <span id="phoneCountryCode"></span>
+          </div>
+          <input type="tel" id="telephone" class="phone-number" placeholder="Your phone number" required>
+        </div>
+        <div class="error" id="telephoneError"></div>
+      </div>
+      <div class="form-group">
+        <label for="birthday">Date of Birth</label>
+        <input type="date" id="birthday" required>
+        <div class="error" id="birthdayError"></div>
+      </div>
+      <button type="submit" class="register-btn">Create Account</button>
+      <div class="login-link">
+        Already have an account? <a href="LOGIN.html">Log In</a>
+      </div>
+    </form>
+  </div>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+  <script>
+    const countries = [
+      { name: "Afghanistan", iso3: "004", phoneCode: "+93" },
+      { name: "Albania", iso3: "008", phoneCode: "+355" },
+      { name: "Algeria", iso3: "012", phoneCode: "+213" },
+      { name: "Andorra", iso3: "020", phoneCode: "+376" },
+      { name: "Angola", iso3: "024", phoneCode: "+244" },
+      { name: "Argentina", iso3: "032", phoneCode: "+54" },
+      { name: "Australia", iso3: "036", phoneCode: "+61" },
+      { name: "Austria", iso3: "040", phoneCode: "+43" },
+      { name: "Bahamas", iso3: "044", phoneCode: "+1-242" },
+      { name: "Belgium", iso3: "056", phoneCode: "+32" },
+      { name: "Brazil", iso3: "076", phoneCode: "+55" },
+      { name: "Canada", iso3: "124", phoneCode: "+1" },
+      { name: "China", iso3: "156", phoneCode: "+86" },
+      { name: "France", iso3: "250", phoneCode: "+33" },
+      { name: "Germany", iso3: "276", phoneCode: "+49" },
+      { name: "India", iso3: "356", phoneCode: "+91" },
+      { name: "Indonesia", iso3: "360", phoneCode: "+62" },
+      { name: "Italy", iso3: "380", phoneCode: "+39" },
+      { name: "Japan", iso3: "392", phoneCode: "+81" },
+      { name: "Malaysia", iso3: "458", phoneCode: "+60" },
+      { name: "Mexico", iso3: "484", phoneCode: "+52" },
+      { name: "Netherlands", iso3: "528", phoneCode: "+31" },
+      { name: "New Zealand", iso3: "554", phoneCode: "+64" },
+      { name: "Norway", iso3: "578", phoneCode: "+47" },
+      { name: "Philippines", iso3: "608", phoneCode: "+63" },
+      { name: "Portugal", iso3: "620", phoneCode: "+351" },
+      { name: "Russia", iso3: "643", phoneCode: "+7" },
+      { name: "Singapore", iso3: "702", phoneCode: "+65" },
+      { name: "South Korea", iso3: "410", phoneCode: "+82" },
+      { name: "Spain", iso3: "724", phoneCode: "+34" },
+      { name: "Sweden", iso3: "752", phoneCode: "+46" },
+      { name: "Switzerland", iso3: "756", phoneCode: "+41" },
+      { name: "Thailand", iso3: "764", phoneCode: "+66" },
+      { name: "United Kingdom", iso3: "826", phoneCode: "+44" },
+      { name: "United States", iso3: "840", phoneCode: "+1" },
+      { name: "Vietnam", iso3: "704", phoneCode: "+84" }
+    ];
+
+    function populateCountries() {
+      const countrySelect = document.getElementById('country');
+      countries.forEach(country => {
+        const option = document.createElement('option');
+        option.value = country.iso3;
+        option.textContent = country.name;
+        option.setAttribute('data-phone-code', country.phoneCode);
+        countrySelect.appendChild(option);
+      });
+    }
+
+    $(document).ready(function() {
+      populateCountries();
+      $('.country-select').select2({
+        placeholder: 'Select your country',
+        allowClear: true,
+        width: '100%',
+        dropdownParent: $('body')
+      });
+
+      $('#country').on('change', function() {
+        const selectedOption = $(this).find(':selected');
+        const phoneCode = selectedOption.attr('data-phone-code') || '';
+        $('#phoneCountryCode').text(phoneCode);
+      });
+    });
+  </script>
+</body>
+</html>

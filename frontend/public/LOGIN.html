@@ -16,7 +16,7 @@
       width: 100%;
       height: 100%;
       font-family: 'Poppins', sans-serif;
-      background: linear-gradient(180deg, #E6C000 14%, #5D110D 66%, #480E0C 78%, #340C0A 90%);
+      background: linear-gradient(180deg, #E6C000 0%, #5D110D 66%, #480E0C 78%, #340C0A 100%);
       overflow: hidden;
       position: relative;
     }
@@ -37,79 +37,94 @@
       left: 50%;
       transform: translate(-50%, -50%);
       background: #350B09;
-      border-radius: 25px;
-      padding: 40px;
-      width: 900px;
+      border-radius: 15px;
+      padding: 30px;
+      width: 650px;
       max-width: 95%;
-      height: 500px;
-      display: flex;
-      gap: 30px;
       z-index: 2;
-
+      display: flex;
+      flex-direction: column;
       opacity: 0;
       animation: fadeIn 1.2s ease-out forwards;
+    }
 
+    .login-container h1 {
+      color: white;
+      text-align: center;
+      font-size: 42px;
+      margin-top: 0;
+      margin-bottom: 30px;
+    }
+
+    .login-content {
+      display: flex;
+      justify-content: space-between;
     }
 
     .form-section {
       flex: 2;
       display: flex;
       flex-direction: column;
-      justify-content: center;
-    }
-
-    .form-section h1 {
-      color: white;
-      text-align: center;
-      font-size: 48px;
-      margin-bottom: 40px;
     }
 
     label {
       color: white;
-      font-size: 20px;
-      margin-bottom: 8px;
+      font-size: 18px;
+      margin-bottom: 6px;
     }
 
     input {
       background: #6A3C3A;
       border: none;
-      border-radius: 12px;
-      height: 50px;
+      border-radius: 8px;
+      height: 40px;
       color: white;
-      font-size: 18px;
+      font-size: 16px;
       padding: 0 15px;
       margin-bottom: 20px;
+      width: 100%;
     }
 
     .login-btn {
       background-color: #CF514C;
       color: white;
-      font-size: 24px;
+      font-size: 20px;
       border: none;
-      border-radius: 12px;
-      padding: 10px;
+      border-radius: 8px;
+      padding: 8px 0;
       cursor: pointer;
       margin-top: 10px;
-      width: 200px;
+      width: 150px;
       align-self: center;
+    }
+
+    .register-text {
+      color: white;
+      text-align: center;
+      margin-top: 15px;
+      font-size: 14px;
+    }
+
+    .register-link {
+      color: #CF514C;
+      text-decoration: none;
+      cursor: pointer;
+      margin-left: 5px;
     }
 
     .qr-section {
       flex: 1;
-      margin-top: 80px;
-      margin-bottom: 80px;
-      margin-left: 20px;
       background: #D9D9D9;
-      border-radius: 10px;
+      border-radius: 5px;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 48px;
+      font-size: 32px;
       color: black;
-      font-family: Poppins, sans-serif;
+      width: 150px;
+      height: 150px;
+      margin-left: 20px;
     }
-
 
     @keyframes fadeIn {
       from { opacity: 0; transform: translate(-50%, -60%); }
@@ -118,18 +133,18 @@
 
     @media screen and (max-width: 768px) {
       .login-container {
-        flex-direction: column;
-        height: auto;
+        width: 90%;
         padding: 20px;
       }
 
-      .qr-section {
-        height: 200px;
-        margin-top: 50px;
+      .login-content {
+        flex-direction: column;
       }
 
-      .form-section h1 {
-        font-size: 36px;
+      .qr-section {
+        margin-left: 0;
+        margin-top: 20px;
+        width: 100%;
       }
     }
   </style>
@@ -137,60 +152,89 @@
 
 <body onload="generateQRCode()">
   <div class="background-img"></div>
-  <div class="alert">
-    <h2>Insert Alert Here</h2>
+  <div class="alert" id="errorMsg" style="display: none; position: fixed; top: 20px; left: 50%; transform: translateX(-50%); background-color: #f44336; color: white; padding: 15px; border-radius: 5px; z-index: 100; opacity: 0; transition: opacity 0.3s;">
+    <span id="errorText"></span>
   </div>
 
   <div class="login-container">
-    <form id="loginForm" class="form-section">
-      <h1>TVaporr</h1>
-      <label for="username">Username</label>
-      <input type="text" name="user" placeholder="Enter username" />
-      <label for="password">Password</label>
-      <input type="password" name="pass" placeholder="Enter password" />
-      <button type="submit" class="login-btn">Login</button>
-    </form>
+    <h1>TVaporr</h1>
+    <div class="login-content">
+      <div class="form-section">
+        <label for="username">username</label>
+        <input type="text" name="user" id="username" placeholder="Enter username" />
+        <label for="password">password</label>
+        <input type="password" name="pass" id="password" placeholder="Enter password" />
+        <div class="register-text">Don't have user? <a href="/register" class="register-link">Register Now</a></div>
+        <button type="button" id="loginBtn" class="login-btn">Login</button>
+      </div>
 
-    <div class="qr-section" id="qrCodeContainer">
-      QR
+      <div class="qr-section" id="qrCodeContainer">
+        QR
+      </div>
     </div>
   </div>
-</body>
+
 <script>
+function showError(message) {
+  const errorDiv = document.getElementById('errorMsg');
+  const errorText = document.getElementById('errorText');
+  errorText.textContent = message;
+  errorDiv.style.display = 'block';
+  errorDiv.style.opacity = '1';
+  
+  setTimeout(() => {
+    errorDiv.style.opacity = '0';
+    setTimeout(() => {
+      errorDiv.style.display = 'none';
+    }, 300);
+  }, 3000);
+}
 
 function generateQRCode() {
-      fetch("/service/login/qrcode-login")
-        .then((res) => res.json())
-        .then((data) => {
-          const qrCodeContainer = document.getElementById("qrCodeContainer");
-          qrCodeContainer.innerHTML = `<img src="${data.qrCode}" alt="QR Code">`;
-        })
-        .catch((err) => console.error("Error generating QR code", err));
+  fetch("/service/login/qrcode-login")
+    .then((res) => res.json())
+    .then((data) => {
+      const qrCodeContainer = document.getElementById("qrCodeContainer");
+      qrCodeContainer.innerHTML = `<img src="${data.qrCode}" alt="QR Code">`;
+    })
+    .catch((err) => console.error("Error generating QR code", err));
+}
+
+document.getElementById('loginBtn').addEventListener('click', async () => {
+  const user = document.getElementById('username').value;
+  const pass = document.getElementById('password').value;
+  
+  if (!user || !pass) {
+    showError('Username and password are required');
+    return;
+  }
+
+  try {
+    const res = await fetch('/service/login/authen', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ user, pass })
+    });
+
+    if (!res.ok) {
+      throw new Error(`HTTP error! Status: ${res.status}`);
     }
 
-document.getElementById('loginForm').addEventListener('submit', async (e) => {
-  e.preventDefault();
-
-  const user = e.target.user.value;
-  const pass = e.target.pass.value;
-
-  const res = await fetch('/service/login/authen', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify({ user, pass })
-  });
-
-  const data = await res.json();
-  if (data.success) {
-
-    window.location.href = "/home";
-
-  } else {
-    window.alert(data.message);
+    const data = await res.json();
+    
+    if (data.success) {
+      // Redirect based on user type
+      window.location.href = data.redirectUrl || "/home";
+    } else {
+      showError(data.message || 'Login failed. Please try again.');
+    }
+  } catch (error) {
+    console.error('Login error:', error);
+    showError('An error occurred during login. Please try again later.');
   }
 });
-
 </script>
+</body>
 </html>

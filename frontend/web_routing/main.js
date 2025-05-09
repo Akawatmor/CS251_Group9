@@ -7,10 +7,12 @@ const HOMEPAGE = require("./HOMEPAGE");
 const LIBRARY = require("./LIBRARY");
 const LOGOUT = require("./LOGOUT");
 const LOGIN = require("./LOGIN");
+const REGISTER = require("./REGISTER");
 
 router.use("/home", HOMEPAGE);
 router.use("/library", LIBRARY);
 router.use("/logout", LOGOUT);
+router.use("/register", REGISTER);
 router.use(LOGIN);
 
 

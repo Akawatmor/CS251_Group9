@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="refresh" content="5;url=/">
-  <title>Logout Successful - TVaporr</title>
+  <title>Method Not Allowed - TVaporr</title>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
   <style>
     body, html {
@@ -67,15 +67,9 @@
       opacity: 0.8;
     }
     
-    .success-icon {
-      font-size: 48px;
-      margin-bottom: 20px;
-      color: #4CAF50;
-    }
-    
-    .status-code {
+    .error-code {
       display: inline-block;
-      background: #4CAF50;
+      background: #6A3C3A;
       padding: 2px 8px;
       border-radius: 4px;
       margin: 0 5px;
@@ -86,10 +80,9 @@
 </head>
 <body>
   <div class="message-container">
-    <div class="success-icon">✓</div>
-    <h1>Logout Successful!</h1>
-    <p>You have been successfully logged out. <span class="status-code">200</span></p>
-    <p>Thank you for using TVaporr!</p>
+    <h1>Method Not Allowed</h1>
+    <p>The request method is not supported for this resource. <span class="error-code">405</span></p>
+    <p>Please try a different approach or return to the home page.</p>
     <button class="redirect-button" onclick="window.location.href='/'">Go to Home</button>
     <p class="countdown">You will be redirected in <span id="timer">5</span> seconds...</p>
   </div>
