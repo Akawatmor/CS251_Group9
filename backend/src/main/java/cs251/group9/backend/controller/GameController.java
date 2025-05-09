@@ -16,6 +16,8 @@ import cs251.group9.backend.service.*;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/games")
@@ -287,6 +289,102 @@ public class GameController {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         } else {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+    }
+    
+    ///////////////// Get Game Picture /////////////////////    @GetMapping("/id={id}/picture={position}")
+    public ResponseEntity<?> getGamePicture(@PathVariable Long id, @PathVariable int position) {
+        if (position < 1 || position > 5) {
+            return ResponseEntity.badRequest().build();
+        }
+        
+        try {
+            byte[] imageData = photoService.getGamePictureData(id, position);
+            return ResponseEntity.ok()
+                    .contentType(org.springframework.http.MediaType.IMAGE_JPEG)
+                    .body(imageData);
+        } catch (Exception e) {
+            // Return empty JSON response with success:false when image not found
+            Map<String, Object> response = new HashMap<>();
+            response.put("success", false);
+            response.put("message", "picture empty");
+            return ResponseEntity.ok(response);
+        }
+    }
+    
+    ///////////////// Game Banner Endpoints /////////////////////
+    
+    // Get banner image
+    @GetMapping("/banner/{position}")
+    public ResponseEntity<?> getBanner(@PathVariable int position) {
+        if (position < 1 || position > 25) {
+            return ResponseEntity.badRequest().build();
+        }
+        
+        try {
+            byte[] imageData = photoService.getBannerPictureData(position);
+            return ResponseEntity.ok()
+                    .contentType(org.springframework.http.MediaType.IMAGE_JPEG) // Will work for jpg, png, webp
+                    .body(imageData);
+        } catch (Exception e) {
+            // Return empty JSON response with success:false when image not found
+            Map<String, Object> response = new HashMap<>();
+            response.put("success", false);
+            response.put("message", "picture empty");
+            return ResponseEntity.ok(response);
+        }
+    }
+    
+    // Upload or update banner image
+    @PostMapping("/banner/{position}")
+    public ResponseEntity<Map<String, Object>> uploadBanner(
+            @PathVariable int position,
+            @RequestParam("file") MultipartFile file) {
+        
+        Map<String, Object> response = new HashMap<>();
+        
+        if (position < 1 || position > 25) {
+            response.put("success", false);
+            response.put("message", "Position must be between 1 and 25");
+            return ResponseEntity.badRequest().body(response);
+        }
+        
+        try {
+            String picturePath = photoService.storeBannerPicture(position, file);
+            
+            response.put("success", true);
+            response.put("message", "Banner uploaded successfully");
+            response.put("path", picturePath);
+            
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            response.put("success", false);
+            response.put("message", "Failed to upload banner: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
+        }
+    }
+    
+    // Delete banner image
+    @DeleteMapping("/banner/{position}")
+    public ResponseEntity<Map<String, Object>> deleteBanner(@PathVariable int position) {
+        Map<String, Object> response = new HashMap<>();
+        
+        if (position < 1 || position > 25) {
+            response.put("success", false);
+            response.put("message", "Position must be between 1 and 25");
+            return ResponseEntity.badRequest().body(response);
+        }
+        
+        boolean deleted = photoService.deleteBannerPicture(position);
+        
+        if (deleted) {
+            response.put("success", true);
+            response.put("message", "Banner deleted successfully");
+            return ResponseEntity.ok(response);
+        } else {
+            response.put("success", false);
+            response.put("message", "Banner not found or could not be deleted");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
         }
     }
 }

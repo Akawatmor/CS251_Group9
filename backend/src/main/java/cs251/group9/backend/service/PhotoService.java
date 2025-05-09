@@ -19,8 +19,8 @@ public class PhotoService {
     private final String userPicturesDir = "user/";
     private final String gamePicturesDir = "games/pictures/";
     private final String developerPicturesDir = "developers/";
-    
-    // Store a user profile photo
+    private final String bannerPicturesDir = "banners/";
+      // Store a user profile photo
     public String storePhoto(Long userId, MultipartFile file) throws IOException {
         String uploadDir = baseUploadDir + userPicturesDir;
         
@@ -38,16 +38,36 @@ public class PhotoService {
         String extension = originalFilename.substring(originalFilename.lastIndexOf("."));
         
         // Create the file path
-        String filename = userId + extension;
+        String baseFilename = userId.toString();
+        String filename = baseFilename + extension;
         Path targetPath = dirPath.resolve(filename);
+        
+        // Delete any existing picture files with same userId but different extension
+        try {
+            Files.list(dirPath)
+                .filter(path -> {
+                    String fname = path.getFileName().toString();
+                    return fname.startsWith(baseFilename + ".") && !fname.equals(filename);
+                })
+                .forEach(path -> {
+                    try {
+                        Files.deleteIfExists(path);
+                    } catch (IOException e) {
+                        // Log error but continue
+                        System.err.println("Failed to delete old photo: " + e.getMessage());
+                    }
+                });
+        } catch (IOException e) {
+            // Log error but continue with save
+            System.err.println("Error checking for old photos: " + e.getMessage());
+        }
         
         // Save the file
         Files.copy(file.getInputStream(), targetPath, StandardCopyOption.REPLACE_EXISTING);
         
         return uploadDir + filename;
     }
-    
-    // Store a developer team photo
+      // Store a developer team photo
     public String storeDeveloperTeamPhoto(Long devId, MultipartFile file) throws IOException {
         String uploadDir = baseUploadDir + developerPicturesDir;
         
@@ -65,8 +85,29 @@ public class PhotoService {
         String extension = originalFilename.substring(originalFilename.lastIndexOf("."));
         
         // Create the file path
-        String filename = "team_" + devId + extension;
+        String baseFilename = "team_" + devId;
+        String filename = baseFilename + extension;
         Path targetPath = dirPath.resolve(filename);
+        
+        // Delete any existing team photo files with same devId but different extension
+        try {
+            Files.list(dirPath)
+                .filter(path -> {
+                    String fname = path.getFileName().toString();
+                    return fname.startsWith(baseFilename + ".") && !fname.equals(filename);
+                })
+                .forEach(path -> {
+                    try {
+                        Files.deleteIfExists(path);
+                    } catch (IOException e) {
+                        // Log error but continue
+                        System.err.println("Failed to delete old team photo: " + e.getMessage());
+                    }
+                });
+        } catch (IOException e) {
+            // Log error but continue with save
+            System.err.println("Error checking for old team photos: " + e.getMessage());
+        }
         
         // Save the file
         Files.copy(file.getInputStream(), targetPath, StandardCopyOption.REPLACE_EXISTING);
@@ -103,8 +144,7 @@ public class PhotoService {
             return null;
         }
     }
-    
-    // Store a game picture
+      // Store a game picture
     public String storeGamePicture(Long gameId, int pictureNumber, MultipartFile file) throws IOException {
         String uploadDir = baseUploadDir + gamePicturesDir;
         
@@ -122,8 +162,29 @@ public class PhotoService {
         String extension = originalFilename.substring(originalFilename.lastIndexOf("."));
         
         // Create the file path
-        String filename = gameId + "_" + pictureNumber + extension;
+        String baseFilename = gameId + "_" + pictureNumber;
+        String filename = baseFilename + extension;
         Path targetPath = dirPath.resolve(filename);
+        
+        // Delete any existing game picture files with same gameId_position but different extension
+        try {
+            Files.list(dirPath)
+                .filter(path -> {
+                    String fname = path.getFileName().toString();
+                    return fname.startsWith(baseFilename + ".") && !fname.equals(filename);
+                })
+                .forEach(path -> {
+                    try {
+                        Files.deleteIfExists(path);
+                    } catch (IOException e) {
+                        // Log error but continue
+                        System.err.println("Failed to delete old game picture: " + e.getMessage());
+                    }
+                });
+        } catch (IOException e) {
+            // Log error but continue with save
+            System.err.println("Error checking for old game pictures: " + e.getMessage());
+        }
         
         // Save the file
         Files.copy(file.getInputStream(), targetPath, StandardCopyOption.REPLACE_EXISTING);
@@ -138,6 +199,21 @@ public class PhotoService {
             return Files.deleteIfExists(path);
         } catch (IOException e) {
             return false;
+        }
+    }
+    
+    // Get a game picture path
+    public String getGamePicturePath(Long gameId, int pictureNumber) {
+        Path dirPath = Paths.get(baseUploadDir + gamePicturesDir);
+        try {
+            // Search for any file with the gameId_pictureNumber as prefix
+            return Files.list(dirPath)
+                .filter(path -> path.getFileName().toString().startsWith(gameId + "_" + pictureNumber))
+                .findFirst()
+                .map(Path::toString)
+                .orElse(null);
+        } catch (IOException e) {
+            return null;
         }
     }
 
@@ -177,5 +253,140 @@ public class PhotoService {
         } catch (java.io.IOException e) {
             throw new Exception("Failed to read team photo: " + e.getMessage());
         }
+    }
+    
+    public byte[] getGamePictureData(Long gameId, int pictureNumber) throws Exception {
+        // Get the path to the game picture
+        String picturePath = getGamePicturePath(gameId, pictureNumber);
+        
+        if (picturePath == null) {
+            throw new Exception("Game picture does not exist");
+        }
+        
+        // Read the photo file into a byte array
+        java.nio.file.Path path = java.nio.file.Paths.get(picturePath);
+        if (!java.nio.file.Files.exists(path)) {
+            throw new Exception("Game picture file not found");
+        }
+        
+        try {
+            return java.nio.file.Files.readAllBytes(path);
+        } catch (java.io.IOException e) {
+            throw new Exception("Failed to read game picture: " + e.getMessage());
+        }
+    }
+    
+    // Banner related methods
+    
+    // Store a banner picture (independent from any entity)
+    public String storeBannerPicture(int bannerPosition, MultipartFile file) throws IOException {
+        if (bannerPosition < 1 || bannerPosition > 25) {
+            throw new IOException("Banner position must be between 1 and 25");
+        }
+        
+        String uploadDir = baseUploadDir + bannerPicturesDir;
+        
+        // Create directory if it doesn't exist
+        Path dirPath = Paths.get(uploadDir);
+        if (!Files.exists(dirPath)) {
+            Files.createDirectories(dirPath);
+        }
+        
+        // Get file extension
+        String originalFilename = file.getOriginalFilename();
+        if (originalFilename == null) {
+            throw new IOException("File name is null");
+        }
+        String extension = originalFilename.substring(originalFilename.lastIndexOf("."));
+        
+        // Create the file path
+        String baseFilename = "banner_" + bannerPosition;
+        String filename = baseFilename + extension;
+        Path targetPath = dirPath.resolve(filename);
+        
+        // Delete any existing banner files with same position but different extension
+        try {
+            Files.list(dirPath)
+                .filter(path -> {
+                    String fname = path.getFileName().toString();
+                    return fname.startsWith(baseFilename) && !fname.equals(filename);
+                })
+                .forEach(path -> {
+                    try {
+                        Files.deleteIfExists(path);
+                    } catch (IOException e) {
+                        // Log error but continue
+                        System.err.println("Failed to delete old banner: " + e.getMessage());
+                    }
+                });
+        } catch (IOException e) {
+            // Log error but continue with save
+            System.err.println("Error checking for old banners: " + e.getMessage());
+        }
+        
+        // Save the file
+        Files.copy(file.getInputStream(), targetPath, StandardCopyOption.REPLACE_EXISTING);
+        
+        return uploadDir + filename;
+    }
+    
+    // Get a banner picture path
+    public String getBannerPicturePath(int bannerPosition) {
+        if (bannerPosition < 1 || bannerPosition > 25) {
+            return null;
+        }
+        
+        Path dirPath = Paths.get(baseUploadDir + bannerPicturesDir);
+        if (!Files.exists(dirPath)) {
+            return null;
+        }
+        
+        String baseFilename = "banner_" + bannerPosition;
+        try {
+            // Search for any file with the banner_{position} prefix
+            return Files.list(dirPath)
+                .filter(path -> path.getFileName().toString().startsWith(baseFilename))
+                .findFirst()
+                .map(Path::toString)
+                .orElse(null);
+        } catch (IOException e) {
+            return null;
+        }
+    }
+    
+    // Get banner picture data as bytes
+    public byte[] getBannerPictureData(int bannerPosition) throws Exception {
+        // Get the path to the banner picture
+        String picturePath = getBannerPicturePath(bannerPosition);
+        
+        if (picturePath == null) {
+            throw new Exception("Banner picture does not exist");
+        }
+        
+        // Read the photo file into a byte array
+        Path path = Paths.get(picturePath);
+        if (!Files.exists(path)) {
+            throw new Exception("Banner picture file not found");
+        }
+        
+        try {
+            return Files.readAllBytes(path);
+        } catch (IOException e) {
+            throw new Exception("Failed to read banner picture: " + e.getMessage());
+        }
+    }
+    
+    // Delete a banner picture
+    public boolean deleteBannerPicture(int bannerPosition) {
+        if (bannerPosition < 1 || bannerPosition > 25) {
+            return false;
+        }
+        
+        String picturePath = getBannerPicturePath(bannerPosition);
+        if (picturePath == null) {
+            return false;
+        }
+        
+        return deleteFile(picturePath);
     }
 }
