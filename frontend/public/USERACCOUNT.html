@@ -252,6 +252,7 @@
         }
         
         userData = await response.json();
+        console.log('Fetched user data:', userData); // For debugging
         
         // Populate user information
         populateUserData();
@@ -267,6 +268,7 @@
     
     // Populate user data into the form fields
     function populateUserData() {
+      userData = userData.user;
       if (!userData) return;
       
       // Profile section
@@ -276,9 +278,14 @@
       document.getElementById('displayname').value = userData.dName || '';
       document.getElementById('age').value = userData.age || '';
       
-      // User display info in sidebar
+      // User display info in sidebar - ensure balance is correctly formatted
       document.getElementById('user-display-name').textContent = userData.dName || 'User';
-      document.getElementById('user-balance').textContent = `Balance: $${userData.balance?.toFixed(2) || '0.00'}`;
+
+      //console.log('User balance:', userData.user); // For debugging
+      
+      // Format balance with 2 decimal places, default to 0.00 if undefined
+      const balance = userData.money !== undefined ? parseFloat(userData.money) : 0.00;
+      document.getElementById('user-balance').textContent = `Balance: $${balance.toFixed(2)}`;
     }
     
     // Fetch and display user's profile picture
@@ -392,14 +399,15 @@
           throw new Error('Failed to add money to account');
         }
         
-        // Update balance
-        if (userData) {
-          userData.balance = (userData.balance || 0) + amount;
-          document.getElementById('user-balance').textContent = `Balance: $${userData.balance.toFixed(2)}`;
-        }
+        // Fetch updated user data to get current balance
+        await fetchUserData();
         
         showMessage('payment-message', `Successfully added $${amount.toFixed(2)} to your account.`, 'success');
         document.getElementById('add-money-form').reset();
+        
+        // Reset payment method selection
+        document.getElementById('payment-method').value = '';
+        togglePaymentDetails();
       } catch (error) {
         console.error('Error adding money:', error);
         showMessage('payment-message', 'Failed to add money to your account. Please try again.', 'error');
@@ -461,7 +469,7 @@
       const sections = document.querySelectorAll('.content-section');
       
       navItems.forEach(item => {
-        item.addEventListener('click', function(e) {
+        item.addEventListener('click', async function(e) {
           e.preventDefault();
           
           const targetSection = this.getAttribute('data-section');
@@ -478,6 +486,11 @@
               section.classList.remove('active');
             }
           });
+          
+          // If moving to the add money section, refresh user data to show current balance
+          if (targetSection === 'add-money') {
+            await fetchUserData();
+          }
         });
       });
     }
