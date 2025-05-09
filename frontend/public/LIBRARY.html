@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>TVaporr</title>
+  <title>library</title>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css">
 </head>
@@ -23,153 +23,460 @@
         <main class="main-content">
           <header class="navbar">
             <div class="nav-links">
-              <a href="/home">Homepage</a>
+              <a href="/HOMEPAGE.html">Homepage</a>
               <span>|</span>
-              <a href="/library">Library</a>
+              <a href="#">Library</a>
             </div>
             <div class="account">
               <img src="https://placehold.co/30x30" alt="Profile Icon">
               <span>Account</span>
             </div>
           </header>
-    
-          <section class="hero"></section>
-    
-          <div class="search-section">
-            <input type="text" placeholder="Search...">
-            <button>🔍</button>
-          </div>
-    
-          <section class="cards">
-            <div class="card"></div>
-            <div class="card"></div>
-            <div class="card"></div>
+          
+          <!-- Banner carousel section - Added from HOMEPAGE -->
+          <section class="hero" id="banner-carousel">
+            <div class="banner-container">
+              <img id="banner-image" class="banner-image" src="" alt="Game Banner">
+              <div class="banner-controls">
+                <button id="prev-banner" class="banner-control">&lt;</button>
+                <div id="banner-indicators" class="banner-indicators"></div>
+                <button id="next-banner" class="banner-control">&gt;</button>
+              </div>
+              <div id="banner-loading" class="banner-loading">Loading banners...</div>
+            </div>
           </section>
+    
+          <header class="navbar">
+            <div class="nav-links">
+              <span>|</span>
+              <a href="#">1</a>
+              <span>|</span>
+              <a href="#">2</a>
+              <span>|</span>
+              <a href="#">3</a>
+              <span>|</span>
+              <a href="#">4</a>
+              <span>|</span>
+            </div>
+          </header>
+          
+          <section class="hero"></section>
         </main>
       </div> 
     
 </body>
 
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    // Initialize banner carousel
+    initBannerCarousel();
+  });
+
+  // Banner carousel functionality
+  function initBannerCarousel() {
+    const MAX_BANNERS = 6; // Maximum number of banners to check
+    const DISPLAY_TIME = 5000; // 5 seconds per banner
+    let availableBanners = []; // Will store indices of banners that exist
+    let currentBannerIndex = 0;
+    let bannerInterval;
+    let isAutoScrolling = true;
+    
+    const bannerImage = document.getElementById('banner-image');
+    const prevButton = document.getElementById('prev-banner');
+    const nextButton = document.getElementById('next-banner');
+    const bannerIndicators = document.getElementById('banner-indicators');
+    const loadingElement = document.getElementById('banner-loading');
+
+    // Check which banner indices actually have images
+    async function checkAvailableBanners() {
+      loadingElement.style.display = 'flex'; // Show loading indicator
+      
+      // Array to store all our fetch promises
+      const fetchPromises = [];
+      
+      for (let i = 1; i <= MAX_BANNERS; i++) {
+        // Create a promise for each banner check
+        const promise = fetch(`http://localhost:8080/api/games/banner/${i}`)
+          .then(response => {
+            if (response.headers.get('content-type')?.includes('application/json')) {
+              return response.json().then(data => {
+                return { index: i, exists: data.success !== false };
+              });
+            }
+            return { index: i, exists: response.ok };
+          })
+          .catch(() => {
+            return { index: i, exists: false };
+          });
+          
+        fetchPromises.push(promise);
+      }
+      
+      // Wait for all promises to resolve
+      const results = await Promise.all(fetchPromises);
+      
+      // Filter to only banners that exist
+      availableBanners = results.filter(result => result.exists).map(result => result.index);
+      
+      if (availableBanners.length > 0) {
+        // Create indicator dots for each banner
+        bannerIndicators.innerHTML = '';
+        availableBanners.forEach((_, index) => {
+          const dot = document.createElement('div');
+          dot.className = 'banner-dot';
+          dot.dataset.index = index;
+          dot.addEventListener('click', () => {
+            showBanner(index);
+            resetTimer();
+          });
+          bannerIndicators.appendChild(dot);
+        });
+        
+        // Show the first banner without animation
+        const bannerIndex = availableBanners[0];
+        bannerImage.src = `http://localhost:8080/api/games/banner/${bannerIndex}`;
+        
+        // Update indicator for the first banner
+        const dots = bannerIndicators.querySelectorAll('.banner-dot');
+        if (dots.length > 0) {
+          dots[0].classList.add('active');
+        }
+        
+        // Start the auto scroll after the first banner has been displayed for DISPLAY_TIME
+        setTimeout(() => {
+          startAutoScroll();
+        }, DISPLAY_TIME);
+      } else {
+        loadingElement.textContent = 'No banners available';
+      }
+      
+      loadingElement.style.display = 'none'; // Hide loading indicator
+    }
+    
+    function showBanner(index, direction = 'next') {
+      if (availableBanners.length === 0) return;
+      
+      // Store old index before updating
+      const oldIndex = currentBannerIndex;
+      
+      // Update index
+      currentBannerIndex = index;
+      
+      // Handle wrapping around the ends
+      if (currentBannerIndex < 0) currentBannerIndex = availableBanners.length - 1;
+      if (currentBannerIndex >= availableBanners.length) currentBannerIndex = 0;
+      
+      // If user clicked on the same banner, do nothing
+      if (oldIndex === currentBannerIndex) return;
+      
+      const bannerIndex = availableBanners[currentBannerIndex];
+      
+      // Create a new image element for the incoming banner
+      const newImage = document.createElement('img');
+      newImage.className = 'banner-image';
+      newImage.alt = "Game Banner";
+      newImage.src = `http://localhost:8080/api/games/banner/${bannerIndex}`;
+      
+      // Position the new image off-screen based on direction
+      const slideDirection = direction === 'next' ? '100%' : '-100%';
+      newImage.style.position = 'absolute';
+      newImage.style.transform = `translateX(${slideDirection})`;
+      
+      // Add the new image to the container
+      const container = document.querySelector('.banner-container');
+      container.appendChild(newImage);
+      
+      // Wait for new image to load
+      newImage.onload = function() {
+        // Once loaded, start animation
+        setTimeout(() => {
+          // Move the current image out in the opposite direction
+          bannerImage.style.transition = 'transform 500ms ease';
+          bannerImage.style.transform = `translateX(${direction === 'next' ? '-100%' : '100%'})`;
+          
+          // Move the new image to center
+          newImage.style.transition = 'transform 500ms ease';
+          newImage.style.transform = 'translateX(0)';
+          
+          // After animation completes, replace old banner with new one
+          setTimeout(() => {
+            // Replace the main banner image source
+            bannerImage.src = newImage.src;
+            
+            // Reset the styles on the main banner image without transition
+            bannerImage.style.transition = 'none';
+            bannerImage.style.transform = 'translateX(0)';
+            
+            // Remove the temporary image
+            container.removeChild(newImage);
+          }, 500);
+        }, 50);
+      };
+      
+      // Update indicator dots
+      const dots = bannerIndicators.querySelectorAll('.banner-dot');
+      dots.forEach((dot, i) => {
+        dot.classList.toggle('active', i === currentBannerIndex);
+      });
+    }
+    
+    function nextBanner() {
+      showBanner(currentBannerIndex + 1, 'next');
+    }
+    
+    function prevBanner() {
+      showBanner(currentBannerIndex - 1, 'prev');
+    }
+    
+    function startAutoScroll() {
+      if (bannerInterval) clearInterval(bannerInterval);
+      bannerInterval = setInterval(() => {
+        if (isAutoScrolling) nextBanner();
+      }, DISPLAY_TIME);
+    }
+    
+    function resetTimer() {
+      if (bannerInterval) clearInterval(bannerInterval);
+      startAutoScroll();
+    }
+    
+    // Event listeners for controls
+    prevButton.addEventListener('click', () => {
+      prevBanner();
+      resetTimer();
+    });
+    
+    nextButton.addEventListener('click', () => {
+      nextBanner();
+      resetTimer();
+    });
+    
+    // Pause auto-scroll when hovering over the banner
+    bannerImage.addEventListener('mouseenter', () => {
+      isAutoScrolling = false;
+    });
+    
+    bannerImage.addEventListener('mouseleave', () => {
+      isAutoScrolling = true;
+      resetTimer();
+    });
+
+    // Handle image load error
+    bannerImage.addEventListener('error', () => {
+      // If an image fails to load, try the next one
+      nextBanner();
+      resetTimer();
+    });
+    
+    // Initialize by checking available banners
+    checkAvailableBanners();
+  }
+</script>
+
 <style>
+  body, html {
+    margin: 0;
+    padding: 0;
+    font-family: 'Poppins', sans-serif;
+    height: 100%;
+    background: linear-gradient(270deg, #471C1A 32%, #9F3E3A 70%, #C9A24E 99%);
+  }
+  
+  .layout {
+    display: flex;
+    height: 100vh;
+  }
+  
+  .sidebar {
+    background: linear-gradient(180deg, #350B09 67%, #471C1A 100%);
+    color: white;
+    width: 250px;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+  
+  .logo {
+    font-size: 32px;
+  }
+  
+  .sidebar hr {
+    border: 0;
+    border-top: 1px solid white;
+    margin: 10px 0;
+  }
+  
+  .sidebar h2 {
+    font-size: 20px;
+  }
+  
+  .tags label {
+    display: block;
+    margin-top: 10px;
+    font-size: 16px;
+  }
+  
+  .main-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    background: url('./PICTURE/LOGIN_BG1.png') no-repeat center/cover;
+  }
+  
+  .navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #230706;
+    color: white;
+    padding: 0 30px;
+    height: 60px;
+  }
+  
+  .nav-links {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+  }
+  
+  .nav-links a {
+    text-decoration: none;
+    color: white;
+    font-size: 20px;
+  }
+  
+  .account {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  
+  .hero {
+    margin: 20px;
+    height: 250px;
+    border-radius: 8px;
+    overflow: hidden;
+    position: relative;
+    background-color: rgba(0, 0, 0, 0.2);
+  }
+  
+  /* Banner Carousel Styles - Added from HOMEPAGE */
+  .banner-container {
+    width: 100%;
+    height: 100%;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+  }
 
-body, html {
-  margin: 0;
-  padding: 0;
-  font-family: 'Poppins', sans-serif;
-  height: 100%;
-  background: linear-gradient(270deg, #471C1A 32%, #9F3E3A 70%, #C9A24E 99%);
-}
+  .banner-image {
+    width: 100%;
+    height: 100%;
+    object-fit: fill;
+    transition: transform 0.5s ease;
+  }
 
-.layout {
-  display: flex;
-  height: 100vh;
-}
+  .banner-controls {
+    position: absolute;
+    bottom: 15px;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    z-index: 10;
+  }
 
-.sidebar {
-  background: linear-gradient(180deg, #350B09 67%, #471C1A 100%);
-  color: white;
-  width: 250px;
-  padding: 20px;
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-}
+  .banner-control {
+    background-color: rgba(0, 0, 0, 0.5);
+    color: white;
+    border: none;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    font-size: 16px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.3s ease;
+  }
 
-.logo {
-  font-size: 32px;
-}
+  .banner-control:hover {
+    background-color: rgba(159, 62, 58, 0.8);
+  }
 
-.sidebar hr {
-  border: 0;
-  border-top: 1px solid white;
-  margin: 10px 0;
-}
+  .banner-indicators {
+    display: flex;
+    gap: 8px;
+  }
 
-.sidebar h2 {
-  font-size: 20px;
-}
+  .banner-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background-color: rgba(255, 255, 255, 0.5);
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+  }
 
-.tags label {
-  display: block;
-  margin-top: 10px;
-  font-size: 16px;
-}
+  .banner-dot:hover {
+    transform: scale(1.2);
+  }
 
-.main-content {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  background: url('https://i.ibb.co/7z1RVtk/dots-bg.png') no-repeat center/cover;
-}
+  .banner-dot.active {
+    background-color: #C9A24E;
+  }
 
-.navbar {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  background-color: #230706;
-  color: white;
-  padding: 0 30px;
-  height: 60px;
-}
-
-.nav-links {
-  display: flex;
-  align-items: center;
-  gap: 15px;
-}
-
-.nav-links a {
-  text-decoration: none;
-  color: white;
-  font-size: 20px;
-}
-
-.account {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-
-.hero {
-  background-color: rgba(255, 255, 255, 0.1);
-  margin: 20px;
-  height: 250px;
-  border-radius: 8px;
-}
-
-.search-section {
-  display: flex;
-  align-items: center;
-  margin: 0 20px 20px 20px;
-}
-
-.search-section input {
-  flex: 1;
-  padding: 10px;
-  font-size: 16px;
-}
-
-.search-section button {
-  padding: 10px 15px;
-  font-size: 20px;
-  background-color: #471C1A;
-  color: white;
-  border: none;
-  cursor: pointer;
-}
-
-.cards {
-  display: flex;
-  gap: 20px;
-  margin: 0 20px;
-}
-
-.card {
-  flex: 1;
-  background-color: rgba(255, 255, 255, 0.1);
-  height: 200px;
-  border-radius: 8px;
-}
-
+  .banner-loading {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: rgba(0, 0, 0, 0.3);
+    color: white;
+    font-size: 18px;
+  }
+  
+  .search-section {
+    display: flex;
+    align-items: center;
+    margin: 0 20px 20px 20px;
+  }
+  
+  .search-section input {
+    flex: 1;
+    padding: 10px;
+    font-size: 16px;
+  }
+  
+  .search-section button {
+    padding: 10px 15px;
+    font-size: 20px;
+    background-color: #471C1A;
+    color: white;
+    border: none;
+    cursor: pointer;
+  }
+  
+  .cards {
+    display: flex;
+    gap: 20px;
+    margin: 0 20px;
+  }
+  
+  .card {
+    flex: 1;
+    background-color: rgba(255, 255, 255, 0.1);
+    height: 200px;
+    border-radius: 8px;
+  }
 </style>
 </html>
