@@ -2,13 +2,14 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Game Page</title>
+    <title>Payment</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>TVaporr</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
+    <div class="background-img"></div>
     <div class="layout">
         <main class="main-content">
             <header class="navbar">
@@ -22,19 +23,135 @@
                 <span>Account</span>
               </div>
             </header>
-      
-
             </section>
+            <div class="payment">
+  <h1>Payment</h1>
+  <div class="payment-section">
+    <!-- ซ้าย: QR Code หรือ Placeholder -->
+    <div class="payment-left">
+      <div class="qr-placeholder">
+        QR Code Placeholder
+      </div>
+    </div>
+
+    <!-- ขวา: แบบฟอร์มกรอกข้อมูล -->
+    <div class="payment-right">
+      <form>
+        <label for="accountName">ชื่อบัญชีธนาคาร:</label>
+        <input type="text" id="accountName" name="accountName" required>
+
+        <label for="bankType">เลือกธนาคาร:</label>
+        <select id="bankType" name="bankType" required>
+          <option value="">-- เลือกธนาคาร --</option>
+          <option value="kbank">กสิกรไทย</option>
+          <option value="scb">ไทยพาณิชย์</option>
+          <option value="bbl">กรุงเทพ</option>
+          <!-- เพิ่มได้ตามต้องการ -->
+        </select>
+
+        <label for="slipUpload">แนบสลิปการโอน:</label>
+        <input type="file" id="slipUpload" name="slipUpload" accept="image/*" required>
+
+        <button type="submit">ยืนยันการชำระเงิน</button>
+      </form>
+    </div>
+  </div>
+</div>
+
           </main>
     </div>
     <style>
-        body, html {
-            margin: 0;
-            padding: 0;
-            font-family: 'Poppins', sans-serif;
-            height: 100%;
-            background: linear-gradient(270deg, #471C1A 32%, #9F3E3A 70%, #C9A24E 99%);
-        }
+        * {
+      box-sizing: border-box;
+    }
+
+    body, html {
+      margin: 0;
+      padding: 0;
+      width: 100%;
+      height: 100%;
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(0deg, #E6C000 0%, #5D110D 66%, #480E0C 78%, #340C0A 100%);
+      overflow: hidden;
+      position: relative;
+    }
+
+    .background-img {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      background: url('../PICTURE/LOGIN_BG1.png') no-repeat center;
+      background-size: 100% 100%;
+      opacity: 0.9;
+      z-index: 0;
+    }
+
+    .payment{
+        color: white;
+    }
+
+    .payment h1{
+        text-align: center;
+    }
+
+    .payment-section {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 30px;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+.payment-left, .payment-right {
+  flex: 1;
+  min-width: 300px;
+}
+
+.qr-placeholder {
+  width: 100%;
+  height: 300px;
+  background-color: #8A3A2F;
+  color: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border: 2px dashed white;
+  font-size: 20px;
+}
+
+.payment-right form {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.payment-right label {
+  font-weight: bold;
+  color: white;
+}
+
+.payment-right input,
+.payment-right select {
+  padding: 10px;
+  border-radius: 5px;
+  border: none;
+  font-size: 16px;
+}
+
+.payment-right button {
+  padding: 12px;
+  background-color: #E6C000;
+  border: none;
+  border-radius: 8px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.payment-right button:hover {
+  background-color: #d4b000;
+}
+
         .account {
             display: flex;
             align-items: center;
@@ -45,7 +162,16 @@
             flex: 1;
             display: flex;
             flex-direction: column;
+            z-index: 2;
+        }
+
+        .main-content .payment{
             background-color: #471C1A;
+            width: 66%;
+            margin-left: 16.5%;
+            margin-right: 16.5%;
+            height: 100%;
+            padding: 20px;
         }
         .layout {
             display: flex;
