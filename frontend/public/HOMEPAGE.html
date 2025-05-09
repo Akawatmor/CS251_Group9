@@ -28,8 +28,14 @@
               <a href="/library">Library</a>
             </div>
             <div class="account">
-              <img src="https://placehold.co/30x30" alt="Profile Icon">
-              <span>Account</span>
+              <div class="account-container" id="account-container">
+                <img src="https://placehold.co/30x30" alt="Profile Icon">
+                <span>Account</span>
+                <div class="account-dropdown" id="account-dropdown">
+                  <a href="/csetting" class="dropdown-item">Settings</a>
+                  <a href="/logout" class="dropdown-item">Logout</a>
+                </div>
+              </div>
             </div>
           </header>          
           <section class="hero" id="banner-carousel">
@@ -63,6 +69,9 @@
     
     // Initialize banner carousel
     initBannerCarousel();
+    
+    // Initialize account dropdown
+    initAccountDropdown();
 
     const searchInput = document.querySelector('.search-section input');
     const searchButton = document.querySelector('.search-section button');
@@ -88,11 +97,28 @@
       }
     });
   });
+  
+  // Account dropdown functionality
+  function initAccountDropdown() {
+    const accountContainer = document.getElementById('account-container');
+    const accountDropdown = document.getElementById('account-dropdown');
+    
+    // Toggle dropdown when clicking on account
+    accountContainer.addEventListener('click', function(e) {
+      e.stopPropagation(); // Prevent event from bubbling to document
+      accountDropdown.classList.toggle('show');
+    });
+    
+    // Close dropdown when clicking elsewhere on the page
+    document.addEventListener('click', function() {
+      accountDropdown.classList.remove('show');
+    });
+  }
 
   // Banner carousel functionality
   function initBannerCarousel() {
     const MAX_BANNERS = 6; // Maximum number of banners to check
-    const DISPLAY_TIME = 2000; // 2 seconds per banner
+    const DISPLAY_TIME = 5000; // 5 seconds per banner
     let availableBanners = []; // Will store indices of banners that exist
     let currentBannerIndex = 0;
     let bannerInterval;
@@ -149,41 +175,85 @@
           bannerIndicators.appendChild(dot);
         });
         
-        // Show the first banner
-        showBanner(0);
-        startAutoScroll();
+        // Show the first banner without animation
+        const bannerIndex = availableBanners[0];
+        bannerImage.src = `http://localhost:8080/api/games/banner/${bannerIndex}`;
+        
+        // Update indicator for the first banner
+        const dots = bannerIndicators.querySelectorAll('.banner-dot');
+        if (dots.length > 0) {
+          dots[0].classList.add('active');
+        }
+        
+        // Start the auto scroll after the first banner has been displayed for DISPLAY_TIME
+        setTimeout(() => {
+          startAutoScroll();
+        }, DISPLAY_TIME);
       } else {
         loadingElement.textContent = 'No banners available';
       }
       
       loadingElement.style.display = 'none'; // Hide loading indicator
     }
-      function showBanner(index, direction = 'next') {
+    
+    function showBanner(index, direction = 'next') {
       if (availableBanners.length === 0) return;
       
+      // Store old index before updating
+      const oldIndex = currentBannerIndex;
+      
+      // Update index
       currentBannerIndex = index;
       
       // Handle wrapping around the ends
       if (currentBannerIndex < 0) currentBannerIndex = availableBanners.length - 1;
       if (currentBannerIndex >= availableBanners.length) currentBannerIndex = 0;
       
+      // If user clicked on the same banner, do nothing
+      if (oldIndex === currentBannerIndex) return;
+      
       const bannerIndex = availableBanners[currentBannerIndex];
       
-      // Slide animation
-      // First move the image off-screen in the direction it's coming from
-      const slideDirection = direction === 'next' ? 100 : -100;
-      bannerImage.style.transform = `translateX(${slideDirection}%)`;
+      // Create a new image element for the incoming banner
+      const newImage = document.createElement('img');
+      newImage.className = 'banner-image';
+      newImage.alt = "Game Banner";
+      newImage.src = `http://localhost:8080/api/games/banner/${bannerIndex}`;
       
-      // Update the image source - keeping the existing URL format
-      bannerImage.src = `http://localhost:8080/api/games/banner/${bannerIndex}`;
+      // Position the new image off-screen based on direction
+      const slideDirection = direction === 'next' ? '100%' : '-100%';
+      newImage.style.position = 'absolute';
+      newImage.style.transform = `translateX(${slideDirection})`;
       
-      // Once the image is loaded, slide it into view
-      bannerImage.onload = function() {
-        // Force browser to acknowledge the initial transform
+      // Add the new image to the container
+      const container = document.querySelector('.banner-container');
+      container.appendChild(newImage);
+      
+      // Wait for new image to load
+      newImage.onload = function() {
+        // Once loaded, start animation
         setTimeout(() => {
-          // Move image back to center with transition
-          bannerImage.style.transform = 'translateX(0)';
-        }, 100);
+          // Move the current image out in the opposite direction
+          bannerImage.style.transition = 'transform 500ms ease';
+          bannerImage.style.transform = `translateX(${direction === 'next' ? '-100%' : '100%'})`;
+          
+          // Move the new image to center
+          newImage.style.transition = 'transform 500ms ease';
+          newImage.style.transform = 'translateX(0)';
+          
+          // After animation completes, replace old banner with new one
+          setTimeout(() => {
+            // Replace the main banner image source
+            bannerImage.src = newImage.src;
+            
+            // Reset the styles on the main banner image without transition
+            bannerImage.style.transition = 'none';
+            bannerImage.style.transform = 'translateX(0)';
+            
+            // Remove the temporary image
+            container.removeChild(newImage);
+          }, 500);
+        }, 50);
       };
       
       // Update indicator dots
@@ -192,7 +262,8 @@
         dot.classList.toggle('active', i === currentBannerIndex);
       });
     }
-      function nextBanner() {
+    
+    function nextBanner() {
       showBanner(currentBannerIndex + 1, 'next');
     }
     
@@ -661,6 +732,51 @@ body, html {
 
 .no-games {
   background-color: rgba(255, 255, 255, 0.1);
+}
+
+.account-container {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+  position: relative;
+  padding: 5px;
+}
+
+.account-container:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+  border-radius: 4px;
+}
+
+.account-dropdown {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  background-color: #230706;
+  border: 1px solid #471C1A;
+  border-radius: 4px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+  width: 150px;
+  display: none;
+  flex-direction: column;
+  overflow: hidden;
+  z-index: 100;
+}
+
+.account-dropdown.show {
+  display: flex;
+}
+
+.dropdown-item {
+  padding: 12px 15px;
+  color: white;
+  text-decoration: none;
+  transition: background-color 0.2s ease;
+  font-size: 16px;
+}
+
+.dropdown-item:hover {
+  background-color: #471C1A;
 }
 
 </style>
