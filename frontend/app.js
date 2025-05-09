@@ -22,8 +22,8 @@ const socketIo = require("socket.io");
 const http = require("http");
 
 ///// Import Dependencies /////
-const webroutes = require("./web_routing/main.js"); //Doing routing work
-const webctl = require("./web_controller/main.js"); //Doing web controller work
+const webroutes = require(`./web_routing/_main.js`); //Doing routing work
+const webctl = require(`./web_controller/_main.js`); //Doing web controller work
 //const springmiddle = require("./springmiddleware"); //Doing communication with spring
 
 //// Runner ////

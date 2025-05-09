@@ -66,10 +66,8 @@ router.get("/register", (req, res) => {
 
 router.all("/", (requ, resp) =>{
     if(requ.method != "POST"){
-        resp.status(405).send(`
-        <h1>Error! Method Not Allowed</h1>
-        <a href="/">Go Back to Login Page</a>
-        `);
+        resp.status(405); // Set HTTP status 405 first
+        resp.sendFile(path.join(__dirname, "..", "public", "ERROR", "405Error_Re5_MNA_EN.html"));
     }
 
 });
