@@ -22,7 +22,7 @@
         <main class="main-content">
           <header class="navbar">
             <div class="nav-links">
-              <a href="#">Homepage</a>
+              <a href="">Homepage</a>
               <span>|</span>
               <a href="/library">Library</a>
             </div>
@@ -412,31 +412,48 @@
   }
   // Function to search games
   function searchGames(query) {
+    if (!query || query.trim() === '') {
+      fetchGames();
+      return;
+    }
+    
+    // Show loading indicator
+    const cardsContainer = document.getElementById('game-cards');
+    cardsContainer.innerHTML = '<p class="searching">Searching for games...</p>';
+    
     // First, try to use server-side search if the API supports it
-    fetch(`http://localhost:8080/api/games/search/all?q=${encodeURIComponent(query)}`)
+    fetch(`http://localhost:8080/api/games/search/name=${encodeURIComponent(query)}`)
       .then(response => {
         if (!response.ok) {
-          // If server doesn't support search parameter, fallback to client-side filtering
+          // If server doesn't support search by name parameter, fallback to client-side filtering
           return fetch('http://localhost:8080/api/games/search/all')
-            .then(resp => resp.json())
+            .then(resp => {
+              if (!resp.ok) throw new Error('Failed to fetch games');
+              return resp.json();
+            })
             .then(allGames => {
-              // Filter games by name on the client side
+              console.log('Client-side filtering games by name:', query);
+              // Filter games by name on the client side (case-insensitive)
               const filteredGames = allGames.filter(game => 
                 game.gName && game.gName.toLowerCase().includes(query.toLowerCase())
               );
               displayGames(filteredGames);
+              return null; // Return null to indicate we've handled the results
             });
         }
         return response.json();
       })
       .then(games => {
         // Only execute this if we got a successful server-side search
-        if (games) displayGames(games);
+        if (games) {
+          console.log('Server-side search returned games:', games.length);
+          displayGames(games);
+        }
       })
       .catch(error => {
         console.error('Error searching games:', error);
-        // Fallback to getting all games
-        fetchGames();
+        displayError('Failed to search games. Please try again.');
+        // Don't fallback to all games automatically, let the user know there was an error
       });
   }
   // Function to display games in the cards section

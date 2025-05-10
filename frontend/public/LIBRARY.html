@@ -5,7 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>library</title>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css">
 </head>
 <body>
 
@@ -25,34 +24,605 @@
             <div class="nav-links">
               <a href="/home">Homepage</a>
               <span>|</span>
-              <a href="#">Library</a>
+              <a href="">Library</a>
             </div>
             <div class="account">
-              <img src="https://placehold.co/30x30" alt="Profile Icon">
-              <span>Account</span>
+              <div class="account-container" id="account-container">
+                <img id="user-profile-photo" src="https://placehold.co/30x30" alt="Profile Icon" style="width: 32px; height: 32px; object-fit: fill;">
+                <span id="user-display-name">Loading...</span>
+                <div class="account-dropdown" id="account-dropdown">
+                  <a href="/csetting" class="dropdown-item">Settings</a>
+                  <a href="/logout" class="dropdown-item">Logout</a>
+                </div>
+              </div>
             </div>
           </header>
     
-          <section class="hero"></section>
-            <header class="navbar">
+          <section class="hero" id="banner-carousel">
+            <div class="banner-container">
+              <img id="banner-image" class="banner-image" src="" alt="Game Banner">
+              <div class="banner-controls">
+                <button id="prev-banner" class="banner-control">&lt;</button>
+                <div id="banner-indicators" class="banner-indicators"></div>
+                <button id="next-banner" class="banner-control">&gt;</button>
+              </div>
+              <div id="banner-loading" class="banner-loading">Loading banners...</div>
+            </div>
+          </section>
+            <header class="navbar library-nav">
               <div class="nav-links">
                 <span>|</span>
-                <a href="#">1</a>
+                <a href="#" class="nav-link active" data-section="all">All</a>
                 <span>|</span>
-                <a href="#">2</a>
+                <a href="#" class="nav-link" data-section="wishlist">Wishlist</a>
                 <span>|</span>
-                <a href="#">3</a>
+                <a href="#" class="nav-link" data-section="owned">Owned</a>
                 <span>|</span>
-                <a href="#">4</a>
+                <a href="#" class="nav-link" data-section="best-rated">Best Rated</a>
                 <span>|</span>
               </div>
             </header>
             
-    
-            <section class="hero"></section>
+            <div id="library-sections">
+              <!-- All Games Section -->
+              <div class="library-section active" id="all-section">
+                <div class="search-section">
+                  <input type="text" placeholder="Search your library...">
+                  <button>🔍</button>
+                </div>
+                <section class="cards-container">
+                  <div class="cards" id="all-games-grid">
+                    <!-- Games will be loaded here dynamically -->
+                  </div>
+                </section>
+              </div>
+              
+              <!-- Wishlist Section -->
+              <div class="library-section" id="wishlist-section">
+                <h3 class="section-title">Your Wishlist</h3>
+                <div class="cards" id="wishlist-games-grid">
+                  <!-- Wishlist games will be loaded here -->
+                </div>
+              </div>
+              
+              <!-- Owned Games Section -->
+              <div class="library-section" id="owned-section">
+                <h3 class="section-title">Your Games</h3>
+                <div class="cards" id="owned-games-grid">
+                  <!-- Owned games will be loaded here -->
+                </div>
+              </div>
+              
+              <!-- Best Rated Section -->
+              <div class="library-section" id="best-rated-section">
+                <h3 class="section-title">Best Rated Games</h3>
+                <div class="cards" id="best-rated-games-grid">
+                  <!-- Best rated games will be loaded here -->
+                </div>
+              </div>
+            </div>
         </main>
       </div> 
     
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    // Initialize account dropdown
+    initAccountDropdown();
+    
+    // Initialize banner carousel
+    initBannerCarousel();
+    
+    // Initialize library navigation
+    initLibraryNav();
+    
+    // Load games for the active section (default: All)
+    loadLibraryGames('all');
+    
+    // Setup search functionality
+    const searchInput = document.querySelector('.search-section input');
+    const searchButton = document.querySelector('.search-section button');
+    
+    // Function to perform search
+    function performSearch() {
+      const searchQuery = searchInput.value.trim();
+      if (searchQuery) {
+        searchLibraryGames(searchQuery);
+      } else {
+        loadLibraryGames('all');
+      }
+    }
+
+    // Add event listener for search button
+    searchButton.addEventListener('click', performSearch);
+    
+    // Add event listener for Enter key in search input
+    searchInput.addEventListener('keypress', function(event) {
+      if (event.key === 'Enter') {
+        event.preventDefault(); // Prevent form submission
+        performSearch();
+      }
+    });
+  });
+
+  // Banner carousel functionality
+  function initBannerCarousel() {
+    const MAX_BANNERS = 6; // Maximum number of banners to check
+    const DISPLAY_TIME = 5000; // 5 seconds per banner
+    let availableBanners = []; // Will store indices of banners that exist
+    let currentBannerIndex = 0;
+    let bannerInterval;
+    let isAutoScrolling = true;
+    
+    const bannerImage = document.getElementById('banner-image');
+    const prevButton = document.getElementById('prev-banner');
+    const nextButton = document.getElementById('next-banner');
+    const bannerIndicators = document.getElementById('banner-indicators');
+    const loadingElement = document.getElementById('banner-loading');
+
+    // Check which banner indices actually have images
+    async function checkAvailableBanners() {
+      loadingElement.style.display = 'flex'; // Show loading indicator
+      
+      // Array to store all our fetch promises
+      const fetchPromises = [];
+      
+      for (let i = 1; i <= MAX_BANNERS; i++) {
+        // Create a promise for each banner check
+        const promise = fetch(`http://localhost:8080/api/games/banner/${i}`)
+          .then(response => {
+            if (response.headers.get('content-type')?.includes('application/json')) {
+              return response.json().then(data => {
+                return { index: i, exists: data.success !== false };
+              });
+            }
+            return { index: i, exists: response.ok };
+          })
+          .catch(() => {
+            return { index: i, exists: false };
+          });
+          
+        fetchPromises.push(promise);
+      }
+      
+      // Wait for all promises to resolve
+      const results = await Promise.all(fetchPromises);
+      
+      // Filter to only banners that exist
+      availableBanners = results.filter(result => result.exists).map(result => result.index);
+      
+      if (availableBanners.length > 0) {
+        // Create indicator dots for each banner
+        bannerIndicators.innerHTML = '';
+        availableBanners.forEach((_, index) => {
+          const dot = document.createElement('div');
+          dot.className = 'banner-dot';
+          dot.dataset.index = index;
+          dot.addEventListener('click', () => {
+            showBanner(index);
+            resetTimer();
+          });
+          bannerIndicators.appendChild(dot);
+        });
+        
+        // Show the first banner without animation
+        const bannerIndex = availableBanners[0];
+        bannerImage.src = `http://localhost:8080/api/games/banner/${bannerIndex}`;
+        
+        // Update indicator for the first banner
+        const dots = bannerIndicators.querySelectorAll('.banner-dot');
+        if (dots.length > 0) {
+          dots[0].classList.add('active');
+        }
+        
+        // Start the auto scroll after the first banner has been displayed for DISPLAY_TIME
+        setTimeout(() => {
+          startAutoScroll();
+        }, DISPLAY_TIME);
+      } else {
+        loadingElement.textContent = 'No banners available';
+      }
+      
+      loadingElement.style.display = 'none'; // Hide loading indicator
+    }
+    
+    function showBanner(index, direction = 'next') {
+      if (availableBanners.length === 0) return;
+      
+      // Store old index before updating
+      const oldIndex = currentBannerIndex;
+      
+      // Update index
+      currentBannerIndex = index;
+      
+      // Handle wrapping around the ends
+      if (currentBannerIndex < 0) currentBannerIndex = availableBanners.length - 1;
+      if (currentBannerIndex >= availableBanners.length) currentBannerIndex = 0;
+      
+      // If user clicked on the same banner, do nothing
+      if (oldIndex === currentBannerIndex) return;
+      
+      const bannerIndex = availableBanners[currentBannerIndex];
+      
+      // Create a new image element for the incoming banner
+      const newImage = document.createElement('img');
+      newImage.className = 'banner-image';
+      newImage.alt = "Game Banner";
+      newImage.src = `http://localhost:8080/api/games/banner/${bannerIndex}`;
+      
+      // Position the new image off-screen based on direction
+      const slideDirection = direction === 'next' ? '100%' : '-100%';
+      newImage.style.position = 'absolute';
+      newImage.style.transform = `translateX(${slideDirection})`;
+      
+      // Add the new image to the container
+      const container = document.querySelector('.banner-container');
+      container.appendChild(newImage);
+      
+      // Wait for new image to load
+      newImage.onload = function() {
+        // Once loaded, start animation
+        setTimeout(() => {
+          // Move the current image out in the opposite direction
+          bannerImage.style.transition = 'transform 500ms ease';
+          bannerImage.style.transform = `translateX(${direction === 'next' ? '-100%' : '100%'})`;
+          
+          // Move the new image to center
+          newImage.style.transition = 'transform 500ms ease';
+          newImage.style.transform = 'translateX(0)';
+          
+          // After animation completes, replace old banner with new one
+          setTimeout(() => {
+            // Replace the main banner image source
+            bannerImage.src = newImage.src;
+            
+            // Reset the styles on the main banner image without transition
+            bannerImage.style.transition = 'none';
+            bannerImage.style.transform = 'translateX(0)';
+            
+            // Remove the temporary image
+            container.removeChild(newImage);
+          }, 500);
+        }, 50);
+      };
+      
+      // Update indicator dots
+      const dots = bannerIndicators.querySelectorAll('.banner-dot');
+      dots.forEach((dot, i) => {
+        dot.classList.toggle('active', i === currentBannerIndex);
+      });
+    }
+    
+    function nextBanner() {
+      showBanner(currentBannerIndex + 1, 'next');
+    }
+    
+    function prevBanner() {
+      showBanner(currentBannerIndex - 1, 'prev');
+    }
+    
+    function startAutoScroll() {
+      if (bannerInterval) clearInterval(bannerInterval);
+      bannerInterval = setInterval(() => {
+        if (isAutoScrolling) nextBanner();
+      }, DISPLAY_TIME);
+    }
+    
+    function resetTimer() {
+      if (bannerInterval) clearInterval(bannerInterval);
+      startAutoScroll();
+    }
+    
+    // Event listeners for controls
+    prevButton.addEventListener('click', () => {
+      prevBanner();
+      resetTimer();
+    });
+    
+    nextButton.addEventListener('click', () => {
+      nextBanner();
+      resetTimer();
+    });
+    
+    // Pause auto-scroll when hovering over the banner
+    bannerImage.addEventListener('mouseenter', () => {
+      isAutoScrolling = false;
+    });
+    
+    bannerImage.addEventListener('mouseleave', () => {
+      isAutoScrolling = true;
+      resetTimer();
+    });
+
+    // Handle image load error
+    bannerImage.addEventListener('error', () => {
+      // If an image fails to load, try the next one
+      nextBanner();
+      resetTimer();
+    });
+    
+    // Initialize by checking available banners
+    checkAvailableBanners();
+  }
+
+  // Function to initialize library navigation
+  function initLibraryNav() {
+    const navLinks = document.querySelectorAll('.library-nav .nav-link');
+    
+    navLinks.forEach(link => {
+      link.addEventListener('click', function(e) {
+        e.preventDefault();
+        
+        // Remove active class from all links and sections
+        navLinks.forEach(l => l.classList.remove('active'));
+        document.querySelectorAll('.library-section').forEach(section => section.classList.remove('active'));
+        
+        // Add active class to clicked link
+        this.classList.add('active');
+        
+        // Get the section to show
+        const sectionId = this.getAttribute('data-section');
+        document.getElementById(`${sectionId}-section`).classList.add('active');
+        
+        // Load games for this section
+        loadLibraryGames(sectionId);
+      });
+    });
+  }
+  
+  // Function to load games for different library sections
+  function loadLibraryGames(sectionId) {
+    const gridId = `${sectionId}-games-grid`;
+    const gamesGrid = document.getElementById(gridId);
+    
+    // Show loading state
+    gamesGrid.innerHTML = '<div class="loading-indicator">Loading games...</div>';
+    
+    // Define the API endpoint based on section
+    let apiEndpoint = '';
+    
+    // Function to get user ID from storage - Defined locally to ensure availability
+    function getUserIdFromStorage() {
+      // Try to get from sessionStorage first
+      const userId = sessionStorage.getItem('userId') || localStorage.getItem('userId');
+      
+      // If not found in storage, check URL parameters (for testing)
+      if (!userId) {
+        const urlParams = new URLSearchParams(window.location.search);
+        return urlParams.get('userId') || '1'; // Default to ID 1 for testing if nothing found
+      }
+      
+      return userId;
+    }
+    
+    const userId = getUserIdFromStorage();
+    
+    switch(sectionId) {
+      case 'all':
+        apiEndpoint = 'http://localhost:8080/api/games/search/all';
+        break;
+      case 'wishlist':
+        apiEndpoint = `http://localhost:8080/api/customers/id=${userId}/wishlist`;
+        break;
+      case 'owned':
+        apiEndpoint = `http://localhost:8080/api/customers/id=${userId}/games`;
+        break;
+      case 'best-rated':
+        apiEndpoint = 'http://localhost:8080/api/games/search/top-rated';
+        break;
+      default:
+        apiEndpoint = 'http://localhost:8080/api/games/search/all';
+    }
+    
+    // Fetch games from the API
+    fetch(apiEndpoint)
+      .then(response => {
+        if (!response.ok) {
+          throw new Error('Network response was not ok');
+        }
+        return response.json();
+      })
+      .then(games => {
+        console.log(`Loaded ${games.length} games for ${sectionId} section`);
+        displayGames(games, gridId);
+      })
+      .catch(error => {
+        console.error(`Error fetching ${sectionId} games:`, error);
+        gamesGrid.innerHTML = `<p class="error-message">Failed to load games. Please try again later.</p>`;
+      });
+  }
+  
+  // Function to search within library games
+  function searchLibraryGames(query) {
+    if (!query || query.trim() === '') {
+      loadLibraryGames('all');
+      return;
+    }
+    
+    // Show loading indicator
+    const gamesGrid = document.getElementById('all-games-grid');
+    gamesGrid.innerHTML = '<div class="loading-indicator">Searching for games...</div>';
+    
+    // First, try to use server-side search if the API supports it
+    fetch(`http://localhost:8080/api/games/search/name=${encodeURIComponent(query)}`)
+      .then(response => {
+        if (!response.ok) {
+          // If server doesn't support search by name parameter, fallback to client-side filtering
+          return fetch('http://localhost:8080/api/games/search/all')
+            .then(resp => {
+              if (!resp.ok) throw new Error('Failed to fetch games');
+              return resp.json();
+            })
+            .then(allGames => {
+              // Filter games by name on the client side (case-insensitive)
+              const filteredGames = allGames.filter(game => 
+                game.gName && game.gName.toLowerCase().includes(query.toLowerCase())
+              );
+              displayGames(filteredGames, 'all-games-grid');
+              return null; // Return null to indicate we've handled the results
+            });
+        }
+        return response.json();
+      })
+      .then(games => {
+        // Only execute this if we got a successful server-side search
+        if (games) {
+          displayGames(games, 'all-games-grid');
+        }
+      })
+      .catch(error => {
+        console.error('Error searching games:', error);
+        gamesGrid.innerHTML = '<p class="error-message">Failed to search games. Please try again.</p>';
+      });
+  }
+
+  // Function to display games in the specified grid
+  function displayGames(games, gridId) {
+    const gamesGrid = document.getElementById(gridId);
+    gamesGrid.innerHTML = ''; // Clear existing cards
+    
+    if (!games || games.length === 0) {
+      gamesGrid.innerHTML = '<p class="no-games">No games found</p>';
+      return;
+    }
+
+    // Create cards directly in the grid without nesting divs
+    games.forEach(game => {
+      const card = document.createElement('div');
+      card.className = 'card game-card';
+      
+      // Create card content
+      let imageHtml = '';
+      // Check for picture1 in the response
+      if (game.picture1) {
+        // Construct the image URL based on gameID
+        const imageUrl = `http://localhost:8080/api/games/id=${game.gameID}/picture=1`;
+        imageHtml = `<img src="${imageUrl}" alt="${game.gName}" class="game-image">`;
+      } else {
+        // Apply gray background for games without images
+        card.classList.add('no-image');
+        // Add a text element showing the game has no image
+        imageHtml = `<div class="no-image-text">No Picture</div>`;
+      }
+      
+      card.innerHTML = `
+        ${imageHtml}
+        <div class="game-info">
+          <h3 class="game-title">${game.gName || 'Unknown Game'}</h3>
+          <p class="game-price">${formatPrice(game.gPrice)}</p>
+        </div>
+      `;
+      
+      // Add click event to navigate to game details
+      card.addEventListener('click', function() {
+        window.location.href = `/buypage?id=${game.gameID}`;
+      });
+      
+      gamesGrid.appendChild(card);
+    });
+  }
+
+  // Helper function to format price
+  function formatPrice(price) {
+    if (price === undefined || price === null) return 'Free';
+    return `$${parseFloat(price).toFixed(2)}`;
+  }
+
+  // Account dropdown functionality
+  function initAccountDropdown() {
+    const accountContainer = document.getElementById('account-container');
+    const accountDropdown = document.getElementById('account-dropdown');
+    const userDisplayName = document.getElementById('user-display-name');
+    const userProfilePhoto = document.getElementById('user-profile-photo');
+    
+    // Toggle dropdown when clicking on account
+    accountContainer.addEventListener('click', function(e) {
+      e.stopPropagation(); // Prevent event from bubbling to document
+      accountDropdown.classList.toggle('show');
+    });
+    
+    // Close dropdown when clicking elsewhere on the page
+    document.addEventListener('click', function() {
+      accountDropdown.classList.remove('show');
+    });
+    
+    // Fetch user information and update display
+    fetchUserInfo();
+    
+    // Function to fetch user information
+    function fetchUserInfo() {
+      // Get user ID from session storage or cookies
+      const userId = getUserIdFromStorage();
+      
+      if (!userId) {
+        console.log('User not logged in');
+        return;
+      }
+      
+      // Fetch user profile data
+      fetch(`http://localhost:8080/api/customers/id=${userId}`)
+        .then(response => {
+          if (!response.ok) {
+            throw new Error('Failed to fetch user data');
+          }
+          return response.json();
+        })
+        .then(userData => {
+          userData = userData.user
+          console.log('User data:', userData);
+          // Update display name
+          if (userData.dName != null) {
+            userDisplayName.textContent = userData.dName;
+          }
+          else if (userData.uName != null) {
+            userDisplayName.textContent = userData.uName;
+          }
+          else{
+            userDisplayName.textContent = "Unknown User";
+          }
+          
+          // Load profile photo
+          loadProfilePhoto(userId);
+        })
+        .catch(error => {
+          console.error('Error fetching user data:', error);
+        });
+    }
+    
+    // Function to load user profile photo
+    function loadProfilePhoto(userId) {
+      // Set photo URL
+      const photoUrl = `http://localhost:8080/api/customers/id=${userId}/photo`;
+      
+      // Create a new image to test if the URL is valid
+      const testImg = new Image();
+      testImg.onload = function() {
+        // If image loads successfully, update the profile photo
+        userProfilePhoto.src = photoUrl;
+      };
+      testImg.onerror = function() {
+        // If image fails to load, keep the default image
+        console.log('Failed to load profile photo, using default');
+      };
+      
+      // Start loading the image
+      testImg.src = photoUrl;
+    }
+    
+    // Function to get user ID from storage
+    function getUserIdFromStorage() {
+      // Try to get from sessionStorage first
+      const userId = sessionStorage.getItem('userId') || localStorage.getItem('userId');
+      
+      // If not found in storage, check URL parameters (for testing)
+      if (!userId) {
+        const urlParams = new URLSearchParams(window.location.search);
+        return urlParams.get('userId') || '1'; // Default to ID 1 for testing if nothing found
+      }
+      
+      return userId;
+    }
+  }
+</script>
 </body>
 <style>
 
@@ -104,6 +674,9 @@
     display: flex;
     flex-direction: column;
     background: url('./PICTURE/LOGIN_BG1.png') no-repeat center/cover;
+    position: relative;
+    overflow-y: auto; /* Allow main content to scroll */
+    height: 100%;
   }
   
   .navbar {
@@ -135,10 +708,97 @@
   }
   
   .hero {
-    background-color: rgba(255, 255, 255, 0.1);
     margin: 20px;
     height: 250px;
+    min-height: 250px; /* Prevent shrinking */
     border-radius: 8px;
+    overflow: hidden;
+    position: relative;
+    background-color: rgba(0, 0, 0, 0.2);
+    z-index: 1; /* Ensure proper stacking */
+  }
+
+  .banner-container {
+    width: 100%;
+    height: 100%;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden; /* Added to contain the sliding animation */
+  }
+
+  .banner-image {
+    width: 100%;
+    height: 100%;
+    object-fit: fill; /* Changed from cover to fill to stretch the image */
+    transition: transform 0.5s ease; /* Changed to transform for slide animation */
+  }
+
+  .banner-controls {
+    position: absolute;
+    bottom: 15px;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    z-index: 10;
+  }
+
+  .banner-control {
+    background-color: rgba(0, 0, 0, 0.5);
+    color: white;
+    border: none;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    font-size: 16px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.3s ease;
+  }
+
+  .banner-control:hover {
+    background-color: rgba(159, 62, 58, 0.8);
+  }
+
+  .banner-indicators {
+    display: flex;
+    gap: 8px;
+  }
+
+  .banner-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background-color: rgba(255, 255, 255, 0.5);
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+  }
+
+  .banner-dot:hover {
+    transform: scale(1.2);
+  }
+
+  .banner-dot.active {
+    background-color: #C9A24E;
+  }
+
+  .banner-loading {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: rgba(0, 0, 0, 0.3);
+    color: white;
+    font-size: 18px;
   }
   
   .search-section {
@@ -173,6 +833,269 @@
     background-color: rgba(255, 255, 255, 0.1);
     height: 200px;
     border-radius: 8px;
+  }
+  
+  .account-container {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+    position: relative;
+    padding: 5px;
+  }
+  
+  .account-container:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+    border-radius: 4px;
+  }
+  
+  .account-dropdown {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    background-color: #230706;
+    border: 1px solid #471C1A;
+    border-radius: 4px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    width: 150px;
+    display: none;
+    flex-direction: column;
+    overflow: hidden;
+    z-index: 100;
+  }
+  
+  .account-dropdown.show {
+    display: flex;
+  }
+  
+  .dropdown-item {
+    padding: 12px 15px;
+    color: white;
+    text-decoration: none;
+    transition: background-color 0.2s ease;
+    font-size: 16px;
+  }
+  
+  .dropdown-item:hover {
+    background-color: #471C1A;
+  }
+  
+  .library-nav {
+    position: sticky;
+    top: 0;
+    z-index: 2; /* Above content, below banner */
+    margin-bottom: 10px;
+    min-height: 60px; /* Prevent shrinking */
+  }
+  
+  .library-nav .nav-link {
+    position: relative;
+    padding: 0 10px;
+  }
+  
+  .library-nav .nav-link.active {
+    color: #C9A24E;
+    font-weight: bold;
+  }
+  
+  .library-nav .nav-link.active::after {
+    content: '';
+    position: absolute;
+    bottom: -10px;
+    left: 0;
+    width: 100%;
+    height: 3px;
+    background-color: #C9A24E;
+  }
+  
+  #library-sections {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    z-index: 1;
+    width: calc(100% - 40px); /* Account for margins */
+    max-width: 100%;
+    overflow-x: hidden; /* Prevent horizontal scrolling */
+    margin: 0 auto;
+  }
+  
+  .library-section {
+    display: none;
+    padding-bottom: 20px;
+    width: 100%;
+    max-width: 100%;
+    overflow-x: hidden; /* Prevent horizontal scrolling */
+  }
+  
+  .library-section.active {
+    display: block;
+    height: 100%;
+    overflow-y: auto; /* Enable vertical scrolling */
+  }
+  
+  .section-title {
+    color: white;
+    margin: 20px 0;
+    font-size: 24px;
+  }
+  
+  .cards-container {
+    flex: 1;
+    padding-bottom: 20px;
+    width: 100%;
+    overflow-y: auto; /* Allow vertical scrolling */
+    overflow-x: hidden; /* Prevent horizontal scrolling */
+  }
+  
+  .cards {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    margin-top: 20px;
+    width: 100%; /* Full width */
+    justify-content: flex-start; /* Align cards to start */
+    padding-right: 20px; /* Prevent cards from touching right edge */
+  }
+  
+  .search-section {
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+    margin-top: 20px;
+  }
+  
+  .search-section input {
+    flex: 1;
+    padding: 12px 15px;
+    font-size: 16px;
+    background-color: rgba(255, 255, 255, 0.15);
+    border: 1px solid #9F3E3A;
+    color: white;
+    border-radius: 4px 0 0 4px;
+    outline: none;
+  }
+  
+  .search-section input::placeholder {
+    color: rgba(255, 255, 255, 0.7);
+  }
+  
+  .search-section button {
+    padding: 12px 20px;
+    font-size: 18px;
+    background-color: #9F3E3A;
+    color: white;
+    border: 1px solid #9F3E3A;
+    border-radius: 0 4px 4px 0;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  .search-section button:hover {
+    background-color: #C9A24E;
+    border-color: #C9A24E;
+  }
+  
+  .card {
+    flex: 0 1 calc(25% - 20px); /* About 4 games per row */
+    min-width: 200px; /* Minimum width for small screens */
+    max-width: calc(25% - 20px); /* Ensure cards don't grow beyond their column */
+    background-color: rgba(255, 255, 255, 0.1);
+    height: 200px;
+    border-radius: 8px;
+    overflow: hidden;
+    position: relative;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    cursor: pointer;
+    margin-bottom: 20px;
+  }
+  
+  /* Media queries for responsive design */
+  @media (max-width: 1200px) {
+    .card {
+      flex: 0 1 calc(33.333% - 20px); /* About 3 games per row */
+    }
+  }
+  
+  @media (max-width: 900px) {
+    .card {
+      flex: 0 1 calc(50% - 20px); /* About 2 games per row */
+    }
+  }
+  
+  @media (max-width: 600px) {
+    .card {
+      flex: 0 1 100%; /* 1 game per row on very small screens */
+    }
+  }
+  
+  .game-card {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .game-card.no-image {
+    background-color: #555; /* Gray background for games without images */
+  }
+  
+  .no-image-text {
+    color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 120px;
+    font-size: 16px;
+    font-weight: bold;
+  }
+  
+  .game-image {
+    width: 100%;
+    height: 120px;
+    object-fit: cover;
+  }
+  
+  .game-info {
+    padding: 10px;
+    color: white;
+    background-color: rgba(0, 0, 0, 0.7);
+    height: 70px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+  
+  .game-title {
+    margin: 0;
+    font-size: 16px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  
+  .game-price {
+    margin: 5px 0 0;
+    font-size: 14px;
+    font-weight: bold;
+  }
+  
+  .error-message, .no-games, .loading-indicator {
+    color: white;
+    text-align: center;
+    width: 100%;
+    padding: 20px;
+    border-radius: 8px;
+  }
+  
+  .error-message {
+    background-color: rgba(255, 0, 0, 0.2);
+  }
+  
+  .no-games {
+    background-color: rgba(255, 255, 255, 0.1);
+  }
+  
+  .loading-indicator {
+    background-color: rgba(201, 162, 78, 0.3);
   }
   
   </style>

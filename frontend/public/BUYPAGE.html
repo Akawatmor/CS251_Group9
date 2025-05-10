@@ -232,6 +232,39 @@
 
     .game-header {
         display: flex;
+        flex-direction: column;
+        margin-bottom: 30px;
+        background-color: #3c1211;
+        border-radius: 10px;
+        padding: 0;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.4);
+        overflow: hidden;
+    }
+
+    .game-main-image {
+        width: 100%;
+        height: 250px;
+        margin-right: 0;
+        margin-bottom: 20px;
+    }
+
+    .game-icon {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        border-radius: 10px 10px 0 0;
+        box-shadow: 0 4px 8px rgba(0,0,0,0.5);
+    }
+
+    .game-info {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        padding: 0 20px 20px;
+    }
+
+    .game-header {
+        display: flex;
         margin-bottom: 30px;
         background-color: #3c1211;
         border-radius: 10px;
@@ -721,10 +754,10 @@ $(document).ready(function() {
         // Set game icon/cover (game banner is picture1)
         const $iconElement = $('#game-icon');
         $iconElement.attr('src', `/service/buypage/image/${game.gameID}/main`);
-        $iconElement.attr('alt', game.gName);
+        $iconElement.attr('alt', `${game.gName} Banner`);
         $iconElement.on('error', function() {
-            $(this).attr('src', 'https://placehold.co/200x200/3c1211/C9A24E?text=No+Image');
-            $(this).attr('alt', 'No image available');
+            $(this).attr('src', 'https://placehold.co/1200x250/3c1211/C9A24E?text=Game+Banner');
+            $(this).attr('alt', 'No banner available');
         });
         
         // Set up gallery images (picture2-picture5)

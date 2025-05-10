@@ -9,6 +9,7 @@ const registerRoutes = require('./REGISTER');
 const libraryRoutes = require('./LIBRARY');
 const csettingRoutes = require('./CSETTING');
 const buypageRoutes = require('./BUYPAGE');
+const logoutRoutes = require('./LOGOUT');
 
 // Mount routes
 router.use('/home', homeRoutes);
@@ -17,6 +18,7 @@ router.use('/register', registerRoutes);
 router.use('/library', libraryRoutes);
 router.use('/csetting', csettingRoutes);
 router.use('/buypage', buypageRoutes);
+router.use('/logout', logoutRoutes);
 
 // Handle root route
 router.get('/', (req, res) => {

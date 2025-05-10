@@ -96,6 +96,39 @@
       margin-top: 10px;
       width: 150px;
       align-self: center;
+      position: relative;
+      transition: background-color 0.3s;
+    }
+
+    .login-btn:disabled {
+      background-color: #a3413d;
+      cursor: not-allowed;
+    }
+
+    .login-btn .spinner {
+      display: none;
+      position: absolute;
+      width: 20px;
+      height: 20px;
+      top: 50%;
+      left: 15px;
+      margin-top: -10px;
+      border: 3px solid rgba(255, 255, 255, 0.3);
+      border-radius: 50%;
+      border-top-color: #fff;
+      animation: spin 1s ease-in-out infinite;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    .login-btn.loading .spinner {
+      display: inline-block;
+    }
+
+    .login-btn.loading {
+      padding-left: 40px;
     }
 
     .register-text {
@@ -165,7 +198,10 @@
         <label for="password">password</label>
         <input type="password" name="pass" id="password" placeholder="Enter password" />
         <div class="register-text">Don't have user? <a href="/register" class="register-link">Register Now</a></div>
-        <button type="button" id="loginBtn" class="login-btn">Login</button>
+        <button type="button" id="loginBtn" class="login-btn">
+          <div class="spinner"></div>
+          <span>Login</span>
+        </button>
       </div>
 
       <div class="qr-section" id="qrCodeContainer">
@@ -201,6 +237,7 @@ function generateQRCode() {
 }
 
 document.getElementById('loginBtn').addEventListener('click', async () => {
+  const loginBtn = document.getElementById('loginBtn');
   const user = document.getElementById('username').value;
   const pass = document.getElementById('password').value;
   
@@ -210,6 +247,10 @@ document.getElementById('loginBtn').addEventListener('click', async () => {
   }
 
   try {
+    // Disable button and show loading state
+    loginBtn.disabled = true;
+    loginBtn.classList.add('loading');
+    
     const res = await fetch('/service/login/authen', {
       method: 'POST',
       headers: {
@@ -234,10 +275,16 @@ document.getElementById('loginBtn').addEventListener('click', async () => {
       window.location.href = data.redirectUrl || "/home";
     } else {
       showError(data.message || 'Login failed. Please try again.');
+      // Re-enable button and hide loading state
+      loginBtn.disabled = false;
+      loginBtn.classList.remove('loading');
     }
   } catch (error) {
     console.error('Login error:', error);
     showError('An error occurred during login. Please try again later.');
+    // Re-enable button and hide loading state
+    loginBtn.disabled = false;
+    loginBtn.classList.remove('loading');
   }
 });
 </script>

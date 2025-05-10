@@ -1,0 +1,907 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <style>
+        body {
+            background-color: #f8f9fa;
+        }
+        .sidebar {
+            height: 100vh;
+            background-color: #343a40;
+            color: white;
+            position: fixed;
+        }
+        .sidebar .nav-link {
+            color: rgba(255, 255, 255, 0.75);
+        }
+        .sidebar .nav-link:hover {
+            color: white;
+        }
+        .sidebar .nav-link.active {
+            color: white;
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+        .main-content {
+            margin-left: 250px;
+            padding: 20px;
+        }
+        .tab-content {
+            padding: 20px;
+            background-color: white;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        .actions-column {
+            width: 150px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container-fluid">
+        <div class="row">
+            <!-- Sidebar -->
+            <nav class="col-md-2 d-none d-md-block sidebar py-4">
+                <div class="text-center mb-4">
+                    <h3>Admin Panel</h3>
+                </div>
+                <ul class="nav flex-column" id="adminTabs" role="tablist">
+                    <li class="nav-item">
+                        <a class="nav-link active" id="dashboard-tab" data-toggle="tab" href="#dashboard" role="tab">Dashboard</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" id="users-tab" data-toggle="tab" href="#users" role="tab">Users</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" id="developers-tab" data-toggle="tab" href="#developers" role="tab">Developers</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" id="games-tab" data-toggle="tab" href="#games" role="tab">Games</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" id="wishlist-tab" data-toggle="tab" href="#wishlist" role="tab">Wishlists</a>
+                    </li>
+                    <li class="nav-item mt-5">
+                        <a class="nav-link text-danger" href="login.html">Logout</a>
+                    </li>
+                </ul>
+            </nav>
+
+            <!-- Main Content -->
+            <main role="main" class="col-md-10 ml-sm-auto main-content">
+                <div class="tab-content" id="adminTabContent">
+                    <!-- Dashboard Tab -->
+                    <div class="tab-pane fade show active" id="dashboard" role="tabpanel">
+                        <h2>Dashboard</h2>
+                        <div class="row mt-4">
+                            <div class="col-md-3 mb-4">
+                                <div class="card bg-primary text-white">
+                                    <div class="card-body">
+                                        <h5 class="card-title">Users</h5>
+                                        <h2 id="userCount">0</h2>
+                                        <a href="#users" class="text-white" data-toggle="tab" role="tab">Manage <i class="fas fa-arrow-right"></i></a>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-3 mb-4">
+                                <div class="card bg-success text-white">
+                                    <div class="card-body">
+                                        <h5 class="card-title">Developers</h5>
+                                        <h2 id="developerCount">0</h2>
+                                        <a href="#developers" class="text-white" data-toggle="tab" role="tab">Manage <i class="fas fa-arrow-right"></i></a>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-3 mb-4">
+                                <div class="card bg-warning text-white">
+                                    <div class="card-body">
+                                        <h5 class="card-title">Games</h5>
+                                        <h2 id="gameCount">0</h2>
+                                        <a href="#games" class="text-white" data-toggle="tab" role="tab">Manage <i class="fas fa-arrow-right"></i></a>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-3 mb-4">
+                                <div class="card bg-danger text-white">
+                                    <div class="card-body">
+                                        <h5 class="card-title">Wishlists</h5>
+                                        <h2 id="wishlistCount">0</h2>
+                                        <a href="#wishlist" class="text-white" data-toggle="tab" role="tab">Manage <i class="fas fa-arrow-right"></i></a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row mt-4">
+                            <div class="col-md-6">
+                                <div class="card">
+                                    <div class="card-header">
+                                        Recent Games
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="table-responsive">
+                                            <table class="table table-sm">
+                                                <thead>
+                                                    <tr>
+                                                        <th>Game Title</th>
+                                                        <th>Developer</th>
+                                                        <th>Release Date</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody id="recentGamesTable">
+                                                    <!-- Data will be loaded here -->
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="card">
+                                    <div class="card-header">
+                                        Recent Users
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="table-responsive">
+                                            <table class="table table-sm">
+                                                <thead>
+                                                    <tr>
+                                                        <th>Username</th>
+                                                        <th>Email</th>
+                                                        <th>Registration Date</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody id="recentUsersTable">
+                                                    <!-- Data will be loaded here -->
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Users Tab -->
+                    <div class="tab-pane fade" id="users" role="tabpanel">
+                        <div class="d-flex justify-content-between align-items-center mb-4">
+                            <h2>User Management</h2>
+                            <button class="btn btn-primary" data-toggle="modal" data-target="#addUserModal">
+                                <i class="fas fa-plus"></i> Add User
+                            </button>
+                        </div>
+                        <div class="table-responsive">
+                            <table class="table table-striped">
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Username</th>
+                                        <th>Email</th>
+                                        <th>Role</th>
+                                        <th>Registration Date</th>
+                                        <th class="actions-column">Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="usersTable">
+                                    <!-- User data will be loaded here -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- Developers Tab -->
+                    <div class="tab-pane fade" id="developers" role="tabpanel">
+                        <div class="d-flex justify-content-between align-items-center mb-4">
+                            <h2>Developer Management</h2>
+                            <button class="btn btn-primary" data-toggle="modal" data-target="#addDeveloperModal">
+                                <i class="fas fa-plus"></i> Add Developer
+                            </button>
+                        </div>
+                        <div class="table-responsive">
+                            <table class="table table-striped">
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Name</th>
+                                        <th>Email</th>
+                                        <th>Website</th>
+                                        <th>Games Count</th>
+                                        <th class="actions-column">Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="developersTable">
+                                    <!-- Developer data will be loaded here -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- Games Tab -->
+                    <div class="tab-pane fade" id="games" role="tabpanel">
+                        <div class="d-flex justify-content-between align-items-center mb-4">
+                            <h2>Game Management</h2>
+                            <button class="btn btn-primary" data-toggle="modal" data-target="#addGameModal">
+                                <i class="fas fa-plus"></i> Add Game
+                            </button>
+                        </div>
+                        <div class="table-responsive">
+                            <table class="table table-striped">
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Title</th>
+                                        <th>Developer</th>
+                                        <th>Genre</th>
+                                        <th>Price</th>
+                                        <th>Release Date</th>
+                                        <th class="actions-column">Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="gamesTable">
+                                    <!-- Game data will be loaded here -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- Wishlist Tab -->
+                    <div class="tab-pane fade" id="wishlist" role="tabpanel">
+                        <div class="d-flex justify-content-between align-items-center mb-4">
+                            <h2>Wishlist Management</h2>
+                        </div>
+                        <div class="form-group mb-4">
+                            <label for="wishlistUserSelect">Filter by User:</label>
+                            <select class="form-control" id="wishlistUserSelect">
+                                <option value="">All Users</option>
+                                <!-- User options will be loaded here -->
+                            </select>
+                        </div>
+                        <div class="table-responsive">
+                            <table class="table table-striped">
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Username</th>
+                                        <th>Game Title</th>
+                                        <th>Added Date</th>
+                                        <th class="actions-column">Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="wishlistTable">
+                                    <!-- Wishlist data will be loaded here -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <!-- Add User Modal -->
+    <div class="modal fade" id="addUserModal" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Add New User</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form id="addUserForm">
+                        <div class="form-group">
+                            <label for="username">Username</label>
+                            <input type="text" class="form-control" id="username" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="email">Email</label>
+                            <input type="email" class="form-control" id="email" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="password">Password</label>
+                            <input type="password" class="form-control" id="password" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="role">Role</label>
+                            <select class="form-control" id="role" required>
+                                <option value="user">User</option>
+                                <option value="admin">Admin</option>
+                            </select>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Add User</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit User Modal -->
+    <div class="modal fade" id="editUserModal" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Edit User</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form id="editUserForm">
+                        <input type="hidden" id="editUserId">
+                        <div class="form-group">
+                            <label for="editUsername">Username</label>
+                            <input type="text" class="form-control" id="editUsername" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="editEmail">Email</label>
+                            <input type="email" class="form-control" id="editEmail" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="editRole">Role</label>
+                            <select class="form-control" id="editRole" required>
+                                <option value="user">User</option>
+                                <option value="admin">Admin</option>
+                            </select>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Update User</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Developer Modal -->
+    <div class="modal fade" id="addDeveloperModal" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Add New Developer</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form id="addDeveloperForm">
+                        <div class="form-group">
+                            <label for="developerName">Developer Name</label>
+                            <input type="text" class="form-control" id="developerName" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="developerEmail">Email</label>
+                            <input type="email" class="form-control" id="developerEmail" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="developerWebsite">Website</label>
+                            <input type="url" class="form-control" id="developerWebsite">
+                        </div>
+                        <div class="form-group">
+                            <label for="developerDescription">Description</label>
+                            <textarea class="form-control" id="developerDescription" rows="3"></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Add Developer</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit Developer Modal -->
+    <div class="modal fade" id="editDeveloperModal" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Edit Developer</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form id="editDeveloperForm">
+                        <input type="hidden" id="editDeveloperId">
+                        <div class="form-group">
+                            <label for="editDeveloperName">Developer Name</label>
+                            <input type="text" class="form-control" id="editDeveloperName" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="editDeveloperEmail">Email</label>
+                            <input type="email" class="form-control" id="editDeveloperEmail" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="editDeveloperWebsite">Website</label>
+                            <input type="url" class="form-control" id="editDeveloperWebsite">
+                        </div>
+                        <div class="form-group">
+                            <label for="editDeveloperDescription">Description</label>
+                            <textarea class="form-control" id="editDeveloperDescription" rows="3"></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Update Developer</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Game Modal -->
+    <div class="modal fade" id="addGameModal" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Add New Game</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form id="addGameForm">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="gameTitle">Game Title</label>
+                                    <input type="text" class="form-control" id="gameTitle" required>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="gameDeveloper">Developer</label>
+                                    <select class="form-control" id="gameDeveloper" required>
+                                        <!-- Developer options will be loaded here -->
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="gameGenre">Genre</label>
+                                    <input type="text" class="form-control" id="gameGenre" required>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="gamePrice">Price</label>
+                                    <input type="number" class="form-control" id="gamePrice" min="0" step="0.01" required>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="gameReleaseDate">Release Date</label>
+                                    <input type="date" class="form-control" id="gameReleaseDate" required>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="gameImage">Game Image URL</label>
+                                    <input type="url" class="form-control" id="gameImage">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="gameDescription">Description</label>
+                            <textarea class="form-control" id="gameDescription" rows="4" required></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Add Game</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit Game Modal -->
+    <div class="modal fade" id="editGameModal" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Edit Game</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form id="editGameForm">
+                        <input type="hidden" id="editGameId">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="editGameTitle">Game Title</label>
+                                    <input type="text" class="form-control" id="editGameTitle" required>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="editGameDeveloper">Developer</label>
+                                    <select class="form-control" id="editGameDeveloper" required>
+                                        <!-- Developer options will be loaded here -->
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="editGameGenre">Genre</label>
+                                    <input type="text" class="form-control" id="editGameGenre" required>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="editGamePrice">Price</label>
+                                    <input type="number" class="form-control" id="editGamePrice" min="0" step="0.01" required>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="editGameReleaseDate">Release Date</label>
+                                    <input type="date" class="form-control" id="editGameReleaseDate" required>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="editGameImage">Game Image URL</label>
+                                    <input type="url" class="form-control" id="editGameImage">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="editGameDescription">Description</label>
+                            <textarea class="form-control" id="editGameDescription" rows="4" required></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Update Game</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            // Initialize navigation
+            $('#adminTabs a').on('click', function (e) {
+                e.preventDefault();
+                $(this).tab('show');
+            });
+
+            // Load mock data (would be replaced by actual API calls)
+            loadMockData();
+
+            // Form submission handlers
+            $('#addUserForm').on('submit', function(e) {
+                e.preventDefault();
+                // Add user logic
+                alert('User added successfully!');
+                $('#addUserModal').modal('hide');
+                $(this)[0].reset();
+                loadMockData(); // Refresh data
+            });
+
+            $('#editUserForm').on('submit', function(e) {
+                e.preventDefault();
+                // Update user logic
+                alert('User updated successfully!');
+                $('#editUserModal').modal('hide');
+                loadMockData(); // Refresh data
+            });
+
+            $('#addDeveloperForm').on('submit', function(e) {
+                e.preventDefault();
+                // Add developer logic
+                alert('Developer added successfully!');
+                $('#addDeveloperModal').modal('hide');
+                $(this)[0].reset();
+                loadMockData(); // Refresh data
+            });
+
+            $('#editDeveloperForm').on('submit', function(e) {
+                e.preventDefault();
+                // Update developer logic
+                alert('Developer updated successfully!');
+                $('#editDeveloperModal').modal('hide');
+                loadMockData(); // Refresh data
+            });
+
+            $('#addGameForm').on('submit', function(e) {
+                e.preventDefault();
+                // Add game logic
+                alert('Game added successfully!');
+                $('#addGameModal').modal('hide');
+                $(this)[0].reset();
+                loadMockData(); // Refresh data
+            });
+
+            $('#editGameForm').on('submit', function(e) {
+                e.preventDefault();
+                // Update game logic
+                alert('Game updated successfully!');
+                $('#editGameModal').modal('hide');
+                loadMockData(); // Refresh data
+            });
+
+            // User filter for wishlist
+            $('#wishlistUserSelect').on('change', function() {
+                // Filter wishlist by selected user
+                filterWishlistByUser($(this).val());
+            });
+        });
+
+        // Mock data loading function (would be replaced with actual API calls)
+        function loadMockData() {
+            // Mock users
+            const users = [
+                { id: 1, username: 'john_doe', email: 'john@example.com', role: 'user', registrationDate: '2023-01-15' },
+                { id: 2, username: 'jane_smith', email: 'jane@example.com', role: 'user', registrationDate: '2023-02-20' },
+                { id: 3, username: 'admin_user', email: 'admin@example.com', role: 'admin', registrationDate: '2022-12-10' }
+            ];
+
+            // Mock developers
+            const developers = [
+                { id: 1, name: 'GameCraft Studios', email: 'contact@gamecraft.com', website: 'https://gamecraft.com', gamesCount: 5 },
+                { id: 2, name: 'Pixel Dreams', email: 'info@pixeldreams.com', website: 'https://pixeldreams.com', gamesCount: 3 },
+                { id: 3, name: 'Epic Legends', email: 'support@epiclegends.com', website: 'https://epiclegends.com', gamesCount: 7 }
+            ];
+
+            // Mock games
+            const games = [
+                { id: 1, title: 'Cosmic Adventure', developer: 'GameCraft Studios', genre: 'Adventure', price: 29.99, releaseDate: '2023-03-15' },
+                { id: 2, title: 'Dark Forest', developer: 'Pixel Dreams', genre: 'Horror', price: 19.99, releaseDate: '2023-01-22' },
+                { id: 3, title: 'Racing Champions', developer: 'Epic Legends', genre: 'Racing', price: 39.99, releaseDate: '2023-05-10' }
+            ];
+
+            // Mock wishlists
+            const wishlists = [
+                { id: 1, userId: 1, username: 'john_doe', gameId: 1, gameTitle: 'Cosmic Adventure', addedDate: '2023-04-05' },
+                { id: 2, userId: 1, username: 'john_doe', gameId: 3, gameTitle: 'Racing Champions', addedDate: '2023-04-10' },
+                { id: 3, userId: 2, username: 'jane_smith', gameId: 2, gameTitle: 'Dark Forest', addedDate: '2023-03-25' }
+            ];
+
+            // Update dashboard counts
+            $('#userCount').text(users.length);
+            $('#developerCount').text(developers.length);
+            $('#gameCount').text(games.length);
+            $('#wishlistCount').text(wishlists.length);
+
+            // Update recent games table
+            let recentGamesHTML = '';
+            games.slice(0, 3).forEach(game => {
+                recentGamesHTML += `
+                    <tr>
+                        <td>${game.title}</td>
+                        <td>${game.developer}</td>
+                        <td>${game.releaseDate}</td>
+                    </tr>
+                `;
+            });
+            $('#recentGamesTable').html(recentGamesHTML);
+
+            // Update recent users table
+            let recentUsersHTML = '';
+            users.slice(0, 3).forEach(user => {
+                recentUsersHTML += `
+                    <tr>
+                        <td>${user.username}</td>
+                        <td>${user.email}</td>
+                        <td>${user.registrationDate}</td>
+                    </tr>
+                `;
+            });
+            $('#recentUsersTable').html(recentUsersHTML);
+
+            // Update users table
+            let usersHTML = '';
+            users.forEach(user => {
+                usersHTML += `
+                    <tr>
+                        <td>${user.id}</td>
+                        <td>${user.username}</td>
+                        <td>${user.email}</td>
+                        <td>${user.role}</td>
+                        <td>${user.registrationDate}</td>
+                        <td>
+                            <button class="btn btn-sm btn-warning edit-user-btn" data-id="${user.id}">
+                                <i class="fas fa-edit"></i> Edit
+                            </button>
+                            <button class="btn btn-sm btn-danger delete-user-btn" data-id="${user.id}">
+                                <i class="fas fa-trash"></i> Delete
+                            </button>
+                        </td>
+                    </tr>
+                `;
+            });
+            $('#usersTable').html(usersHTML);
+
+            // Update developers table
+            let developersHTML = '';
+            developers.forEach(dev => {
+                developersHTML += `
+                    <tr>
+                        <td>${dev.id}</td>
+                        <td>${dev.name}</td>
+                        <td>${dev.email}</td>
+                        <td>${dev.website}</td>
+                        <td>${dev.gamesCount}</td>
+                        <td>
+                            <button class="btn btn-sm btn-warning edit-developer-btn" data-id="${dev.id}">
+                                <i class="fas fa-edit"></i> Edit
+                            </button>
+                            <button class="btn btn-sm btn-danger delete-developer-btn" data-id="${dev.id}">
+                                <i class="fas fa-trash"></i> Delete
+                            </button>
+                        </td>
+                    </tr>
+                `;
+            });
+            $('#developersTable').html(developersHTML);
+
+            // Update games table
+            let gamesHTML = '';
+            games.forEach(game => {
+                gamesHTML += `
+                    <tr>
+                        <td>${game.id}</td>
+                        <td>${game.title}</td>
+                        <td>${game.developer}</td>
+                        <td>${game.genre}</td>
+                        <td>$${game.price}</td>
+                        <td>${game.releaseDate}</td>
+                        <td>
+                            <button class="btn btn-sm btn-warning edit-game-btn" data-id="${game.id}">
+                                <i class="fas fa-edit"></i> Edit
+                            </button>
+                            <button class="btn btn-sm btn-danger delete-game-btn" data-id="${game.id}">
+                                <i class="fas fa-trash"></i> Delete
+                            </button>
+                        </td>
+                    </tr>
+                `;
+            });
+            $('#gamesTable').html(gamesHTML);
+
+            // Update wishlist table
+            let wishlistsHTML = '';
+            wishlists.forEach(wishlist => {
+                wishlistsHTML += `
+                    <tr>
+                        <td>${wishlist.id}</td>
+                        <td>${wishlist.username}</td>
+                        <td>${wishlist.gameTitle}</td>
+                        <td>${wishlist.addedDate}</td>
+                        <td>
+                            <button class="btn btn-sm btn-danger delete-wishlist-btn" data-id="${wishlist.id}">
+                                <i class="fas fa-trash"></i> Delete
+                            </button>
+                        </td>
+                    </tr>
+                `;
+            });
+            $('#wishlistTable').html(wishlistsHTML);
+
+            // Populate user select for wishlist filtering
+            let userSelectHTML = '<option value="">All Users</option>';
+            users.forEach(user => {
+                userSelectHTML += `<option value="${user.id}">${user.username}</option>`;
+            });
+            $('#wishlistUserSelect').html(userSelectHTML);
+
+            // Populate developer select for game forms
+            let developerSelectHTML = '';
+            developers.forEach(dev => {
+                developerSelectHTML += `<option value="${dev.id}">${dev.name}</option>`;
+            });
+            $('#gameDeveloper, #editGameDeveloper').html(developerSelectHTML);
+
+            // Add event listeners for action buttons
+            $('.edit-user-btn').on('click', function() {
+                const userId = $(this).data('id');
+                // In a real app, fetch user data based on userId
+                $('#editUserId').val(userId);
+                $('#editUsername').val('john_doe'); // Example
+                $('#editEmail').val('john@example.com'); // Example
+                $('#editRole').val('user'); // Example
+                $('#editUserModal').modal('show');
+            });
+
+            $('.delete-user-btn').on('click', function() {
+                const userId = $(this).data('id');
+                if (confirm('Are you sure you want to delete this user?')) {
+                    // Delete user logic
+                    alert('User deleted successfully!');
+                    loadMockData(); // Refresh data
+                }
+            });
+
+            $('.edit-developer-btn').on('click', function() {
+                const devId = $(this).data('id');
+                // In a real app, fetch developer data based on devId
+                $('#editDeveloperId').val(devId);
+                $('#editDeveloperName').val('GameCraft Studios'); // Example
+                $('#editDeveloperEmail').val('contact@gamecraft.com'); // Example
+                $('#editDeveloperWebsite').val('https://gamecraft.com'); // Example
+                $('#editDeveloperDescription').val('Game development studio specializing in adventure games.'); // Example
+                $('#editDeveloperModal').modal('show');
+            });
+
+            $('.delete-developer-btn').on('click', function() {
+                const devId = $(this).data('id');
+                if (confirm('Are you sure you want to delete this developer?')) {
+                    // Delete developer logic
+                    alert('Developer deleted successfully!');
+                    loadMockData(); // Refresh data
+                }
+            });
+
+            $('.edit-game-btn').on('click', function() {
+                const gameId = $(this).data('id');
+                // In a real app, fetch game data based on gameId
+                $('#editGameId').val(gameId);
+                $('#editGameTitle').val('Cosmic Adventure'); // Example
+                $('#editGameDeveloper').val('1'); // Example
+                $('#editGameGenre').val('Adventure'); // Example
+                $('#editGamePrice').val('29.99'); // Example
+                $('#editGameReleaseDate').val('2023-03-15'); // Example
+                $('#editGameImage').val('https://example.com/game-image.jpg'); // Example
+                $('#editGameDescription').val('An epic adventure in space.'); // Example
+                $('#editGameModal').modal('show');
+            });
+
+            $('.delete-game-btn').on('click', function() {
+                const gameId = $(this).data('id');
+                if (confirm('Are you sure you want to delete this game?')) {
+                    // Delete game logic
+                    alert('Game deleted successfully!');
+                    loadMockData(); // Refresh data
+                }
+            });
+
+            $('.delete-wishlist-btn').on('click', function() {
+                const wishlistId = $(this).data('id');
+                if (confirm('Are you sure you want to delete this wishlist entry?')) {
+                    // Delete wishlist entry logic
+                    alert('Wishlist entry deleted successfully!');
+                    loadMockData(); // Refresh data
+                }
+            });
+        }
+
+        function filterWishlistByUser(userId) {
+            // In a real application, this would filter wishlist entries from the database
+            if (!userId) {
+                // Show all wishlist entries
+                loadMockData();
+            } else {
+                // Filter wishlist entries for the selected user
+                const wishlists = [
+                    { id: 1, userId: 1, username: 'john_doe', gameId: 1, gameTitle: 'Cosmic Adventure', addedDate: '2023-04-05' },
+                    { id: 2, userId: 1, username: 'john_doe', gameId: 3, gameTitle: 'Racing Champions', addedDate: '2023-04-10' },
+                ];
+                
+                let wishlistsHTML = '';
+                wishlists.forEach(wishlist => {
+                    wishlistsHTML += `
+                        <tr>
+                            <td>${wishlist.id}</td>
+                            <td>${wishlist.username}</td>
+                            <td>${wishlist.gameTitle}</td>
+                            <td>${wishlist.addedDate}</td>
+                            <td>
+                                <button class="btn btn-sm btn-danger delete-wishlist-btn" data-id="${wishlist.id}">
+                                    <i class="fas fa-trash"></i> Delete
+                                </button>
+                            </td>
+                        </tr>
+                    `;
+                });
+                $('#wishlistTable').html(wishlistsHTML);
+            }
+        }
+    </script>
+</body>
+</html>
