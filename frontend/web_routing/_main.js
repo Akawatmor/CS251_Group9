@@ -2,20 +2,25 @@ const express = require('express');
 const router = express.Router();
 const path = require('path');
 
-///// Function Route /////
-const HOMEPAGE = require("./HOMEPAGE");
-const LIBRARY = require("./LIBRARY");
-const LOGOUT = require("./LOGOUT");
-const LOGIN = require("./LOGIN");
-const REGISTER = require("./REGISTER");
-const CSETTING = require("./CSETTING");
+// Import route modules
+const homeRoutes = require('./HOMEPAGE');
+const loginRoutes = require('./LOGIN');
+const registerRoutes = require('./REGISTER');
+const libraryRoutes = require('./LIBRARY');
+const csettingRoutes = require('./CSETTING');
+const buypageRoutes = require('./BUYPAGE');
 
-router.use("/home", HOMEPAGE);
-router.use("/library", LIBRARY);
-router.use("/logout", LOGOUT);
-router.use("/register", REGISTER);
-router.use("/csetting", CSETTING);
-router.use(LOGIN);
+// Mount routes
+router.use('/home', homeRoutes);
+router.use('/login', loginRoutes);
+router.use('/register', registerRoutes);
+router.use('/library', libraryRoutes);
+router.use('/csetting', csettingRoutes);
+router.use('/buypage', buypageRoutes);
 
+// Handle root route
+router.get('/', (req, res) => {
+    res.redirect('/login');
+});
 
 module.exports = router;

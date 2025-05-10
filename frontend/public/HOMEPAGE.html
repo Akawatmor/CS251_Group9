@@ -5,7 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>TVaporr Home</title>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css">
 </head>
 <body>
 
@@ -460,7 +459,7 @@
       // Check for picture1 in the response
       if (game.picture1) {
         // Construct the image URL based on gameID
-        const imageUrl = `http://localhost:8080/api/games/banner/${game.gameID}`;
+        const imageUrl = `http://localhost:8080/api/games/id=${game.gameID}/picture=1`;
         imageHtml = `<img src="${imageUrl}" alt="${game.gName}" class="game-image">`;
       } else {
         // Apply gray background for games without images
@@ -479,7 +478,7 @@
       
       // Add click event to navigate to game details
       card.addEventListener('click', function() {
-        window.location.href = `/BUYPAGE.html?id=${game.gameID}`;
+        window.location.href = `/buypage?id=${game.gameID}`;
       });
       
       cardsContainer.appendChild(card);

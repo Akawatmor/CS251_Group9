@@ -7,7 +7,7 @@ Made by Akawat, @2025
 ///// Configuration /////
 
 //Config Web Service Port
-const WEBPORT = 3000;
+const WEBPORT = process.env.PORT || 3000;
 
 
 
@@ -24,7 +24,7 @@ const http = require("http");
 ///// Import Dependencies /////
 const webroutes = require(`./web_routing/_main.js`); //Doing routing work
 const webctl = require(`./web_controller/_main.js`); //Doing web controller work
-//const springmiddle = require("./springmiddleware"); //Doing communication with spring
+//require('./springmiddleware/BUYPAGE')(app); // Import route handlers
 
 //// Runner ////
 const app = express();
@@ -34,6 +34,7 @@ const io = socketIo(server);
 //// App Use /////
 app.use(express.static(path.join(__dirname, "public")));
 app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
 app.use(session({
   secret: 'TheSecretKeyIsNothingThatYouWantToKnow',
   resave: false,

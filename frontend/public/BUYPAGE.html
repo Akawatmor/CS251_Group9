@@ -2,43 +2,50 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Game Page</title>
+    <title>Game Details - TVaporr</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TVaporr Buy</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="styles.css">
+    <!-- Add jQuery -->
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 </head>
 <body>
     <div class="layout">
         <main class="main-content">
             <header class="navbar">
               <div class="nav-links">
-                <a href="#">Homepage</a>
+                <a href="/home">Homepage</a>
                 <span>|</span>
-                <a href="#">Library</a>
+                <a href="/library">Library</a>
               </div>
               <div class="account">
-                <img src="https://placehold.co/30x30" alt="Profile Icon">
-                <span>Account</span>
+                <img id="user-profile-photo" src="https://placehold.co/30x30" alt="Profile Icon" style="width: 32px; height: 32px; object-fit: fill;">
+                <span id="user-display-name">Account</span>
               </div>
-            </header>            <div class="store">
+            </header>            
+            <div class="store">
                 <div class="game-store">
-                  <div class="game-details">
+                  <div id="loading-indicator" class="loading-indicator">
+                    <div class="spinner"></div>
+                    <p>Loading game details...</p>
+                  </div>
+                  <div id="game-details" class="game-details" style="display: none;">
                     <div class="game-header">
                       <div class="game-main-image">
-                        <img src="https://placehold.co/512x512" alt="Game Icon" class="game-icon">
+                        <img id="game-icon" src="" alt="Game Icon" class="game-icon">
                       </div>
                       <div class="game-info">
-                        <h1 class="game-title">Cyberpunk Adventure</h1>
+                        <h1 id="game-title" class="game-title">Loading...</h1>
                         <div class="game-meta">
                           <div class="rating">
-                            <span class="stars">★★★★☆</span>
-                            <span class="rating-count">4.2/5</span>
+                            <span id="game-stars" class="stars">★★★★★</span>
+                            <span id="game-rating" class="rating-count">0/5</span>
                           </div>
-                          <div class="price">$59.99</div>                          <div class="game-actions">
-                            <button class="buy-button">Buy Game</button>
-                            <button class="play-button" disabled>Play Game</button>
-                            <button class="wishlist-button"><span class="wishlist-icon">♡</span> Add to Wishlist</button>
+                          <div id="game-price" class="price">$0.00</div>
+                          <div class="game-actions">
+                            <button id="buy-button" class="buy-button">Buy Game</button>
+                            <button id="play-button" class="play-button" disabled>Play Game</button>
+                            <button id="wishlist-button" class="wishlist-button"><span class="wishlist-icon">♡</span> Add to Wishlist</button>
                           </div>
                         </div>
                       </div>
@@ -47,794 +54,1048 @@
                     <div class="game-gallery">
                       <h3>Game Gallery</h3>
                       <div class="gallery-images">
-                        <img src="https://placehold.co/400x225" alt="Screenshot 1" class="gallery-img active">
-                        <img src="https://placehold.co/400x225" alt="Screenshot 2" class="gallery-img">
-                        <img src="https://placehold.co/400x225" alt="Screenshot 3" class="gallery-img">
-                        <img src="https://placehold.co/400x225" alt="Screenshot 4" class="gallery-img">
+                        <img id="gallery-main" src="" alt="Screenshot" class="gallery-img active">
                       </div>
-                      <div class="gallery-thumbs">
-                        <img src="https://placehold.co/100x56" alt="Thumbnail 1" class="thumb active" data-index="0">
-                        <img src="https://placehold.co/100x56" alt="Thumbnail 2" class="thumb" data-index="1">
-                        <img src="https://placehold.co/100x56" alt="Thumbnail 3" class="thumb" data-index="2">
-                        <img src="https://placehold.co/100x56" alt="Thumbnail 4" class="thumb" data-index="3">
+                      <div id="gallery-thumbs" class="gallery-thumbs">
+                        <!-- Thumbnails will be added dynamically -->
                       </div>
                     </div>
                     
                     <div class="game-description">
                       <h3>Description</h3>
-                      <div class="markdown-content">
-                        <p>Experience the future in <strong>Cyberpunk Adventure</strong>, a groundbreaking open-world RPG set in a dystopian future where technology and humanity collide.</p>
-                        
-                        <h4>Key Features:</h4>
-                        <ul>
-                          <li>Immersive open world with multiple districts to explore</li>
-                          <li>Deep character customization system</li>
-                          <li>Branching storylines with meaningful choices</li>
-                          <li>Advanced combat mechanics with cybernetic enhancements</li>
-                        </ul>
-                        
-                        <p>Dive into a world where corporations rule and cybernetic modifications define your identity. Choose your path, forge alliances, and shape the future of this neon-lit metropolis.</p>
-                      </div>
-                    </div>
-                      <div class="wishlist-section">
-                      <h3>My Wishlist</h3>
-                      <div class="wishlist-container">
-                        <div class="wishlist-info">
-                          <p class="wishlist-empty">Your wishlist is currently empty. Add games to your wishlist to keep track of games you're interested in!</p>
-                          <div class="wishlist-items hidden">
-                            <!-- Wishlist items will appear here when added -->
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                    
-                    <div class="achievements-section">
-                      <h3>Achievements</h3>
-                      <div class="achievements-list">
-                        <div class="achievement">
-                          <img src="https://placehold.co/40x40" alt="Achievement 1">
-                          <div class="achievement-info">
-                            <h4>First Steps</h4>
-                            <p>Complete the tutorial mission</p>
-                          </div>
-                        </div>
-                        <div class="achievement">
-                          <img src="https://placehold.co/40x40" alt="Achievement 2">
-                          <div class="achievement-info">
-                            <h4>Street Cred</h4>
-                            <p>Reach level 10 reputation</p>
-                          </div>
-                        </div>
-                        <div class="achievement">
-                          <img src="https://placehold.co/40x40" alt="Achievement 3">
-                          <div class="achievement-info">
-                            <h4>Full Metal</h4>
-                            <p>Install 5 cybernetic implants</p>
-                          </div>
-                        </div>
+                      <div id="game-description" class="markdown-content">
+                        Loading description...
                       </div>
                     </div>
                     
                     <div class="reviews-section">
                       <h3>User Reviews</h3>
-                      <div class="reviews-list">
-                        <div class="review">
-                          <div class="review-header">
-                            <img src="https://placehold.co/30x30" alt="User 1" class="user-avatar">
-                            <div class="review-meta">
-                              <h4>GamerPro99</h4>
-                              <div class="review-rating">★★★★★</div>
-                            </div>
-                          </div>
-                          <p class="review-content">Amazing game with stunning visuals! The story kept me engaged for hours. Definitely worth every penny.</p>
-                        </div>
-                        <div class="review">
-                          <div class="review-header">
-                            <img src="https://placehold.co/30x30" alt="User 2" class="user-avatar">
-                            <div class="review-meta">
-                              <h4>CyberNinja</h4>
-                              <div class="review-rating">★★★★☆</div>
-                            </div>
-                          </div>
-                          <p class="review-content">Great gameplay mechanics and immersive world. A few bugs here and there, but overall an excellent experience.</p>
-                        </div>
-                        <div class="review">
-                          <div class="review-header">
-                            <img src="https://placehold.co/30x30" alt="User 3" class="user-avatar">
-                            <div class="review-meta">
-                              <h4>RPGLover42</h4>
-                              <div class="review-rating">★★★☆☆</div>
-                            </div>
-                          </div>
-                          <p class="review-content">The story is interesting but the game could use more side quests. Combat system is fun once you get used to it.</p>
-                        </div>
+                      <div id="reviews-list" class="reviews-list">
+                        <p>No reviews available for this game yet.</p>
                       </div>
                     </div>
+                  </div>
+                  
+                  <div id="error-message" class="error-message" style="display: none;">
+                    <h2>Game Not Found</h2>
+                    <p>Sorry, we couldn't find the game you're looking for.</p>
+                    <a href="/home" class="back-button">Back to Homepage</a>
                   </div>
                 </div>
                 
                 <div class="game-grid">
-                  <div class="game-card">
-                    <img src="https://placehold.co/300x150" alt="Game Thumbnail">
-                    <h3>Game Title 1</h3>
-                    <p>Short description about the game.</p>
-                    <button>Buy</button>
-                  </div>
-                  <div class="game-card">
-                    <img src="https://placehold.co/300x150" alt="Game Thumbnail">
-                    <h3>Game Title 2</h3>
-                    <p>Another cool game description.</p>
-                    <button>Buy</button>
-                  </div>
-                  <div class="game-card">
-                    <img src="https://placehold.co/300x150" alt="Game Thumbnail">
-                    <h3>Game Title 3</h3>
-                    <p>Another cool game description.</p>
-                    <button>Buy</button>
-                  </div>
-                  <div class="game-card">
-                    <img src="https://placehold.co/300x150" alt="Game Thumbnail">
-                    <h3>Game Title 4</h3>
-                    <p>Short description about the game.</p>
-                    <button>Buy</button>
-                  </div>
-                  <div class="game-card">
-                    <img src="https://placehold.co/300x150" alt="Game Thumbnail">
-                    <h3>Game Title 5</h3>
-                    <p>Another cool game description.</p>
-                    <button>Buy</button>
-                  </div>
-                  <div class="game-card">
-                    <img src="https://placehold.co/300x150" alt="Game Thumbnail">
-                    <h3>Game Title 6</h3>
-                    <p>Another cool game description.</p>
-                    <button>Buy</button>
+                  <h3>You might also like</h3>
+                  <div id="related-games" class="related-games">
+                    <!-- Related games will be loaded here -->
+                    <div class="loading-spinner">Loading...</div>
                   </div>
                 </div>
               </div>
             </div>
-            
-            
           </main>
-    </div>    <style>
-        body, html {
-            margin: 0;
-            padding: 0;
-            font-family: 'Poppins', sans-serif;
-            height: 100%;
-            background: #471C1A;
-        }
+    </div>
+
+<style>
+    /* Add these new styles to the existing CSS */
+    .loading-indicator {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        height: 400px;
+    }
+
+    .spinner {
+        width: 50px;
+        height: 50px;
+        border: 5px solid rgba(255, 255, 255, 0.3);
+        border-radius: 50%;
+        border-top-color: #C9A24E;
+        animation: spin 1s ease-in-out infinite;
+        margin-bottom: 20px;
+    }
+
+    @keyframes spin {
+        to { transform: rotate(360deg); }
+    }
+
+    .error-message {
+        text-align: center;
+        padding: 50px 20px;
+    }
+
+    .error-message h2 {
+        color: #C9A24E;
+        margin-bottom: 15px;
+    }
+
+    .back-button {
+        display: inline-block;
+        margin-top: 20px;
+        padding: 12px 25px;
+        background-color: #9F3E3A;
+        color: white;
+        text-decoration: none;
+        border-radius: 5px;
+        transition: all 0.3s ease;
+    }
+
+    .back-button:hover {
+        background-color: #C9A24E;
+        transform: translateY(-2px);
+    }
+
+    .related-games {
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+    }
+
+    .requirements {
+        background-color: #471C1A;
+        padding: 15px;
+        border-radius: 8px;
+        line-height: 1.6;
+    }
+    
+    /* Add this to your existing styles */
+    body, html {
+        margin: 0;
+        padding: 0;
+        font-family: 'Poppins', sans-serif;
+        height: 100%;
+        background: #471C1A;
+    }
+    
+    .account {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .main-content {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        background-color: #471C1A;
+    }
+    
+    .layout {
+        display: flex;
+        height: 100vh;
+    }
+    
+    .navbar {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        background-color: #230706;
+        color: white;
+        padding: 0 30px;
+        height: 60px;
+        flex-shrink: 0;
+    }
+    
+    .nav-links {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        width: 100%;
+    }
+    
+    .nav-links a {
+        text-decoration: none;
+        color: white;
+        font-size: 20px;
+    }
+    
+    .store {
+        display: flex;
+        width: 100%;
+        height: calc(100% - 60px);
+        overflow: hidden;
+    }
+
+    .game-store {
+        width: 75%;
+        background-color: #2c0c0b;
+        padding: 0;
+        box-sizing: border-box;
+        height: 100%;
+        overflow-y: auto;
+        color: #fff;
+    }
+
+    .game-details {
+        padding: 20px;
+    }
+
+    .game-header {
+        display: flex;
+        margin-bottom: 30px;
+        background-color: #3c1211;
+        border-radius: 10px;
+        padding: 20px;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.4);
+    }
+
+    .game-main-image {
+        flex: 0 0 200px;
+        margin-right: 30px;
+    }
+
+    .game-icon {
+        width: 100%;
+        border-radius: 10px;
+        box-shadow: 0 4px 8px rgba(0,0,0,0.5);
+    }
+
+    .game-info {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .game-title {
+        font-size: 32px;
+        margin: 0 0 15px 0;
+        color: #C9A24E;
+    }
+
+    .game-meta {
+        margin-bottom: 20px;
+    }
+
+    .rating {
+        font-size: 20px;
+        margin-bottom: 10px;
+    }
+
+    .stars {
+        color: #C9A24E;
+        margin-right: 10px;
+    }
+
+    .price {
+        font-size: 28px;
+        font-weight: bold;
+        color: #C9A24E;
+        margin: 15px 0;
+    }
+
+    .game-actions {
+        margin-top: 20px;
+        display: flex;
+        gap: 15px;
+    }
+    
+    .buy-button, .play-button, .wishlist-button {
+        padding: 12px 25px;
+        border-radius: 5px;
+        font-weight: bold;
+        font-size: 16px;
+        cursor: pointer;
+        border: none;
+        transition: all 0.3s ease;
+    }
+
+    .buy-button {
+        background-color: #C9A24E;
+        color: #1a1a1a;
+    }
+
+    .buy-button:hover {
+        background-color: #e7c55b;
+        transform: translateY(-2px);
+    }
+
+    .play-button {
+        background-color: #5E1F1B;
+        color: white;
+        border: 2px solid #C9A24E;
+    }
+
+    .play-button:not([disabled]):hover {
+        background-color: #7a2b26;
+        transform: translateY(-2px);
+    }
+
+    .play-button[disabled] {
+        opacity: 0.5;
+        cursor: not-allowed;
+    }
+    
+    .wishlist-button {
+        background-color: transparent;
+        color: white;
+        border: 1px solid white;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+    
+    .wishlist-button:hover {
+        background-color: rgba(255,255,255,0.1);
+        transform: translateY(-2px);
+    }
+    
+    .wishlist-button.wishlisted {
+        border-color: #C9A24E;
+        color: #C9A24E;
+    }
+    
+    .wishlist-button.wishlisted .wishlist-icon {
+        color: #C9A24E;
+    }
+    
+    .wishlist-icon {
+        font-size: 18px;
+    }
+
+    .game-gallery {
+        margin-bottom: 30px;
+        background-color: #3c1211;
+        border-radius: 10px;
+        padding: 20px;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.4);
+    }
+
+    .gallery-images {
+        position: relative;
+        height: 300px;
+        overflow: hidden;
+        border-radius: 10px;
+        margin-bottom: 10px;
+        background-color: #230706;
+    }
+
+    .gallery-img {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+        opacity: 0;
+        transition: opacity 0.5s ease;
+    }
+
+    .gallery-img.active {
+        opacity: 1;
+    }
+
+    .gallery-thumbs {
+        display: flex;
+        gap: 10px;
+        overflow-x: auto;
+        padding-bottom: 10px;
+    }
+
+    .thumb {
+        width: 100px;
+        height: 56px;
+        object-fit: cover;
+        border-radius: 5px;
+        cursor: pointer;
+        opacity: 0.7;
+        transition: all 0.3s ease;
+        border: 2px solid transparent;
+    }
+
+    .thumb:hover {
+        opacity: 0.9;
+    }
+
+    .thumb.active {
+        opacity: 1;
+        border-color: #C9A24E;
+    }
+
+    .game-description, .achievements-section, .reviews-section {
+        margin-bottom: 30px;
+        background-color: #3c1211;
+        border-radius: 10px;
+        padding: 20px;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.4);
+    }
+
+    .markdown-content {
+        line-height: 1.6;
+    }
+
+    h3 {
+        color: #C9A24E;
+        font-size: 22px;
+        margin-top: 0;
+        margin-bottom: 15px;
+        border-bottom: 1px solid #5E1F1B;
+        padding-bottom: 10px;
+    }
+
+    .reviews-list {
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+    }
+
+    .review {
+        background-color: #471C1A;
+        padding: 15px;
+        border-radius: 8px;
+    }
+
+    .review-header {
+        display: flex;
+        align-items: center;
+        margin-bottom: 10px;
+    }
+
+    .user-avatar {
+        width: 30px;
+        height: 30px;
+        border-radius: 50%;
+        margin-right: 10px;
+    }
+
+    .review-meta {
+        flex: 1;
+    }
+
+    .review-meta h4 {
+        margin: 0;
+        font-size: 16px;
+    }
+
+    .review-rating {
+        color: #C9A24E;
+        font-size: 14px;
+    }
+
+    .review-content {
+        margin: 0;
+        line-height: 1.4;
+    }
+
+    .game-grid {
+        width: 25%;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        padding: 20px;
+        box-sizing: border-box;
+        background-color: #3c0f0e;
+        overflow-y: auto;
+    }
+
+    .game-grid h3 {
+        margin-top: 0;
+    }
+
+    .game-card {
+        background-color: #5E1F1B;
+        border-radius: 10px;
+        padding: 15px;
+        color: white;
+        box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+        transition: transform 0.2s;
+    }
+
+    .game-card:hover {
+        transform: translateY(-5px);
+    }
+
+    .game-card img {
+        width: 100%;
+        border-radius: 8px;
+    }
+
+    .game-card h4 {
+        margin: 10px 0 5px;
+        font-size: 16px;
+    }
+
+    .game-card p {
+        font-size: 14px;
+        margin-bottom: 10px;
+    }
+
+    .game-card button {
+        background-color: #C9A24E;
+        border: none;
+        color: black;
+        padding: 8px 12px;
+        border-radius: 5px;
+        font-weight: bold;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+
+    .game-card button:hover {
+        background-color: #e7c55b;
+    }
+</style>
+
+<script>
+$(document).ready(function() {
+    // Get game ID from URL parameters
+    const urlParams = new URLSearchParams(window.location.search);
+    const gameId = urlParams.get('id');
+    
+    if (!gameId) {
+        showError('No game ID provided');
+        return;
+    }
+    
+    console.log(`Loading game with ID: ${gameId}`);
+    
+    // Initialize UI
+    initUI();
+    
+    // Fetch game details
+    fetchGameDetails(gameId);
+    
+    // Fetch reviews
+    fetchGameReviews(gameId);
+    
+    // Fetch related games (similar games)
+    fetchRelatedGames(gameId);
+    
+    // Initialize account data
+    initAccount();
+
+    // Function to initialize UI
+    function initUI() {
+        // Buy button functionality
+        $('#buy-button').on('click', function() {
+            // Redirect to payment page with game ID
+            window.location.href = `/payment?gameId=${gameId}`;
+        });
         
-        .account {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .main-content {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            background-color: #471C1A;
-        }
+        $('#play-button').on('click', function() {
+            if (!$(this).prop('disabled')) {
+                // Download game file when play is clicked
+                downloadGameFile(gameId);
+            }
+        });
         
-        .layout {
-            display: flex;
-            height: 100vh;
-        }
-        
-        .topbar {
-            width: 1920px;
-            height: 84px;
-            background: #350B09;
-            position: absolute;
-            top: 73px;
-            left: 0;
-        }
-        
-        .navbar {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            background-color: #230706;
-            color: white;
-            padding: 0 30px;
-            height: 60px;
-            flex-shrink: 0;
-        }
-        
-        .nav-links {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            width: 100%;
-        }
-        
-        .nav-links a {
-            text-decoration: none;
-            color: white;
-            font-size: 20px;
-        }
-        
-        .store {
-            display: flex;
-            width: 100%;
-            height: 100%;
-        }
-
-        .game-store {
-            width: 75%;
-            background-color: #2c0c0b;
-            padding: 0;
-            box-sizing: border-box;
-            height: 100%;
-            overflow-y: auto;
-            color: #fff;
-        }
-
-        .game-details {
-            padding: 20px;
-        }
-
-        .game-header {
-            display: flex;
-            margin-bottom: 30px;
-            background-color: #3c1211;
-            border-radius: 10px;
-            padding: 20px;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.4);
-        }
-
-        .game-main-image {
-            flex: 0 0 200px;
-            margin-right: 30px;
-        }
-
-        .game-icon {
-            width: 100%;
-            border-radius: 10px;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.5);
-        }
-
-        .game-info {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-        }
-
-        .game-title {
-            font-size: 32px;
-            margin: 0 0 15px 0;
-            color: #C9A24E;
-        }
-
-        .game-meta {
-            margin-bottom: 20px;
-        }
-
-        .rating {
-            font-size: 20px;
-            margin-bottom: 10px;
-        }
-
-        .stars {
-            color: #C9A24E;
-            margin-right: 10px;
-        }
-
-        .price {
-            font-size: 28px;
-            font-weight: bold;
-            color: #C9A24E;
-            margin: 15px 0;
-        }
-
-        .game-actions {
-            margin-top: 20px;
-            display: flex;
-            gap: 15px;
-        }        .buy-button, .play-button, .wishlist-button {
-            padding: 12px 25px;
-            border-radius: 5px;
-            font-weight: bold;
-            font-size: 16px;
-            cursor: pointer;
-            border: none;
-            transition: all 0.3s ease;
-        }
-
-        .buy-button {
-            background-color: #C9A24E;
-            color: #1a1a1a;
-        }
-
-        .buy-button:hover {
-            background-color: #e7c55b;
-            transform: translateY(-2px);
-        }
-
-        .play-button {
-            background-color: #5E1F1B;
-            color: white;
-            border: 2px solid #C9A24E;
-        }
-
-        .play-button:not([disabled]):hover {
-            background-color: #7a2b26;
-            transform: translateY(-2px);
-        }
-
-        .play-button[disabled] {
-            opacity: 0.5;
-            cursor: not-allowed;
-        }
-        
-        .wishlist-button {
-            background-color: transparent;
-            color: white;
-            border: 1px solid white;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-        
-        .wishlist-button:hover {
-            background-color: rgba(255,255,255,0.1);
-            transform: translateY(-2px);
-        }
-        
-        .wishlist-button.wishlisted {
-            border-color: #C9A24E;
-            color: #C9A24E;
-        }
-        
-        .wishlist-button.wishlisted .wishlist-icon {
-            color: #C9A24E;
-            content: '♥';
-        }
-        
-        .wishlist-icon {
-            font-size: 18px;
-        }
-
-        .game-gallery {
-            margin-bottom: 30px;
-        }
-
-        .gallery-images {
-            position: relative;
-            height: 300px;
-            overflow: hidden;
-            border-radius: 10px;
-            margin-bottom: 10px;
-        }
-
-        .gallery-img {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            opacity: 0;
-            transition: opacity 0.5s ease;
-        }
-
-        .gallery-img.active {
-            opacity: 1;
-        }
-
-        .gallery-thumbs {
-            display: flex;
-            gap: 10px;
-            overflow-x: auto;
-            padding-bottom: 10px;
-        }
-
-        .thumb {
-            width: 100px;
-            height: 56px;
-            object-fit: cover;
-            border-radius: 5px;
-            cursor: pointer;
-            opacity: 0.7;
-            transition: all 0.3s ease;
-            border: 2px solid transparent;
-        }
-
-        .thumb:hover {
-            opacity: 0.9;
-        }
-
-        .thumb.active {
-            opacity: 1;
-            border-color: #C9A24E;
-        }
-
-        .game-description {
-            margin-bottom: 30px;
-            background-color: #3c1211;
-            border-radius: 10px;
-            padding: 20px;
-        }
-
-        .markdown-content {
-            line-height: 1.6;
-        }
-
-        .markdown-content h4 {
-            color: #C9A24E;
-            margin-top: 20px;
-            margin-bottom: 10px;
-        }
-
-        .markdown-content ul {
-            padding-left: 20px;
-        }
-
-        .markdown-content li {
-            margin-bottom: 5px;
-        }
-
-        .markdown-content strong {
-            color: #C9A24E;
-        }        .achievements-section, .reviews-section, .wishlist-section {
-            margin-bottom: 30px;
-            background-color: #3c1211;
-            border-radius: 10px;
-            padding: 20px;
-        }
-        
-        .wishlist-container {
-            min-height: 100px;
-        }
-        
-        .wishlist-empty {
-            text-align: center;
-            color: #aaa;
-            font-style: italic;
-        }
-        
-        .wishlist-items {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-            gap: 15px;
-        }
-        
-        .wishlist-item {
-            background-color: #471C1A;
-            padding: 10px;
-            border-radius: 8px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-        
-        .wishlist-item img {
-            width: 120px;
-            height: 70px;
-            object-fit: cover;
-            border-radius: 5px;
-            margin-bottom: 10px;
-        }
-        
-        .wishlist-item-title {
-            font-size: 16px;
-            margin: 5px 0;
-        }
-          .wishlist-item-price {
-            font-size: 14px;
-            color: #C9A24E;
-            font-weight: bold;
-            margin-bottom: 8px;
-        }
-        
-        .remove-wishlist {
-            background-color: #5E1F1B;
-            border: 1px solid rgba(255,255,255,0.2);
-            color: white;
-            padding: 5px 10px;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 12px;
-            transition: all 0.2s ease;
-        }
-        
-        .remove-wishlist:hover {
-            background-color: #7a2b26;
-        }
-        
-        .hidden {
-            display: none;
-        }
-
-        h3 {
-            color: #C9A24E;
-            font-size: 22px;
-            margin-top: 0;
-            margin-bottom: 15px;
-            border-bottom: 1px solid #5E1F1B;
-            padding-bottom: 10px;
-        }
-
-        .achievements-list {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-            gap: 15px;
-        }
-
-        .achievement {
-            display: flex;
-            align-items: center;
-            background-color: #471C1A;
-            padding: 10px;
-            border-radius: 8px;
-        }
-
-        .achievement img {
-            width: 40px;
-            height: 40px;
-            border-radius: 5px;
-            margin-right: 10px;
-        }
-
-        .achievement-info h4 {
-            margin: 0 0 5px 0;
-            font-size: 16px;
-        }
-
-        .achievement-info p {
-            margin: 0;
-            font-size: 14px;
-            color: #aaa;
-        }
-
-        .reviews-list {
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-        }
-
-        .review {
-            background-color: #471C1A;
-            padding: 15px;
-            border-radius: 8px;
-        }
-
-        .review-header {
-            display: flex;
-            align-items: center;
-            margin-bottom: 10px;
-        }
-
-        .user-avatar {
-            width: 30px;
-            height: 30px;
-            border-radius: 50%;
-            margin-right: 10px;
-        }
-
-        .review-meta {
-            flex: 1;
-        }
-
-        .review-meta h4 {
-            margin: 0;
-            font-size: 16px;
-        }
-
-        .review-rating {
-            color: #C9A24E;
-            font-size: 14px;
-        }
-
-        .review-content {
-            margin: 0;
-            line-height: 1.4;
-        }
-
-        .game-grid {
-            width: 25%;
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
-            padding: 20px;
-            box-sizing: border-box;
-            background-color: #3c0f0e;
-            overflow-y: auto;
-        }
-
-        .game-card {
-            background-color: #5E1F1B;
-            border-radius: 10px;
-            padding: 15px;
-            color: white;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.3);
-            transition: transform 0.2s;
-        }
-
-        .game-card:hover {
-            transform: translateY(-5px);
-        }
-
-        .game-card img {
-            width: 100%;
-            border-radius: 8px;
-        }
-
-        .game-card h3 {
-            margin: 10px 0 5px;
-            font-size: 18px;
-            border-bottom: none;
-            padding-bottom: 0;
-        }
-
-        .game-card p {
-            font-size: 14px;
-            margin-bottom: 10px;
-        }
-
-        .game-card button {
-            background-color: #C9A24E;
-            border: none;
-            color: black;
-            padding: 10px 15px;
-            border-radius: 5px;
-            font-weight: bold;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .game-card button:hover {
-            background-color: #e7c55b;
-        }
-    </style>    <script>
-        // JavaScript for gallery functionality
-        document.addEventListener('DOMContentLoaded', function() {
-            const thumbs = document.querySelectorAll('.thumb');
-            const galleryImages = document.querySelectorAll('.gallery-img');
-            
-            thumbs.forEach(thumb => {
-                thumb.addEventListener('click', function() {
-                    const index = parseInt(this.dataset.index);
-                    
-                    // Update active states for thumbnails
-                    thumbs.forEach(t => t.classList.remove('active'));
-                    this.classList.add('active');
-                    
-                    // Update active states for gallery images
-                    galleryImages.forEach(img => img.classList.remove('active'));
-                    galleryImages[index].classList.add('active');
-                });
-            });
-            
-            // Buy button functionality
-            const buyButton = document.querySelector('.buy-button');
-            const playButton = document.querySelector('.play-button');
-            
-            buyButton.addEventListener('click', function() {
-                // Simulate purchase
-                alert('Thank you for your purchase! You can now play the game.');
-                
-                // Enable play button
-                playButton.disabled = false;
-            });
-            
-            playButton.addEventListener('click', function() {
-                if (!this.disabled) {
-                    alert('Launching game...');
-                }
-            });
-            
-            // Wishlist functionality
-            const wishlistButton = document.querySelector('.wishlist-button');
-            const wishlistIcon = document.querySelector('.wishlist-icon');
-            const wishlistItems = document.querySelector('.wishlist-items');
-            const emptyWishlistMessage = document.querySelector('.wishlist-empty');
-            
-            // Sample wishlist data for demonstration
-            const wishlistGames = [];
-            
-            // Handle wishlist button clicks
-            wishlistButton.addEventListener('click', function() {
-                // Toggle wishlist state
-                if (this.classList.contains('wishlisted')) {
-                    // Remove from wishlist
-                    this.classList.remove('wishlisted');
-                    wishlistIcon.textContent = '♡';
-                    this.textContent = '';
-                    this.appendChild(wishlistIcon);
-                    this.appendChild(document.createTextNode(' Add to Wishlist'));
-                    
-                    // Remove the game from wishlist array
-                    const gameIndex = wishlistGames.findIndex(game => game.title === 'Cyberpunk Adventure');
-                    if (gameIndex !== -1) {
-                        wishlistGames.splice(gameIndex, 1);
-                    }
-                } else {
-                    // Add to wishlist
-                    this.classList.add('wishlisted');
-                    wishlistIcon.textContent = '♥';
-                    this.textContent = '';
-                    this.appendChild(wishlistIcon);
-                    this.appendChild(document.createTextNode(' In Wishlist'));
-                    
-                    // Add the current game to wishlist
-                    wishlistGames.push({
-                        id: 'cyberpunk-adventure',
-                        title: 'Cyberpunk Adventure',
-                        image: 'https://placehold.co/300x150',
-                        price: '$59.99'
-                    });
-                }
-                
-                // Update wishlist display
-                updateWishlistDisplay();
-            });
-            
-            function updateWishlistDisplay() {
-                // Clear current wishlist
-                wishlistItems.innerHTML = '';
-                
-                // Show/hide empty message
-                if (wishlistGames.length === 0) {
-                    emptyWishlistMessage.classList.remove('hidden');
-                    wishlistItems.classList.add('hidden');
-                } else {
-                    emptyWishlistMessage.classList.add('hidden');
-                    wishlistItems.classList.remove('hidden');
-                    
-                    // Add each game to wishlist
-                    wishlistGames.forEach(game => {
-                        const gameElement = document.createElement('div');
-                        gameElement.className = 'wishlist-item';
-                        
-                        const gameImage = document.createElement('img');
-                        gameImage.src = game.image;
-                        gameImage.alt = game.title;
-                        
-                        const gameTitle = document.createElement('div');
-                        gameTitle.className = 'wishlist-item-title';
-                        gameTitle.textContent = game.title;
-                        
-                        const gamePrice = document.createElement('div');
-                        gamePrice.className = 'wishlist-item-price';
-                        gamePrice.textContent = game.price;
-                        
-                        const removeButton = document.createElement('button');
-                        removeButton.className = 'remove-wishlist';
-                        removeButton.textContent = 'Remove';
-                        removeButton.addEventListener('click', function() {
-                            // Remove from wishlist
-                            const gameIndex = wishlistGames.findIndex(g => g.id === game.id);
-                            if (gameIndex !== -1) {
-                                wishlistGames.splice(gameIndex, 1);
-                            }
-                            
-                            // Update current game if it's the same one
-                            if (game.id === 'cyberpunk-adventure') {
-                                wishlistButton.classList.remove('wishlisted');
-                                wishlistIcon.textContent = '♡';
-                                wishlistButton.textContent = '';
-                                wishlistButton.appendChild(wishlistIcon);
-                                wishlistButton.appendChild(document.createTextNode(' Add to Wishlist'));
-                            }
-                            
-                            // Refresh wishlist display
-                            updateWishlistDisplay();
-                        });
-                        
-                        gameElement.appendChild(gameImage);
-                        gameElement.appendChild(gameTitle);
-                        gameElement.appendChild(gamePrice);
-                        gameElement.appendChild(removeButton);
-                        
-                        wishlistItems.appendChild(gameElement);
-                    });
-                }
+        // Wishlist button functionality
+        $('#wishlist-button').on('click', function() {
+            const userId = getUserId();
+            if (!userId) {
+                alert('Please log in to add games to your wishlist');
+                return;
             }
             
-            // Initialize wishlist display
-            updateWishlistDisplay();
+            const $wishlistBtn = $(this);
+            const $wishlistIcon = $wishlistBtn.find('.wishlist-icon');
+            
+            // Toggle wishlist state
+            if ($wishlistBtn.hasClass('wishlisted')) {
+                // Remove from wishlist
+                $wishlistBtn.removeClass('wishlisted');
+                $wishlistIcon.text('♡');
+                $wishlistBtn.html('').append($wishlistIcon).append(' Add to Wishlist');
+                
+                // Make API call to remove from wishlist
+                removeFromWishlist(userId, gameId);
+            } else {
+                // Add to wishlist
+                $wishlistBtn.addClass('wishlisted');
+                $wishlistIcon.text('♥');
+                $wishlistBtn.html('').append($wishlistIcon).append(' In Wishlist');
+                
+                // Make API call to add to wishlist
+                addToWishlist(userId, gameId);
+            }
         });
-    </script>
+    }
+    
+    // Function to initialize account data
+    function initAccount() {
+        const userId = getUserId();
+        
+        if (userId) {
+            // Fetch user profile data
+            $.ajax({
+                url: `http://localhost:8080/api/customers/id=${userId}`,
+                method: 'GET',
+                success: function(userData) {
+                    // Update display name
+                    if (userData && userData.dName) {
+                        $('#user-display-name').text(userData.dName);
+                    } else if (userData && userData.uName) {
+                        $('#user-display-name').text(userData.uName);
+                    }
+                    
+                    // Load profile photo if available
+                    fetchProfilePhoto(userId);
+                },
+                error: function(xhr, status, error) {
+                    console.error('Error fetching user data:', error);
+                }
+            });
+        }
+    }
+    
+    // Function to fetch user profile photo
+    function fetchProfilePhoto(userId) {
+        const photoUrl = `http://localhost:8080/api/customers/id=${userId}/photo`;
+        
+        // Test if the image exists
+        $.ajax({
+            url: photoUrl,
+            method: 'GET',
+            success: function() {
+                $('#user-profile-photo').attr('src', photoUrl);
+            },
+            error: function(xhr, status, error) {
+                console.error('Error loading profile photo:', error);
+            }
+        });
+    }
+    
+    // Function to get user ID from storage
+    function getUserId() {
+        return sessionStorage.getItem('userId') || localStorage.getItem('userId');
+    }
+    
+    // Function to fetch game details
+    function fetchGameDetails(gameId) {
+        console.log("Fetching details for game ID:", gameId);
+        
+        $.ajax({
+            url: `/service/buypage/details/${gameId}`,
+            method: 'GET',
+            success: function(game) {
+                console.log("Game details received:", game);
+                
+                // Display game details
+                displayGameDetails(game);
+                
+                // Check if user owns this game
+                checkGameOwnership(gameId);
+                
+                // Check if game is in wishlist
+                checkWishlistStatus(gameId);
+            },
+            error: function(xhr, status, error) {
+                console.error('Error fetching game details:', error);
+                showError('Game not found or an error occurred');
+            }
+        });
+    }
+    
+    // Function to fetch game reviews
+    function fetchGameReviews(gameId) {
+        $.ajax({
+            url: `/service/buypage/reviews/${gameId}`,
+            method: 'GET',
+            success: function(reviews) {
+                console.log(`Received ${reviews.length} reviews for game ${gameId}`);
+                displayReviews(reviews);
+            },
+            error: function(xhr, status, error) {
+                console.error('Error fetching game reviews:', error);
+                // Just show no reviews message
+                $('#reviews-list').html('<p>No reviews available for this game yet.</p>');
+            }
+        });
+    }
+    
+    // Function to display game details
+    function displayGameDetails(game) {
+        // Hide loading indicator and show game details
+        $('#loading-indicator').hide();
+        $('#game-details').show();
+        
+        // Set game title
+        $('#game-title').text(game.gName || 'Untitled Game');
+        
+        // Set game price
+        $('#game-price').text(formatPrice(game.gPrice));
+        
+        // Set game rating
+        setRating(game.rating || 0);
+        
+        // Set game description
+        $('#game-description').html(game.gDesc || 'No description available.');
+        
+        // Set game icon/cover (game banner is picture1)
+        const $iconElement = $('#game-icon');
+        $iconElement.attr('src', `/service/buypage/image/${game.gameID}/main`);
+        $iconElement.attr('alt', game.gName);
+        $iconElement.on('error', function() {
+            $(this).attr('src', 'https://placehold.co/200x200/3c1211/C9A24E?text=No+Image');
+            $(this).attr('alt', 'No image available');
+        });
+        
+        // Set up gallery images (picture2-picture5)
+        setupGallery(game);
+    }
+    
+    // Function to set up the gallery
+    function setupGallery(game) {
+        const $galleryImages = $('.gallery-images');
+        const $galleryThumbs = $('#gallery-thumbs');
+        
+        // Clear current images in gallery
+        $galleryImages.empty();
+        $galleryThumbs.empty();
+        
+        // Check if any additional pictures exist (picture2 to picture5)
+        const hasPictures = game.picture2 != null || game.picture3 != null || 
+                            game.picture4 != null || game.picture5 != null;
+        
+        if (!hasPictures) {
+            // If no pictures, show placeholder
+            const $noImageElement = $('<div>')
+                .addClass('no-image-message')
+                .text('No screenshots available');
+            $galleryImages.append($noImageElement);
+            return;
+        }
+        
+        // Add images to gallery
+        let activeImageSet = false;
+        
+        // Create array of potential pictures
+        const pictures = [
+            { id: 2, field: 'picture2' },
+            { id: 3, field: 'picture3' },
+            { id: 4, field: 'picture4' },
+            { id: 5, field: 'picture5' }
+        ];
+        
+        pictures.forEach(pic => {
+            if (game[pic.field] != null) {
+                const imageUrl = `/service/buypage/image/${game.gameID}/picture${pic.id}`;
+                
+                // Add to main gallery
+                const $img = $('<img>')
+                    .addClass(`gallery-img ${!activeImageSet ? 'active' : ''}`)
+                    .attr('src', imageUrl)
+                    .attr('alt', `${game.gName} Screenshot ${pic.id}`)
+                    .attr('data-index', pic.id - 2); // Index 0-3 for pictures 2-5
+                
+                $img.on('error', function() {
+                    $(this).attr('src', 'https://placehold.co/600x400/3c1211/C9A24E?text=No+Image');
+                    $(this).attr('alt', 'No image available');
+                });
+                $galleryImages.append($img);
+                
+                // Add thumbnail
+                const $thumb = $('<img>')
+                    .addClass(`thumb ${!activeImageSet ? 'active' : ''}`)
+                    .attr('src', imageUrl)
+                    .attr('alt', `Thumbnail ${pic.id}`)
+                    .attr('data-index', pic.id - 2);
+                
+                $thumb.on('error', function() {
+                    $(this).attr('src', 'https://placehold.co/100x56/3c1211/C9A24E?text=No+Image');
+                });
+                
+                // Add click event to thumbnail
+                $thumb.on('click', function() {
+                    // Update active classes for thumbnails
+                    $galleryThumbs.find('.thumb').removeClass('active');
+                    $(this).addClass('active');
+                    
+                    // Update active classes for gallery images
+                    $galleryImages.find('.gallery-img').removeClass('active');
+                    const selectedIndex = $(this).data('index');
+                    $galleryImages.find(`.gallery-img[data-index="${selectedIndex}"]`).addClass('active');
+                });
+                
+                $galleryThumbs.append($thumb);
+                activeImageSet = true;
+            }
+        });
+    }
+    
+    // Function to format and display reviews
+    function displayReviews(reviews) {
+        const $reviewsList = $('#reviews-list');
+        
+        if (!reviews || reviews.length === 0) {
+            $reviewsList.html('<p>No reviews available for this game yet.</p>');
+            return;
+        }
+        
+        $reviewsList.empty();
+        
+        // Sort reviews by date (newest first)
+        reviews.sort((a, b) => new Date(b.reviewDate) - new Date(a.reviewDate));
+        
+        // Display up to 5 reviews
+        const displayReviews = reviews.slice(0, 5);
+        
+        displayReviews.forEach(review => {
+            // Convert score (1-10) to stars (1-5)
+            const starRating = Math.round((review.score / 2) * 10) / 10;
+            const recommended = review.score >= 5;
+            
+            // Get user name (use dName if available, otherwise uName)
+            const userName = review.customer.dName || review.customer.uName || 'Anonymous';
+            
+            // Format date
+            const reviewDate = new Date(review.reviewDate);
+            const formattedDate = reviewDate.toLocaleDateString();
+            
+            const $reviewElement = $('<div>').addClass('review').html(`
+                <div class="review-header">
+                    <div class="user-avatar">👤</div>
+                    <div class="review-meta">
+                        <h4>${userName}</h4>
+                        <div class="review-rating">
+                            ${renderStars(starRating)}
+                            <span class="recommendation ${recommended ? 'recommended' : 'not-recommended'}">
+                                ${recommended ? '✓ Recommended' : '✗ Not Recommended'}
+                            </span>
+                            <span class="review-date">${formattedDate}</span>
+                        </div>
+                    </div>
+                </div>
+                <p class="review-content">${review.comment || 'No comment provided.'}</p>
+            `);
+            
+            $reviewsList.append($reviewElement);
+        });
+    }
+    
+    // Helper function to render stars for reviews
+    function renderStars(rating) {
+        const fullStars = Math.floor(rating);
+        const hasHalfStar = rating % 1 >= 0.5;
+        let stars = '';
+        
+        for (let i = 0; i < fullStars; i++) {
+            stars += '★';
+        }
+        
+        if (hasHalfStar) {
+            stars += '☆';
+        }
+        
+        const emptyStars = 5 - Math.ceil(rating);
+        for (let i = 0; i < emptyStars; i++) {
+            stars += '☆';
+        }
+        
+        return `<span class="stars">${stars}</span>`;
+    }
+    
+    // Function to set rating display
+    function setRating(rating) {
+        // Format rating to one decimal place
+        const formattedRating = parseFloat(rating).toFixed(1);
+        
+        // Update rating text
+        $('#game-rating').text(`${formattedRating}/5`);
+        
+        // Update stars visual
+        const fullStars = Math.floor(rating);
+        const hasHalfStar = rating % 1 >= 0.5;
+        
+        let starsHTML = '';
+        
+        // Add full stars
+        for (let i = 0; i < fullStars; i++) {
+            starsHTML += '★';
+        }
+        
+        // Add half star if needed
+        if (hasHalfStar) {
+            starsHTML += '½';
+        }
+        
+        // Add empty stars
+        const emptyStars = 5 - Math.ceil(rating);
+        for (let i = 0; i < emptyStars; i++) {
+            starsHTML += '☆';
+        }
+        
+        $('#game-stars').text(starsHTML);
+    }
+    
+    // Function to fetch related games (different from current game)
+    function fetchRelatedGames(currentGameId) {
+        $.ajax({
+            url: `/service/buypage/related/${currentGameId}`,
+            method: 'GET',
+            success: function(games) {
+                const $relatedGamesContainer = $('#related-games');
+                $relatedGamesContainer.empty();
+                
+                if (games.length === 0) {
+                    $relatedGamesContainer.html('<p>No related games found</p>');
+                    return;
+                }
+                
+                games.forEach(game => {
+                    const $gameCard = createGameCard(game);
+                    $relatedGamesContainer.append($gameCard);
+                });
+            },
+            error: function(xhr, status, error) {
+                console.error('Error fetching related games:', error);
+                $('#related-games').html('<p>Failed to load related games</p>');
+            }
+        });
+    }
+    
+    // Function to create a game card
+    function createGameCard(game) {
+        // Use proper image URL (banner is picture1)
+        const imageUrl = `/service/buypage/image/${game.gameID}/main`;
+        
+        const $card = $('<div>').addClass('game-card');
+        
+        const $img = $('<img>')
+            .attr('src', imageUrl)
+            .attr('alt', game.gName)
+            .on('error', function() {
+                $(this).attr('src', 'https://placehold.co/300x150/3c1211/C9A24E?text=No+Image');
+            });
+        
+        const $title = $('<h4>').text(game.gName || 'Untitled Game');
+        const $price = $('<p>').text(formatPrice(game.gPrice));
+        const $button = $('<button>')
+            .attr('data-id', game.gameID)
+            .text('View Details')
+            .on('click', function() {
+                window.location.href = `/buypage?id=${$(this).data('id')}`;
+            });
+        
+        $card.append($img, $title, $price, $button);
+        
+        return $card;
+    }
+    
+    // Function to check if user owns the game
+    function checkGameOwnership(gameId) {
+        const userId = getUserId();
+        
+        if (!userId) return;
+        
+        // Call API to check if user owns this game
+        $.ajax({
+            url: `http://localhost:8080/api/customers/games/id=${userId}`,
+            method: 'GET',
+            success: function(ownedGames) {
+                const ownsGame = ownedGames.some(game => game.gameID == gameId);
+                
+                if (ownsGame) {
+                    // Update UI to show the user owns this game
+                    const $buyButton = $('#buy-button');
+                    const $playButton = $('#play-button');
+                    
+                    $buyButton.text('Owned');
+                    $buyButton.prop('disabled', true);
+                    $buyButton.css('backgroundColor', '#5E1F1B');
+                    
+                    $playButton.prop('disabled', false);
+                }
+            },
+            error: function(xhr, status, error) {
+                console.error('Error checking game ownership:', error);
+            }
+        });
+    }
+    
+    // Function to check if game is in wishlist
+    function checkWishlistStatus(gameId) {
+        const userId = getUserId();
+        
+        if (!userId) return;
+        
+        // Call API to check if game is in wishlist
+        $.ajax({
+            url: `http://localhost:8080/api/wishlist/user=${userId}`,
+            method: 'GET',
+            success: function(wishlistGames) {
+                console.log(gameId);
+                const isWishlisted = wishlistGames.some(game => game.id.gameID == gameId);
+
+                //console.log(wishlistGames.some(game => game.id.gameID == gameId));
+                
+                if (isWishlisted) {
+                    // Update UI to show the game is wishlisted
+                    const $wishlistButton = $('#wishlist-button');
+                    const $wishlistIcon = $wishlistButton.find('.wishlist-icon'); 
+                    
+                    $wishlistButton.addClass('wishlisted');
+                    $wishlistIcon.text('♥');
+                    $wishlistButton.html('');
+                    $wishlistButton.append($wishlistIcon);
+                    $wishlistButton.append(' In Wishlist');
+                }
+            },
+            error: function(xhr, status, error) {
+                console.error('Error checking wishlist status:', error);
+            }
+        });
+    }
+    
+    // Function to add to wishlist
+    function addToWishlist(userId, gameId) {
+        $.ajax({
+            url: `http://localhost:8080/api/wishlist/user=${userId}/game=${gameId}`,
+            method: 'POST',
+            success: function(data) {
+                console.log('Added to wishlist:', data);
+            },
+            error: function(xhr, status, error) {
+                console.error('Error adding to wishlist:', error);
+                alert('Failed to add game to wishlist');
+            }
+        });
+    }
+    
+    // Function to remove from wishlist
+    function removeFromWishlist(userId, gameId) {
+        $.ajax({
+            url: `http://localhost:8080/api/wishlist/user=${userId}/game=${gameId}`,
+            method: 'DELETE',
+            success: function(data) {
+                console.log('Removed from wishlist:', data);
+            },
+            error: function(xhr, status, error) {
+                console.error('Error removing from wishlist:', error);
+                alert('Failed to remove game from wishlist');
+            }
+        });
+    }
+    
+    // Function to download game file
+    function downloadGameFile(gameId) {
+        const downloadUrl = `http://localhost:8080/api/games/id=${gameId}/file`;
+        
+        // Create a temporary link and trigger download
+        const $downloadLink = $('<a>')
+            .attr('href', downloadUrl)
+            .attr('download', `game_${gameId}.zip`)
+            .appendTo('body');
+            
+        $downloadLink[0].click();
+        $downloadLink.remove();
+    }
+    
+    // Function to show error message
+    function showError(message) {
+        $('#loading-indicator').hide();
+        $('#game-details').hide();
+        
+        const $errorElement = $('#error-message');
+        $errorElement.show();
+        $errorElement.find('p').text(message);
+    }
+    
+    // Helper function to format price
+    function formatPrice(price) {
+        if (price === undefined || price === null) return 'Free';
+        if (price === 0) return 'Free';
+        return `$${parseFloat(price).toFixed(2)}`;
+    }
+});
+</script>
+
 </body>
 </html>
