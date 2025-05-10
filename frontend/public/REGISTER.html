@@ -6,6 +6,7 @@
   <title>TVaporr User Registration</title>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
   <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
   <style>
     body, html {
       margin: 0;
@@ -263,6 +264,15 @@
     .phone-number::placeholder {
       color: rgba(255, 255, 255, 0.6);
     }
+
+    #birthday.placeholder-shown::before {
+      content: 'DD/MM/YYYY';
+      color: rgba(255, 255, 255, 0.6);
+      position: absolute;
+      left: 12px;
+      top: 12px;
+      pointer-events: none;
+    }
   </style>
 </head>
 <body>
@@ -326,7 +336,7 @@
       </div>
       <div class="form-group">
         <label for="birthday">Date of Birth</label>
-        <input type="date" id="birthday" required>
+        <input type="text" id="birthday" placeholder="DD/MM/YYYY" required>
         <div class="error" id="birthdayError"></div>
       </div>
       <button type="submit" class="register-btn">Create Account</button>
@@ -337,6 +347,7 @@
   </div>
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
   <script>
     const countries = [
       { name: "Afghanistan", iso3: "004", phoneCode: "+93" },
@@ -401,6 +412,40 @@
         const selectedOption = $(this).find(':selected');
         const phoneCode = selectedOption.attr('data-phone-code') || '';
         $('#phoneCountryCode').text(phoneCode);
+      });
+    });
+
+    document.addEventListener('DOMContentLoaded', function () {
+      const birthdayInput = document.getElementById('birthday');
+
+      // Initialize flatpickr for the birthday input
+      flatpickr(birthdayInput, {
+        dateFormat: "d/m/Y", // Set format to DD/MM/YYYY
+        altInput: true,
+        altFormat: "d/m/Y",
+        locale: "en", // Force calendar to display in English
+        allowInput: true, // Allow manual input
+        maxDate: "today", // Restrict maximum date to today
+        onReady: function (_, __, instance) {
+          // Apply custom font to the calendar
+          instance.calendarContainer.style.fontFamily = "'Poppins', sans-serif";
+
+          // Fix width of month dropdown and add border radius
+          const monthDropdown = instance.calendarContainer.querySelector(".flatpickr-monthDropdown-months");
+          if (monthDropdown) {
+            monthDropdown.style.width = "130px"; // Set consistent width
+            monthDropdown.style.height = "30px"; // Set consistent height
+            monthDropdown.style.borderRadius = "8px"; // Add border radius
+            monthDropdown.style.marginRight = "10px"; // Move to the right by 20px
+          }
+
+          // Move year input wrapper to the right
+          const yearDropdown = instance.calendarContainer.querySelector(".numInputWrapper");
+          if (yearDropdown) {
+            yearDropdown.style.width = "65px"; // Set consistent width
+            yearDropdown.style.borderRadius = "8px"; // Set consistent border radius
+          }
+        }
       });
     });
   </script>
