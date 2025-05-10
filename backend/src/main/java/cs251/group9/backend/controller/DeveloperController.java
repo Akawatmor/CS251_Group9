@@ -4,20 +4,16 @@
 package cs251.group9.backend.controller;
 
 import org.springframework.beans.factory.annotation.*;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.*;
 
-import cs251.group9.backend.entity.Developer3x;
-import cs251.group9.backend.repository.DeveloperRepository;
-import cs251.group9.backend.service.DeveloperService;
-import cs251.group9.backend.service.PhotoService;
+import cs251.group9.backend.entity.*;
+import cs251.group9.backend.service.*;
+import cs251.group9.backend.repository.*;
 
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.io.*;
+import java.util.*;
 
 @RestController
 @RequestMapping("/api/developers")

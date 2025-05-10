@@ -1,20 +1,14 @@
 package cs251.group9.backend.controller;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.beans.factory.annotation.*;
+import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
 
-import cs251.group9.backend.entity.Achievement4x;
-import cs251.group9.backend.entity.AchievementUser;
-import cs251.group9.backend.entity.AchievementUserId;
-import cs251.group9.backend.entity.Customer1x;
-import cs251.group9.backend.repository.AchievementRepository;
-import cs251.group9.backend.repository.AchievementUserRepository;
-import cs251.group9.backend.repository.Customer1xRepository;
+import cs251.group9.backend.entity.*;
+//import cs251.group9.backend.service.*;
+import cs251.group9.backend.repository.*;
 
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @RestController
 @RequestMapping("/api/user-achievements")

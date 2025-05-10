@@ -1,14 +1,14 @@
 package cs251.group9.backend.controller;
 
-import cs251.group9.backend.entity.Category5x;
-import cs251.group9.backend.repository.CategoryRepository;
-
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.*;
 import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-import java.util.Optional;
+import cs251.group9.backend.entity.*;
+//import cs251.group9.backend.service.*;
+import cs251.group9.backend.repository.*;
+
+import java.util.*;
 
 @RestController
 @RequestMapping("/api/categories")
