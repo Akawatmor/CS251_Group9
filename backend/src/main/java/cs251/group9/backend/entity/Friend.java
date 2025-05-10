@@ -1,7 +1,5 @@
 package cs251.group9.backend.entity;
 
-import java.time.*;
-
 import jakarta.persistence.*;
 
 @Entity

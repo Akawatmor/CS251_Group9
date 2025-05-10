@@ -32,8 +32,13 @@ public class Developer3x {
         if (this.devID == null) this.devID = 3000000001L;
     }
 	
+	//Dev Name and Username
 	@Column(unique = true, nullable = false)
     private String devName;
+
+	//Dev Password
+	@Column(nullable = false)
+	private String password;
     
     @Column(unique = true, nullable = false)
     private String email;
@@ -87,4 +92,11 @@ public class Developer3x {
     public void setTeamPicture(String teamPicture) {
         this.teamPicture = teamPicture;
     }
+	public String getPassword() {
+		return password;
+	}
+	public void setPassword(String password) {
+		this.password = password;
+	}
+	
 }

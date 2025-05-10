@@ -165,4 +165,14 @@ public class DeveloperService {
     public boolean isUsernameTaken(String username) {
         return isDeveloperNameTaken(username);
     }
+
+    /**
+     * Find developer by username and password
+     * @param username Developer username
+     * @param password Developer password
+     * @return Optional of Developer3x if found
+     */
+    public Optional<Developer3x> findByDevNameAndPassword(String username, String password) {
+        return developerRepo.findByDevNameAndPassword(username, password);
+    }
 }
