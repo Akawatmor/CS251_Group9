@@ -279,7 +279,16 @@
       document.getElementById('age').value = userData.age || '';
       
       // User display info in sidebar - ensure balance is correctly formatted
-      document.getElementById('user-display-name').textContent = userData.dName || 'User';
+      //console.log('User display name:', userData); // For debugging
+      if (userData.dName != null) {
+        document.getElementById('user-display-name').textContent = userData.dName;
+      }
+      else if (userData.uName != null) {
+        document.getElementById('user-display-name').textContent = userData.uName;
+      }
+      else{
+        document.getElementById('user-display-name').textContent = "Unknown User";
+      }
 
       //console.log('User balance:', userData.user); // For debugging
       

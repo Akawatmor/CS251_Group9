@@ -141,8 +141,14 @@
           userData = userData.user
           console.log('User data:', userData);
           // Update display name
-          if (userData && userData.dName) {
+          if (userData.dName != null) {
             userDisplayName.textContent = userData.dName;
+          }
+          else if (userData.uName != null) {
+            userDisplayName.textContent = userData.uName;
+          }
+          else{
+            userDisplayName.textContent = "Unknown User";
           }
           
           // Load profile photo
