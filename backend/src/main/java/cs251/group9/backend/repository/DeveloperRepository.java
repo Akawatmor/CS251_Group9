@@ -13,7 +13,7 @@ public interface DeveloperRepository extends JpaRepository<Developer3x, Long> {
     boolean existsByDevName(String devName);
     boolean existsByEmail(String email);
 
-    @Query(value = "SELECT * FROM developer WHERE devName = :devName AND password = :password", nativeQuery = true)
+    @Query(value = "SELECT * FROM developer WHERE dev_name = :devName AND password = :password", nativeQuery = true)
     Optional<Developer3x> findByDevNameAndPassword(String devName, String password);
 
 
