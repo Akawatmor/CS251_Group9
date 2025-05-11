@@ -58,6 +58,9 @@ app.use((err, req, res, next) => {
 app.get("/", (req, res) => {
   res.sendFile(path.join(__dirname, "public", "LOGIN.html"));
 });
+app.get("/login", (req, res) => {
+  res.sendFile(path.join(__dirname, "public", "LOGIN.html"));
+});
 
 app.use(webroutes);
 app.use("/service", webctl);

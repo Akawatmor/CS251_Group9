@@ -121,7 +121,7 @@ class BuyPageService {
      */
     static async getAllGames() {
         try {
-            const response = await makeRequest(`${BASE_URL}/games/search/all`);
+            const response = await makeRequest(`${BASE_URL}/games/all`);
             return response.data;
         } catch (error) {
             console.error(`Error fetching all games:`, error.message);
@@ -264,6 +264,7 @@ module.exports = {
             try {
                 const currentGameId = req.params.gameId;
                 const allGames = await BuyPageService.getAllGames();
+                allGames = allGames.game;
                 
                 // Filter out current game
                 const otherGames = allGames.filter(game => game.gameID != currentGameId);

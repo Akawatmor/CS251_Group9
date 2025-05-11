@@ -398,7 +398,7 @@
     
     switch(sectionId) {
       case 'all':
-        apiEndpoint = 'http://localhost:8080/api/games/search/all';
+        apiEndpoint = 'http://localhost:8080/api/games/all';
         break;
       case 'wishlist':
         apiEndpoint = `http://localhost:8080/api/wishlist/user=${userId}`;
@@ -410,7 +410,7 @@
         apiEndpoint = 'http://localhost:8080/api/games/search/top-rated';
         break;
       default:
-        apiEndpoint = 'http://localhost:8080/api/games/search/all';
+        apiEndpoint = 'http://localhost:8080/api/games/all';
     }
     
     // Fetch games from the API
@@ -431,7 +431,7 @@
           displayGames(wishlistGames, gridId);
         } else {
           // For other sections, use data directly
-          displayGames(data, gridId);
+          displayGames(data.game, gridId);
         }
       })
       .catch(error => {
@@ -456,12 +456,13 @@
       .then(response => {
         if (!response.ok) {
           // If server doesn't support search by name parameter, fallback to client-side filtering
-          return fetch('http://localhost:8080/api/games/search/all')
+          return fetch('http://localhost:8080/api/games/all')
             .then(resp => {
               if (!resp.ok) throw new Error('Failed to fetch games');
               return resp.json();
             })
             .then(allGames => {
+              console.log('All games:', allGames);
               // Filter games by name on the client side (case-insensitive)
               const filteredGames = allGames.filter(game => 
                 game.gName && game.gName.toLowerCase().includes(query.toLowerCase())

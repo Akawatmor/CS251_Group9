@@ -6,10 +6,6 @@ const LoginService = require('../springmiddleware/LOGIN');
 
 ///// Function Route /////
 
-// Remove hardcoded credentials as they will now be verified by the backend
-// const USER = "Example";
-// const PASS = "Password";
-
 router.post("/authen", async (requ, resp) => {
     const {user, pass} = requ.body;
     
@@ -27,9 +23,28 @@ router.post("/authen", async (requ, resp) => {
         const authResult = await LoginService.authenticate(user, pass);
         
         if (authResult.success) {
-            // Set session on successful login
+            // Set session based on user type
+            requ.session.user = {
+                id: authResult.id,
+                username: user,
+                type: authResult.type
+            };
             
-            requ.session.user = user;
+            // Return user type and redirect URL for client-side redirect
+            let redirectUrl = '/home'; // Default for customer
+            
+            if (authResult.type === 'developer') {
+                redirectUrl = '/devpage';
+            } else if (authResult.type === 'admin') {
+                redirectUrl = '/staffpage';
+            }
+            
+            return resp.json({
+                success: true,
+                id: authResult.id,
+                type: authResult.type,
+                redirectUrl: redirectUrl
+            });
         }
         
         // Return the result from the authentication service
@@ -70,7 +85,6 @@ router.all("/", (requ, resp) =>{
         resp.status(405); // Set HTTP status 405 first
         resp.sendFile(path.join(__dirname, "..", "public", "ERROR", "405Error_Re5_MNA_EN.html"));
     }
-
 });
 
 module.exports = router;

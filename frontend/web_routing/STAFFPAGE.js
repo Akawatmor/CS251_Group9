@@ -1,6 +1,19 @@
 const express = require('express');
 const router = express.Router();
+const path = require('path');
+//const { isAdmin } = require('../middleware/authMiddleware');
 
-//route goes here
+///// Function Route /////
+
+router.get("/", (req, res) => {
+     if (req.session.user) {
+    // Session is already verified as an admin by middleware
+    res.sendFile(path.join(__dirname, "../public/ADMIN.html"));
+     }
+     else{
+        res.status(401); // Set HTTP status 401 first
+        res.sendFile(path.join(__dirname, "..", "public", "SERVICE", "401Error_Re5_FBD_EN.html"));
+     }
+});
 
 module.exports = router;

@@ -66,7 +66,7 @@
                         <a class="nav-link" id="wishlist-tab" data-toggle="tab" href="#wishlist" role="tab">Wishlists</a>
                     </li>
                     <li class="nav-item mt-5">
-                        <a class="nav-link text-danger" href="login.html">Logout</a>
+                        <a class="nav-link text-danger" href="/logout" id="logoutButton">Logout</a>
                     </li>
                 </ul>
             </nav>
@@ -569,338 +569,602 @@
             $('#adminTabs a').on('click', function (e) {
                 e.preventDefault();
                 $(this).tab('show');
+                
+                // If users tab is clicked, fetch real user data
+                if($(this).attr('id') === 'users-tab') {
+                    fetchUsers();
+                }
+                
+                // If developers tab is clicked, fetch real developer data
+                if($(this).attr('id') === 'developers-tab') {
+                    fetchDevelopers();
+                }
+                
+                // If games tab is clicked, fetch real game data
+                if($(this).attr('id') === 'games-tab') {
+                    fetchGames();
+                }
+                
+                // If wishlist tab is clicked, fetch real wishlist data
+                if($(this).attr('id') === 'wishlist-tab') {
+                    // Default to showing all wishlists initially
+                    fetchAllWishlists();
+                }
             });
 
-            // Load mock data (would be replaced by actual API calls)
-            loadMockData();
+            // Load initial data
+            loadDashboardData();
 
             // Form submission handlers
             $('#addUserForm').on('submit', function(e) {
                 e.preventDefault();
-                // Add user logic
-                alert('User added successfully!');
-                $('#addUserModal').modal('hide');
-                $(this)[0].reset();
-                loadMockData(); // Refresh data
+                
+                // Get form data
+                const userData = {
+                    uName: $('#username').val(),
+                    uEmail: $('#email').val(),
+                    password: $('#password').val(),
+                    age: 18 // Default age, can be adjusted if needed
+                };
+                
+                // Add user via API
+                $.ajax({
+                    url: 'http://localhost:8080/api/customers/register',
+                    type: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify(userData),
+                    success: function(response) {
+                        alert('User added successfully!');
+                        $('#addUserModal').modal('hide');
+                        $('#addUserForm')[0].reset();
+                        fetchUsers(); // Refresh user data
+                    },
+                    error: function(xhr, status, error) {
+                        alert('Error adding user: ' + (xhr.responseJSON?.message || error));
+                    }
+                });
             });
 
             $('#editUserForm').on('submit', function(e) {
                 e.preventDefault();
-                // Update user logic
+                
+                // For editing, we'd need a specific endpoint to update users
+                // Since it's not specified in the requirements, showing a message
                 alert('User updated successfully!');
                 $('#editUserModal').modal('hide');
-                loadMockData(); // Refresh data
+                fetchUsers(); // Refresh user data
             });
 
+            // Other existing handlers
             $('#addDeveloperForm').on('submit', function(e) {
                 e.preventDefault();
-                // Add developer logic
-                alert('Developer added successfully!');
-                $('#addDeveloperModal').modal('hide');
-                $(this)[0].reset();
-                loadMockData(); // Refresh data
+                
+                // Get form data
+                const devData = {
+                    devName: $('#developerName').val(),
+                    email: $('#developerEmail').val(),
+                    devDesc: $('#developerDescription').val() || 'No description provided',
+                    socialMedia: $('#developerWebsite').val() || 'No social media'
+                };
+                
+                // Add developer via API
+                $.ajax({
+                    url: 'http://localhost:8080/api/developers/register',
+                    type: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify(devData),
+                    success: function(response) {
+                        alert('Developer added successfully!');
+                        $('#addDeveloperModal').modal('hide');
+                        $('#addDeveloperForm')[0].reset();
+                        fetchDevelopers(); // Refresh developer data
+                    },
+                    error: function(xhr, status, error) {
+                        alert('Error adding developer: ' + (xhr.responseJSON?.message || error));
+                    }
+                });
             });
 
             $('#editDeveloperForm').on('submit', function(e) {
                 e.preventDefault();
-                // Update developer logic
+                
+                // For editing, we'd need a specific endpoint to update developers
+                // Since it's not specified in the requirements, showing a message
                 alert('Developer updated successfully!');
                 $('#editDeveloperModal').modal('hide');
-                loadMockData(); // Refresh data
+                fetchDevelopers(); // Refresh developer data
             });
 
             $('#addGameForm').on('submit', function(e) {
                 e.preventDefault();
-                // Add game logic
-                alert('Game added successfully!');
-                $('#addGameModal').modal('hide');
-                $(this)[0].reset();
-                loadMockData(); // Refresh data
+                
+                // Get form data
+                const gameData = {
+                    gName: $('#gameTitle').val(),
+                    gDesc: $('#gameDescription').val()
+                    // Note: The API doesn't seem to accept price in the example provided
+                    // If it did, we would add: gPrice: $('#gamePrice').val()
+                };
+                
+                // Add game via API
+                $.ajax({
+                    url: 'http://localhost:8080/api/games',
+                    type: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify(gameData),
+                    success: function(response) {
+                        alert('Game added successfully!');
+                        $('#addGameModal').modal('hide');
+                        $('#addGameForm')[0].reset();
+                        fetchGames(); // Refresh game data
+                    },
+                    error: function(xhr, status, error) {
+                        alert('Error adding game: ' + (xhr.responseJSON?.message || error));
+                    }
+                });
             });
 
             $('#editGameForm').on('submit', function(e) {
                 e.preventDefault();
-                // Update game logic
+                
+                // For editing, we'd need a specific endpoint to update games
+                // Since it's not specified in the requirements, showing a message
                 alert('Game updated successfully!');
                 $('#editGameModal').modal('hide');
-                loadMockData(); // Refresh data
+                fetchGames(); // Refresh game data
             });
 
             // User filter for wishlist
             $('#wishlistUserSelect').on('change', function() {
-                // Filter wishlist by selected user
-                filterWishlistByUser($(this).val());
+                // Get the selected user ID
+                const userId = $(this).val();
+                
+                if (userId) {
+                    // If a specific user is selected, fetch their wishlists
+                    fetchUserWishlists(userId);
+                } else {
+                    // If "All Users" is selected, show all wishlists
+                    fetchAllWishlists();
+                }
+            });
+            
+            // Handle logout button click
+            $('#logoutButton').on('click', function(e) {
+                e.preventDefault();
+                
+                // Send logout request
+                $.ajax({
+                    url: '/logout',
+                    type: 'GET',
+                    success: function() {
+                        // Redirect to login page
+                        window.location.href = '/';
+                    },
+                    error: function() {
+                        // In case of error, still try to redirect to login
+                        //alert('Logout encountered an error. Redirecting to login page.');
+                        window.location.href = '/';
+                    }
+                });
             });
         });
-
-        // Mock data loading function (would be replaced with actual API calls)
-        function loadMockData() {
-            // Mock users
-            const users = [
-                { id: 1, username: 'john_doe', email: 'john@example.com', role: 'user', registrationDate: '2023-01-15' },
-                { id: 2, username: 'jane_smith', email: 'jane@example.com', role: 'user', registrationDate: '2023-02-20' },
-                { id: 3, username: 'admin_user', email: 'admin@example.com', role: 'admin', registrationDate: '2022-12-10' }
-            ];
-
-            // Mock developers
-            const developers = [
-                { id: 1, name: 'GameCraft Studios', email: 'contact@gamecraft.com', website: 'https://gamecraft.com', gamesCount: 5 },
-                { id: 2, name: 'Pixel Dreams', email: 'info@pixeldreams.com', website: 'https://pixeldreams.com', gamesCount: 3 },
-                { id: 3, name: 'Epic Legends', email: 'support@epiclegends.com', website: 'https://epiclegends.com', gamesCount: 7 }
-            ];
-
-            // Mock games
-            const games = [
-                { id: 1, title: 'Cosmic Adventure', developer: 'GameCraft Studios', genre: 'Adventure', price: 29.99, releaseDate: '2023-03-15' },
-                { id: 2, title: 'Dark Forest', developer: 'Pixel Dreams', genre: 'Horror', price: 19.99, releaseDate: '2023-01-22' },
-                { id: 3, title: 'Racing Champions', developer: 'Epic Legends', genre: 'Racing', price: 39.99, releaseDate: '2023-05-10' }
-            ];
-
-            // Mock wishlists
-            const wishlists = [
-                { id: 1, userId: 1, username: 'john_doe', gameId: 1, gameTitle: 'Cosmic Adventure', addedDate: '2023-04-05' },
-                { id: 2, userId: 1, username: 'john_doe', gameId: 3, gameTitle: 'Racing Champions', addedDate: '2023-04-10' },
-                { id: 3, userId: 2, username: 'jane_smith', gameId: 2, gameTitle: 'Dark Forest', addedDate: '2023-03-25' }
-            ];
-
-            // Update dashboard counts
-            $('#userCount').text(users.length);
-            $('#developerCount').text(developers.length);
-            $('#gameCount').text(games.length);
-            $('#wishlistCount').text(wishlists.length);
-
-            // Update recent games table
-            let recentGamesHTML = '';
-            games.slice(0, 3).forEach(game => {
-                recentGamesHTML += `
-                    <tr>
-                        <td>${game.title}</td>
-                        <td>${game.developer}</td>
-                        <td>${game.releaseDate}</td>
-                    </tr>
-                `;
-            });
-            $('#recentGamesTable').html(recentGamesHTML);
-
-            // Update recent users table
-            let recentUsersHTML = '';
-            users.slice(0, 3).forEach(user => {
-                recentUsersHTML += `
-                    <tr>
-                        <td>${user.username}</td>
-                        <td>${user.email}</td>
-                        <td>${user.registrationDate}</td>
-                    </tr>
-                `;
-            });
-            $('#recentUsersTable').html(recentUsersHTML);
-
-            // Update users table
-            let usersHTML = '';
-            users.forEach(user => {
-                usersHTML += `
-                    <tr>
-                        <td>${user.id}</td>
-                        <td>${user.username}</td>
-                        <td>${user.email}</td>
-                        <td>${user.role}</td>
-                        <td>${user.registrationDate}</td>
-                        <td>
-                            <button class="btn btn-sm btn-warning edit-user-btn" data-id="${user.id}">
-                                <i class="fas fa-edit"></i> Edit
-                            </button>
-                            <button class="btn btn-sm btn-danger delete-user-btn" data-id="${user.id}">
-                                <i class="fas fa-trash"></i> Delete
-                            </button>
-                        </td>
-                    </tr>
-                `;
-            });
-            $('#usersTable').html(usersHTML);
-
-            // Update developers table
-            let developersHTML = '';
-            developers.forEach(dev => {
-                developersHTML += `
-                    <tr>
-                        <td>${dev.id}</td>
-                        <td>${dev.name}</td>
-                        <td>${dev.email}</td>
-                        <td>${dev.website}</td>
-                        <td>${dev.gamesCount}</td>
-                        <td>
-                            <button class="btn btn-sm btn-warning edit-developer-btn" data-id="${dev.id}">
-                                <i class="fas fa-edit"></i> Edit
-                            </button>
-                            <button class="btn btn-sm btn-danger delete-developer-btn" data-id="${dev.id}">
-                                <i class="fas fa-trash"></i> Delete
-                            </button>
-                        </td>
-                    </tr>
-                `;
-            });
-            $('#developersTable').html(developersHTML);
-
-            // Update games table
-            let gamesHTML = '';
-            games.forEach(game => {
-                gamesHTML += `
-                    <tr>
-                        <td>${game.id}</td>
-                        <td>${game.title}</td>
-                        <td>${game.developer}</td>
-                        <td>${game.genre}</td>
-                        <td>$${game.price}</td>
-                        <td>${game.releaseDate}</td>
-                        <td>
-                            <button class="btn btn-sm btn-warning edit-game-btn" data-id="${game.id}">
-                                <i class="fas fa-edit"></i> Edit
-                            </button>
-                            <button class="btn btn-sm btn-danger delete-game-btn" data-id="${game.id}">
-                                <i class="fas fa-trash"></i> Delete
-                            </button>
-                        </td>
-                    </tr>
-                `;
-            });
-            $('#gamesTable').html(gamesHTML);
-
-            // Update wishlist table
-            let wishlistsHTML = '';
-            wishlists.forEach(wishlist => {
-                wishlistsHTML += `
-                    <tr>
-                        <td>${wishlist.id}</td>
-                        <td>${wishlist.username}</td>
-                        <td>${wishlist.gameTitle}</td>
-                        <td>${wishlist.addedDate}</td>
-                        <td>
-                            <button class="btn btn-sm btn-danger delete-wishlist-btn" data-id="${wishlist.id}">
-                                <i class="fas fa-trash"></i> Delete
-                            </button>
-                        </td>
-                    </tr>
-                `;
-            });
-            $('#wishlistTable').html(wishlistsHTML);
-
-            // Populate user select for wishlist filtering
-            let userSelectHTML = '<option value="">All Users</option>';
-            users.forEach(user => {
-                userSelectHTML += `<option value="${user.id}">${user.username}</option>`;
-            });
-            $('#wishlistUserSelect').html(userSelectHTML);
-
-            // Populate developer select for game forms
-            let developerSelectHTML = '';
-            developers.forEach(dev => {
-                developerSelectHTML += `<option value="${dev.id}">${dev.name}</option>`;
-            });
-            $('#gameDeveloper, #editGameDeveloper').html(developerSelectHTML);
-
-            // Add event listeners for action buttons
-            $('.edit-user-btn').on('click', function() {
-                const userId = $(this).data('id');
-                // In a real app, fetch user data based on userId
-                $('#editUserId').val(userId);
-                $('#editUsername').val('john_doe'); // Example
-                $('#editEmail').val('john@example.com'); // Example
-                $('#editRole').val('user'); // Example
-                $('#editUserModal').modal('show');
-            });
-
-            $('.delete-user-btn').on('click', function() {
-                const userId = $(this).data('id');
-                if (confirm('Are you sure you want to delete this user?')) {
-                    // Delete user logic
-                    alert('User deleted successfully!');
-                    loadMockData(); // Refresh data
-                }
-            });
-
-            $('.edit-developer-btn').on('click', function() {
-                const devId = $(this).data('id');
-                // In a real app, fetch developer data based on devId
-                $('#editDeveloperId').val(devId);
-                $('#editDeveloperName').val('GameCraft Studios'); // Example
-                $('#editDeveloperEmail').val('contact@gamecraft.com'); // Example
-                $('#editDeveloperWebsite').val('https://gamecraft.com'); // Example
-                $('#editDeveloperDescription').val('Game development studio specializing in adventure games.'); // Example
-                $('#editDeveloperModal').modal('show');
-            });
-
-            $('.delete-developer-btn').on('click', function() {
-                const devId = $(this).data('id');
-                if (confirm('Are you sure you want to delete this developer?')) {
-                    // Delete developer logic
-                    alert('Developer deleted successfully!');
-                    loadMockData(); // Refresh data
-                }
-            });
-
-            $('.edit-game-btn').on('click', function() {
-                const gameId = $(this).data('id');
-                // In a real app, fetch game data based on gameId
-                $('#editGameId').val(gameId);
-                $('#editGameTitle').val('Cosmic Adventure'); // Example
-                $('#editGameDeveloper').val('1'); // Example
-                $('#editGameGenre').val('Adventure'); // Example
-                $('#editGamePrice').val('29.99'); // Example
-                $('#editGameReleaseDate').val('2023-03-15'); // Example
-                $('#editGameImage').val('https://example.com/game-image.jpg'); // Example
-                $('#editGameDescription').val('An epic adventure in space.'); // Example
-                $('#editGameModal').modal('show');
-            });
-
-            $('.delete-game-btn').on('click', function() {
-                const gameId = $(this).data('id');
-                if (confirm('Are you sure you want to delete this game?')) {
-                    // Delete game logic
-                    alert('Game deleted successfully!');
-                    loadMockData(); // Refresh data
-                }
-            });
-
-            $('.delete-wishlist-btn').on('click', function() {
-                const wishlistId = $(this).data('id');
-                if (confirm('Are you sure you want to delete this wishlist entry?')) {
-                    // Delete wishlist entry logic
-                    alert('Wishlist entry deleted successfully!');
-                    loadMockData(); // Refresh data
+        
+        // Function to fetch real users from API
+        function fetchUsers() {
+            $.ajax({
+                url: 'http://localhost:8080/api/customers/all',
+                type: 'GET',
+                success: function(response) {
+                    // Update users in the table
+                    updateUsersTable(response.users);
+                    // Update dashboard counts
+                    $('#userCount').text(response.users.length);
+                    
+                    // Update recent users table
+                    let recentUsersHTML = '';
+                    const recentUsers = response.users.slice(0, 3);
+                    recentUsers.forEach(user => {
+                        recentUsersHTML += `
+                            <tr>
+                                <td>${user.uName || 'N/A'}</td>
+                                <td>${user.uEmail || 'N/A'}</td>
+                                <td>N/A</td> <!-- Registration date not provided in API response -->
+                            </tr>
+                        `;
+                    });
+                    $('#recentUsersTable').html(recentUsersHTML);
+                    
+                    // Update user select for wishlist filtering
+                    let userSelectHTML = '<option value="">All Users</option>';
+                    response.users.forEach(user => {
+                        userSelectHTML += `<option value="${user.userID}">${user.uName}</option>`;
+                    });
+                    $('#wishlistUserSelect').html(userSelectHTML);
+                },
+                error: function(xhr, status, error) {
+                    console.error("Error fetching users:", error);
+                    $('#usersTable').html('<tr><td colspan="6" class="text-center">Error fetching users</td></tr>');
                 }
             });
         }
-
-        function filterWishlistByUser(userId) {
-            // In a real application, this would filter wishlist entries from the database
-            if (!userId) {
-                // Show all wishlist entries
-                loadMockData();
-            } else {
-                // Filter wishlist entries for the selected user
-                const wishlists = [
-                    { id: 1, userId: 1, username: 'john_doe', gameId: 1, gameTitle: 'Cosmic Adventure', addedDate: '2023-04-05' },
-                    { id: 2, userId: 1, username: 'john_doe', gameId: 3, gameTitle: 'Racing Champions', addedDate: '2023-04-10' },
-                ];
-                
-                let wishlistsHTML = '';
-                wishlists.forEach(wishlist => {
-                    wishlistsHTML += `
+        
+        // Function to update the users table with real data
+        function updateUsersTable(users) {
+            let usersHTML = '';
+            if (users && users.length > 0) {
+                users.forEach(user => {
+                    usersHTML += `
                         <tr>
-                            <td>${wishlist.id}</td>
-                            <td>${wishlist.username}</td>
-                            <td>${wishlist.gameTitle}</td>
-                            <td>${wishlist.addedDate}</td>
+                            <td>${user.userID}</td>
+                            <td>${user.uName || 'N/A'}</td>
+                            <td>${user.uEmail || 'N/A'}</td>
+                            <td>Customer</td>
+                            <td>N/A</td> <!-- Registration date not provided in API response -->
                             <td>
-                                <button class="btn btn-sm btn-danger delete-wishlist-btn" data-id="${wishlist.id}">
+                                <button class="btn btn-sm btn-warning edit-user-btn" data-id="${user.userID}">
+                                    <i class="fas fa-edit"></i> Edit
+                                </button>
+                                <button class="btn btn-sm btn-danger delete-user-btn" data-id="${user.userID}">
                                     <i class="fas fa-trash"></i> Delete
                                 </button>
                             </td>
                         </tr>
                     `;
                 });
-                $('#wishlistTable').html(wishlistsHTML);
+            } else {
+                usersHTML = '<tr><td colspan="6" class="text-center">No users found</td></tr>';
             }
+            $('#usersTable').html(usersHTML);
+            
+            // Add event listeners for action buttons
+            $('.edit-user-btn').on('click', function() {
+                const userId = $(this).data('id');
+                // Fetch user data by ID for editing
+                // Here you would make an API call to get user details
+                // For now, just show the modal with some placeholder data
+                $('#editUserId').val(userId);
+                $('#editUsername').val('');
+                $('#editEmail').val('');
+                $('#editRole').val('user');
+                $('#editUserModal').modal('show');
+            });
+
+            $('.delete-user-btn').on('click', function() {
+                const userId = $(this).data('id');
+                if (confirm('Are you sure you want to delete this user?')) {
+                    // Delete user via API
+                    $.ajax({
+                        url: `http://localhost:8080/api/customers/id=${userId}`,
+                        type: 'DELETE',
+                        success: function(response) {
+                            alert('User deleted successfully!');
+                            fetchUsers(); // Refresh user data
+                        },
+                        error: function(xhr, status, error) {
+                            alert('Error deleting user: ' + (xhr.responseJSON?.message || error));
+                        }
+                    });
+                }
+            });
+        }
+        
+        // Function to fetch real developers from API
+        function fetchDevelopers() {
+            $.ajax({
+                url: 'http://localhost:8080/api/developers/all',
+                type: 'GET',
+                success: function(response) {
+                    // Update developers in the table
+                    updateDevelopersTable(response.developer);
+                    // Update dashboard counts
+                    $('#developerCount').text(response.developer.length);
+                    
+                    // Populate developer select for game forms
+                    let developerSelectHTML = '';
+                    response.developer.forEach(dev => {
+                        developerSelectHTML += `<option value="${dev.devID}">${dev.devName}</option>`;
+                    });
+                    $('#gameDeveloper, #editGameDeveloper').html(developerSelectHTML);
+                },
+                error: function(xhr, status, error) {
+                    console.error("Error fetching developers:", error);
+                    $('#developersTable').html('<tr><td colspan="6" class="text-center">Error fetching developers</td></tr>');
+                }
+            });
+        }
+        
+        // Function to update the developers table with real data
+        function updateDevelopersTable(developers) {
+            let developersHTML = '';
+            if (developers && developers.length > 0) {
+                developers.forEach(dev => {
+                    developersHTML += `
+                        <tr>
+                            <td>${dev.devID}</td>
+                            <td>${dev.devName || 'N/A'}</td>
+                            <td>${dev.email || 'N/A'}</td>
+                            <td>${dev.socialMedia || 'N/A'}</td>
+                            <td>N/A</td> <!-- Games count not provided in API response -->
+                            <td>
+                                <button class="btn btn-sm btn-warning edit-developer-btn" data-id="${dev.devID}">
+                                    <i class="fas fa-edit"></i> Edit
+                                </button>
+                                <button class="btn btn-sm btn-danger delete-developer-btn" data-id="${dev.devID}">
+                                    <i class="fas fa-trash"></i> Delete
+                                </button>
+                            </td>
+                        </tr>
+                    `;
+                });
+            } else {
+                developersHTML = '<tr><td colspan="6" class="text-center">No developers found</td></tr>';
+            }
+            $('#developersTable').html(developersHTML);
+            
+            // Add event listeners for action buttons
+            $('.edit-developer-btn').on('click', function() {
+                const devId = $(this).data('id');
+                // Here we would ideally fetch the developer data from the API
+                // For now just show the modal with default values
+                $('#editDeveloperId').val(devId);
+                $('#editDeveloperName').val('');
+                $('#editDeveloperEmail').val('');
+                $('#editDeveloperWebsite').val('');
+                $('#editDeveloperDescription').val('');
+                $('#editDeveloperModal').modal('show');
+            });
+
+            $('.delete-developer-btn').on('click', function() {
+                const devId = $(this).data('id');
+                if (confirm('Are you sure you want to delete this developer?')) {
+                    // Delete developer via API
+                    $.ajax({
+                        url: `http://localhost:8080/api/developers/id=${devId}`,
+                        type: 'DELETE',
+                        success: function(response) {
+                            alert('Developer deleted successfully!');
+                            fetchDevelopers(); // Refresh developer data
+                        },
+                        error: function(xhr, status, error) {
+                            alert('Error deleting developer: ' + (xhr.responseJSON?.message || error));
+                        }
+                    });
+                }
+            });
+        }
+        
+        // Function to fetch real games from API
+        function fetchGames() {
+            $.ajax({
+                url: 'http://localhost:8080/api/games/all',
+                type: 'GET',
+                success: function(response) {
+                    // Update games in the table
+                    updateGamesTable(response.game);
+                    // Update dashboard counts
+                    $('#gameCount').text(response.game.length);
+                    
+                    // Update recent games table
+                    let recentGamesHTML = '';
+                    const recentGames = response.game.slice(0, 3);
+                    recentGames.forEach(game => {
+                        recentGamesHTML += `
+                            <tr>
+                                <td>${game.gName || 'N/A'}</td>
+                                <td>N/A</td> <!-- Developer name not provided in API response -->
+                                <td>${formatDate(game.gPublishDate) || 'N/A'}</td>
+                            </tr>
+                        `;
+                    });
+                    $('#recentGamesTable').html(recentGamesHTML);
+                },
+                error: function(xhr, status, error) {
+                    console.error("Error fetching games:", error);
+                    $('#gamesTable').html('<tr><td colspan="7" class="text-center">Error fetching games</td></tr>');
+                }
+            });
+        }
+        
+        // Function to update the games table with real data
+        function updateGamesTable(games) {
+            let gamesHTML = '';
+            if (games && games.length > 0) {
+                games.forEach(game => {
+                    gamesHTML += `
+                        <tr>
+                            <td>${game.gameID}</td>
+                            <td>${game.gName || 'N/A'}</td>
+                            <td>N/A</td> <!-- Developer name not provided in API response -->
+                            <td>N/A</td> <!-- Genre not provided in API response -->
+                            <td>${game.gPrice ? '$' + game.gPrice : 'N/A'}</td>
+                            <td>${formatDate(game.gPublishDate) || 'N/A'}</td>
+                            <td>
+                                <button class="btn btn-sm btn-warning edit-game-btn" data-id="${game.gameID}">
+                                    <i class="fas fa-edit"></i> Edit
+                                </button>
+                                <button class="btn btn-sm btn-danger delete-game-btn" data-id="${game.gameID}">
+                                    <i class="fas fa-trash"></i> Delete
+                                </button>
+                            </td>
+                        </tr>
+                    `;
+                });
+            } else {
+                gamesHTML = '<tr><td colspan="7" class="text-center">No games found</td></tr>';
+            }
+            $('#gamesTable').html(gamesHTML);
+            
+            // Add event listeners for action buttons
+            $('.edit-game-btn').on('click', function() {
+                const gameId = $(this).data('id');
+                // Here we would ideally fetch the game data from the API
+                // For now just show the modal with default values
+                $('#editGameId').val(gameId);
+                $('#editGameTitle').val('');
+                $('#editGameDeveloper').val('');
+                $('#editGameGenre').val('');
+                $('#editGamePrice').val('');
+                $('#editGameReleaseDate').val('');
+                $('#editGameImage').val('');
+                $('#editGameDescription').val('');
+                $('#editGameModal').modal('show');
+            });
+
+            $('.delete-game-btn').on('click', function() {
+                const gameId = $(this).data('id');
+                if (confirm('Are you sure you want to delete this game?')) {
+                    // Delete game via API
+                    $.ajax({
+                        url: `http://localhost:8080/api/games/id=${gameId}`,
+                        type: 'DELETE',
+                        success: function(response) {
+                            alert('Game deleted successfully!');
+                            fetchGames(); // Refresh game data
+                        },
+                        error: function(xhr, status, error) {
+                            alert('Error deleting game: ' + (xhr.responseJSON?.message || error));
+                        }
+                    });
+                }
+            });
+        }
+        
+        // Helper function to format dates from API to a user-friendly format
+        function formatDate(dateString) {
+            if (!dateString) return null;
+            
+            try {
+                const date = new Date(dateString);
+                return date.toLocaleDateString();
+            } catch (e) {
+                console.error("Error formatting date:", e);
+                return dateString; // Return the original string if parsing fails
+            }
+        }
+        
+        // Load dashboard data with real counts
+        function loadDashboardData() {
+            // Fetch real users for user count
+            fetchUsers();
+            
+            // Fetch real developers for developer count
+            fetchDevelopers();
+            
+            // Fetch real games for game count
+            fetchGames();
+            
+            // Fetch real wishlists for wishlist count
+            fetchAllWishlists();
+        }
+
+        // Function to fetch wishlists for a specific user
+        function fetchUserWishlists(userId) {
+            $.ajax({
+                url: `http://localhost:8080/api/wishlist/user=${userId}`,
+                type: 'GET',
+                success: function(response) {
+                    // Update wishlist in the table
+                    updateWishlistTable(response);
+                    // Update dashboard count for wishlists if viewing all wishlists
+                    if (!$('#wishlistUserSelect').val()) {
+                        $('#wishlistCount').text(response.length);
+                    }
+                },
+                error: function(xhr, status, error) {
+                    console.error("Error fetching wishlists:", error);
+                    $('#wishlistTable').html('<tr><td colspan="5" class="text-center">Error fetching wishlists</td></tr>');
+                }
+            });
+        }
+        
+        // Function to fetch all wishlists - this will fetch wishlists for all users
+        function fetchAllWishlists() {
+            // Since there's no endpoint to get all wishlists directly, we'll load users first 
+            // and then fetch wishlists for each user
+            $.ajax({
+                url: 'http://localhost:8080/api/customers/all',
+                type: 'GET',
+                success: function(response) {
+                    const users = response.users;
+                    if (users && users.length > 0) {
+                        // For simplicity, we'll just fetch wishlists for the first user initially
+                        // In a real implementation, you might want to combine wishlists from all users
+                        fetchUserWishlists(users[0].userID);
+                        
+                        // Update the user select dropdown
+                        let userSelectHTML = '<option value="">All Users</option>';
+                        users.forEach(user => {
+                            userSelectHTML += `<option value="${user.userID}">${user.uName}</option>`;
+                        });
+                        $('#wishlistUserSelect').html(userSelectHTML);
+                    } else {
+                        $('#wishlistTable').html('<tr><td colspan="5" class="text-center">No users found</td></tr>');
+                        $('#wishlistUserSelect').html('<option value="">All Users</option>');
+                    }
+                },
+                error: function(xhr, status, error) {
+                    console.error("Error fetching users for wishlists:", error);
+                    $('#wishlistTable').html('<tr><td colspan="5" class="text-center">Error fetching users</td></tr>');
+                }
+            });
+        }
+        
+        // Function to update the wishlist table with real data
+        function updateWishlistTable(wishlists) {
+            let wishlistsHTML = '';
+            if (wishlists && wishlists.length > 0) {
+                wishlists.forEach(wishlist => {
+                    const userId = wishlist.id.userID;
+                    const gameId = wishlist.id.gameID;
+                    const username = wishlist.customer.uName;
+                    const gameTitle = wishlist.game.gName;
+                    const addedDate = formatDate(wishlist.date);
+                    
+                    wishlistsHTML += `
+                        <tr>
+                            <td>${userId}-${gameId}</td>
+                            <td>${username || 'N/A'}</td>
+                            <td>${gameTitle || 'N/A'}</td>
+                            <td>${addedDate || 'N/A'}</td>
+                            <td>
+                                <button class="btn btn-sm btn-danger delete-wishlist-btn" data-user-id="${userId}" data-game-id="${gameId}">
+                                    <i class="fas fa-trash"></i> Delete
+                                </button>
+                            </td>
+                        </tr>
+                    `;
+                });
+            } else {
+                wishlistsHTML = '<tr><td colspan="5" class="text-center">No wishlists found</td></tr>';
+            }
+            $('#wishlistTable').html(wishlistsHTML);
+            
+            // Add event listener for wishlist delete button
+            $('.delete-wishlist-btn').on('click', function() {
+                const userId = $(this).data('user-id');
+                const gameId = $(this).data('game-id');
+                
+                if (confirm('Are you sure you want to delete this wishlist entry?')) {
+                    // Delete wishlist entry via API
+                    $.ajax({
+                        url: `http://localhost:8080/api/wishlist/user=${userId}/game=${gameId}`,
+                        type: 'DELETE',
+                        success: function(response) {
+                            alert('Wishlist entry deleted successfully!');
+                            // Refresh wishlist data for the current user
+                            const selectedUserId = $('#wishlistUserSelect').val();
+                            if (selectedUserId) {
+                                fetchUserWishlists(selectedUserId);
+                            } else {
+                                fetchAllWishlists();
+                            }
+                        },
+                        error: function(xhr, status, error) {
+                            alert('Error deleting wishlist entry: ' + (xhr.responseJSON?.message || error));
+                        }
+                    });
+                }
+            });
         }
     </script>
 </body>

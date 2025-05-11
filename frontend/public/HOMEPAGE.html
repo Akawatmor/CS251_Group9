@@ -395,7 +395,7 @@
 
   // Function to fetch all games
   function fetchGames() {
-    fetch('http://localhost:8080/api/games/search/all')
+    fetch('http://localhost:8080/api/games/all')
       .then(response => {
         if (!response.ok) {
           throw new Error('Network response was not ok');
@@ -460,6 +460,9 @@
   function displayGames(games) {
     const cardsContainer = document.getElementById('game-cards');
     cardsContainer.innerHTML = ''; // Clear existing cards
+
+    // Check if games is an array and has elements
+    games = games.game;
     
     if (!games || games.length === 0) {
       cardsContainer.innerHTML = '<p class="no-games">No games found</p>';
