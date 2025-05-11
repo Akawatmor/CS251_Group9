@@ -16,8 +16,6 @@ import cs251.group9.backend.service.*;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.*;
-import java.util.HashMap;
-import java.util.Map;
 
 @RestController
 @RequestMapping("/api/games")
@@ -37,6 +35,9 @@ public class GameController {
     @Autowired
     private GameCategoryRepository gameCategoryRepo;
     
+    @Autowired
+    private GameService gameService;
+    
     ///////////////////// Add new Game ////////////////////////
     @PostMapping("/")
     public ResponseEntity<Game2x> addGame(@RequestBody Game2x game) {
@@ -46,10 +47,22 @@ public class GameController {
     }
     
     ///////////////////// Search Game All ////////////////////////
-    @GetMapping("/search/all")
-    public List<Game2x> getAllGames() {
-        return gameRepo.findAll();
+    @GetMapping("/all")
+    public ResponseEntity<Map<String, Object>> getAllDevelopers() {
+        Map<String, Object> response = new HashMap<>();
+
+        try {
+            List<Game2x> game = gameRepo.findAll();
+            response.put("success", true);
+            response.put("game", game);
+            return ResponseEntity.ok(response);
+        } catch (RuntimeException e) {
+            response.put("success", false);
+            response.put("message", e.getMessage());
+            return ResponseEntity.badRequest().body(response);
+        }
     }
+
 
     ///////////////////// Search Game by Name ////////////////////////
     @GetMapping("/search/name={name}")
@@ -89,13 +102,6 @@ public class GameController {
                     if (updatedGame.getMainExecutablePath() != null) {
                         game.setMainExecutablePath(updatedGame.getMainExecutablePath());
                     }
-                    if (updatedGame.getDownloadUrl() != null) {
-                        game.setDownloadUrl(updatedGame.getDownloadUrl());
-                    }
-                    if (updatedGame.getInstallationGuide() != null) {
-                        game.setInstallationGuide(updatedGame.getInstallationGuide());
-                    }
-                    
                     return ResponseEntity.ok(gameRepo.save(game));
                 })
                 .orElse(ResponseEntity.notFound().build());
@@ -103,97 +109,191 @@ public class GameController {
     
     ////////////////// Delete Game ////////////////////////
     @DeleteMapping("/id={id}")
-    public ResponseEntity<Void> deleteGame(@PathVariable Long id) {
-        return gameRepo.findById(id)
-                .map(game -> {
-                    // Delete associated files here if needed
-                    gameRepo.delete(game);
-                    return ResponseEntity.noContent().<Void>build();
-                })
-                .orElse(ResponseEntity.notFound().build());
+    public ResponseEntity<?> deleteGame(@PathVariable Long id) {
+        Map<String, Object> response = new HashMap<>();
+        
+        try {
+            boolean deleted = gameService.deleteGameWithDependencies(id);
+            
+            if (deleted) {
+                return ResponseEntity.noContent().build();
+            } else {
+                response.put("success", false);
+                response.put("message", "Game not found with ID: " + id);
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
+            }
+        } catch (Exception e) {
+            response.put("success", false);
+            response.put("message", "Error deleting game: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
+        }
     }
     
     /////////////////// Upload Game Picture ////////////////////////
-    @PostMapping("/id={id}/picture/{position}")
-    public ResponseEntity<String> uploadPicture(@PathVariable Long id, 
+    
+    /** Add or Update Game Picture
+     * 
+     * This endpoint allows the user to upload a picture for a game.
+     * The picture will be stored in a specific location on the server.
+     * 
+     * @param id The ID of the game.
+     * @param position The position of the picture (1-6).
+     * @param file The picture file to upload.
+     * @return A response entity containing the result of the operation.
+     * 
+     * Rewritten by SKO
+     */
+    @PostMapping("/id={id}/picture={position}")
+    public ResponseEntity<?> uploadPicture(@PathVariable Long id, 
                                                @PathVariable int position,
                                                @RequestParam("file") MultipartFile file) {
-        if (position < 1 || position > 5) {
-            return ResponseEntity.badRequest().body("Position must be between 1 and 5");
+
+        Map<String, Object> response = new HashMap<>();
+
+        // Validate position
+        if (position < 1 || position > 6) {
+            response.put("success", false);
+            response.put("error", "picturenumber");
+            response.put("message", "Failed to upload game picture. Position must be between 1 and 8 ");
+            return ResponseEntity.badRequest().body(response);
+        }
+ 
+        // Validate file type only JPEG PNG
+        String contentType = file.getContentType();
+        if (contentType == null || (!contentType.equals("image/jpeg") && !contentType.equals("image/png"))) {
+            response.put("success", false);
+            response.put("error", "filetype");
+            response.put("message", "Failed to upload game picture. Only JPEG and PNG files are allowed");
+            return ResponseEntity.badRequest().body(response);
         }
         
+        //try to upload the picture
         try {
-            return gameRepo.findById(id)
-                    .map(game -> {
-                        try {
-                            String picturePath = photoService.storeGamePicture(id, position, file);
-                            
-                            // Update the corresponding picture field
-                            switch (position) {
-                                case 1: game.setPicture1(picturePath); break;
-                                case 2: game.setPicture2(picturePath); break;
-                                case 3: game.setPicture3(picturePath); break;
-                                case 4: game.setPicture4(picturePath); break;
-                                case 5: game.setPicture5(picturePath); break;
-                            }
-                            
-                            gameRepo.save(game);
-                            return ResponseEntity.ok(picturePath);
-                        } catch (IOException e) {
-                            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                                    .body("Failed to upload picture: " + e.getMessage());
-                        }
-                    })
-                    .orElse(ResponseEntity.notFound().build());
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("Failed to upload: " + e.getMessage());
+            String picturePath = photoService.storeGamePicture(id, position, file);
+            Game2x game = gameRepo.findById(id).orElse(null);
+
+            // Check if the game exists
+            if (game == null) {
+                response.put("success", false);
+                response.put("error", "gameid");
+                response.put("message", "Failed to upload game picture. Game not found");
+                return ResponseEntity.badRequest().body(response);
+            }
+
+            // Update the corresponding picture field
+            switch (position){
+                case 1: game.setPicture1(picturePath); break;
+                case 2: game.setPicture2(picturePath); break;
+                case 3: game.setPicture3(picturePath); break;
+                case 4: game.setPicture4(picturePath); break;
+                case 5: game.setPicture5(picturePath); break;
+                //case 6: gameRepo.findById(id).get().setPicture6(picturePath); break;
+                //case 7: gameRepo.findById(id).get().setPicture7(picturePath); break;
+                //case 8: gameRepo.findById(id).get().setPicture8(picturePath); break;
+            }
+
+            // Update the game in the database
+            gameRepo.save(game);
+
+            // Return success response
+            response.put("success", true);
+            response.put("message", "Game picture uploaded successfully");
+            response.put("path", picturePath);
+            return ResponseEntity.badRequest().body(response);
+
         }
+        catch (IOException e) {
+            response.put("success", false);
+            response.put("error", "upload");
+            response.put("message", "Failed to upload game picture: " + e.getMessage());
+            return ResponseEntity.badRequest().body(response);
+        }
+
+
     }
     
 /////////////////// Delete Game Picture ////////////////////////
+
+    /** Delete Game Picture
+     * 
+     * This endpoint allows the user to delete a picture for a game.
+     * The picture will be removed from the server.
+     * 
+     * @param id The ID of the game.
+     * @param position The position of the picture (1-6).
+     * @return A response entity containing the result of the operation.
+     * 
+     * Rewritten by SKO
+     */
     @DeleteMapping("/id={id}/picture={position}")
-    public ResponseEntity<String> deletePicture(@PathVariable Long id, @PathVariable int position) {
-        if (position < 1 || position > 5) {
-            return ResponseEntity.badRequest().body("Position must be between 1 and 5");
+    public ResponseEntity<?> deletePicture(@PathVariable Long id, @PathVariable int position) {
+
+        Map<String, Object> response = new HashMap<>();
+
+        // Validate position
+        if (position < 1 || position > 6) {
+            response.put("success", false);
+            response.put("error", "picturenumber");
+            response.put("message", "Failed to upload game picture. Position must be between 1 and 8 ");
+            return ResponseEntity.badRequest().body(response);
         }
-        
-        return gameRepo.findById(id)
-                .map(game -> {
-                    String picturePath = null;
-                    
-                    // Get and clear the corresponding picture field
-                    switch (position) {
-                        case 1: 
-                            picturePath = game.getPicture1();
-                            game.setPicture1(null); 
-                            break;
-                        case 2: 
-                            picturePath = game.getPicture2();
-                            game.setPicture2(null); 
-                            break;
-                        case 3: 
-                            picturePath = game.getPicture3();
-                            game.setPicture3(null); 
-                            break;
-                        case 4: 
-                            picturePath = game.getPicture4();
-                            game.setPicture4(null); 
-                            break;
-                        case 5: 
-                            picturePath = game.getPicture5();
-                            game.setPicture5(null); 
-                            break;
-                    }
-                    
-                    if (picturePath != null) {
-                        photoService.deleteFile(picturePath);
-                    }
-                    
-                    gameRepo.save(game);
-                    return ResponseEntity.ok("Picture deleted successfully");
-                })
-                .orElse(ResponseEntity.notFound().build());
+
+        try{
+            // Get the game by ID
+            Game2x game = gameRepo.findById(id).orElse(null);
+
+            // Check if the game exists
+            if (game == null) {
+                response.put("success", false);
+                response.put("error", "gameid");
+                response.put("message", "Failed to delete game picture. Game not found");
+                return ResponseEntity.badRequest().body(response);
+            }
+
+            // Get the corresponding picture field
+            String picturePath = null;
+            switch (position) {
+                case 1: picturePath = game.getPicture1(); break;
+                case 2: picturePath = game.getPicture2(); break;
+                case 3: picturePath = game.getPicture3(); break;
+                case 4: picturePath = game.getPicture4(); break;
+                case 5: picturePath = game.getPicture5(); break;
+            }
+
+            if (picturePath == null) {
+                response.put("success", false);
+                response.put("error", "nofile");
+                response.put("message", "Failed to delete game picture. No Picture");
+                return ResponseEntity.badRequest().body(response);
+            }
+
+            // Delete the file from the server
+            photoService.deleteFile(picturePath);
+
+            // Update the corresponding picture field to null
+            switch (position) {
+                case 1: game.setPicture1(null); break;
+                case 2: game.setPicture2(null); break;
+                case 3: game.setPicture3(null); break;
+                case 4: game.setPicture4(null); break;
+                case 5: game.setPicture5(null); break;
+            }
+
+            // Update the game in the database
+            gameRepo.save(game);
+
+            // Return success response
+            response.put("success", true);
+            response.put("message", "Game picture deleted successfully");
+            return ResponseEntity.ok(response);
+
+
+        } catch (Exception e) {
+            response.put("success", false);
+            response.put("error", "delete");
+            response.put("message", "Failed to delete game picture: " + e.getMessage());
+            return ResponseEntity.badRequest().body(response);
+        }
     }
     
 //////////////////// Upload Game Executable ////////////////////////

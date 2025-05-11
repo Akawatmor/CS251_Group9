@@ -46,8 +46,6 @@ public class Game2x {
     
     // File hosting paths
     private String mainExecutablePath;
-    private String downloadUrl;
-    private String installationGuide;
     
     // Pictures (up to 5)
     private String picture1;
@@ -104,18 +102,6 @@ public class Game2x {
 	}
 	public void setMainExecutablePath(String mainExecutablePath) {
 		this.mainExecutablePath = mainExecutablePath;
-	}
-	public String getDownloadUrl() {
-		return downloadUrl;
-	}
-	public void setDownloadUrl(String downloadUrl) {
-		this.downloadUrl = downloadUrl;
-	}
-	public String getInstallationGuide() {
-		return installationGuide;
-	}
-	public void setInstallationGuide(String installationGuide) {
-		this.installationGuide = installationGuide;
 	}
 	public String getPicture1() {
 		return picture1;

@@ -24,12 +24,17 @@ public class PhotoService {
     private final String developerPicturesDir = "developers/";
     private final String bannerPicturesDir = "banner/";
     
+
+/////////////////////// User profile picture methods ////////////////////////
+
     // Store a user profile photo with standardized naming
     public String storePhoto(Long userId, MultipartFile file) throws IOException {
-        String uploadDir = baseUploadDir + userPicturesDir;
+        
+        String DIR = baseUploadDir + userPicturesDir;
+        //System.out.println("Upload Profile Pic to "+ uploadDir);
         
         // Create directory if it doesn't exist
-        Path dirPath = Paths.get(uploadDir);
+        Path dirPath = Paths.get(DIR);
         if (!Files.exists(dirPath)) {
             Files.createDirectories(dirPath);
         }
@@ -66,8 +71,26 @@ public class PhotoService {
         // Save the file
         Files.copy(file.getInputStream(), targetPath, StandardCopyOption.REPLACE_EXISTING);
         
-        return uploadDir + filename;
+        return DIR + filename;
     }
+
+    // Get a user profile photo path with updated directory structure
+    public String getPhotoPath(Long userId) {
+        String DIR = baseUploadDir + userPicturesDir;
+        Path dirPath = Paths.get(DIR);
+        try {
+            // Search for any file with the standardized user profile naming
+            return Files.list(dirPath)
+                .filter(path -> path.getFileName().toString().startsWith("userprofile" + userId))
+                .findFirst()
+                .map(Path::toString)
+                .orElse(null);
+        } catch (IOException e) {
+            return null;
+        }
+    }
+
+////////////////////////// Developer team picture methods ////////////////////////
     
     // Store a developer team photo
     public String storeDeveloperTeamPhoto(Long devId, MultipartFile file) throws IOException {
@@ -114,20 +137,7 @@ public class PhotoService {
         return uploadDir + filename;
     }
     
-    // Get a user profile photo path with updated directory structure
-    public String getPhotoPath(Long userId) {
-        Path dirPath = Paths.get(baseUploadDir + userPicturesDir);
-        try {
-            // Search for any file with the standardized user profile naming
-            return Files.list(dirPath)
-                .filter(path -> path.getFileName().toString().startsWith("userprofile" + userId))
-                .findFirst()
-                .map(Path::toString)
-                .orElse(null);
-        } catch (IOException e) {
-            return null;
-        }
-    }
+    
     
     // Get a developer team photo path
     public String getDeveloperTeamPhotoPath(Long devId) {
@@ -143,6 +153,8 @@ public class PhotoService {
             return null;
         }
     }
+
+////////////////////////////// Game picture methods ////////////////////////
     
     // Store a game picture with standardized naming
     public String storeGamePicture(Long gameId, int pictureNumber, MultipartFile file) throws IOException {
@@ -308,6 +320,7 @@ public class PhotoService {
             throw new IOException("Banner position must be between 1 and 25");
         }
         
+
         String uploadDir = baseUploadDir + bannerPicturesDir;
         
         // Create directory if it doesn't exist
@@ -347,6 +360,9 @@ public class PhotoService {
         return uploadDir + filename;
     }
     
+
+////////////////////// Banner picture methods ////////////////////////
+
     // Get a banner picture path with standardized naming
     public String getBannerPicturePath(int bannerPosition) {
         if (bannerPosition < 1 || bannerPosition > 25) {

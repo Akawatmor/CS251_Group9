@@ -2,6 +2,7 @@ package cs251.group9.backend.repository;
 
 import cs251.group9.backend.entity.*;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
@@ -20,4 +21,8 @@ public interface PlayedRepository extends JpaRepository<Played, PlayedId> {
     
     @Query(value = "SELECT * FROM played WHERE userID = :userID AND gameID = :gameID", nativeQuery = true)
     Optional<Played> findByUserIDAndGameID(@Param("userID") Long userID, @Param("gameID") Long gameID);
+    
+    @Modifying
+    @Query(value = "DELETE FROM played WHERE gameID = :gameID", nativeQuery = true)
+    void deleteByGameId(@Param("gameID") Long gameID);
 }

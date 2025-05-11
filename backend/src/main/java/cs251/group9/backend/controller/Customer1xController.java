@@ -78,6 +78,23 @@ public class Customer1xController {
         }
     }
 
+///////////////////////// Get All Customers /////////////////////////
+    @GetMapping("/all")
+    public ResponseEntity<Map<String, Object>> getAllCustomers() {
+        Map<String, Object> response = new HashMap<>();
+        
+        try {
+            List<Customer1x> customers = customer1xService.getAllCustomers();
+            response.put("success", true);
+            response.put("users", customers);
+            return ResponseEntity.ok(response);
+        } catch (RuntimeException e) {
+            response.put("success", false);
+            response.put("message", e.getMessage());
+            return ResponseEntity.badRequest().body(response);
+        }
+    }
+
 ///////////////////////// Delete Customer by CustomerID /////////////////////////
     @DeleteMapping("/id={userId}")
     public ResponseEntity<Map<String, Object>> deleteCustomer(@PathVariable Long userId) {

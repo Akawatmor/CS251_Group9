@@ -2,6 +2,7 @@ package cs251.group9.backend.repository;
 
 import cs251.group9.backend.entity.*;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
@@ -24,4 +25,8 @@ public interface WishlistRepository extends JpaRepository<Wishlist, WishlistId> 
     
     @Query(value = "DELETE FROM wishlist WHERE userID = :userID AND gameID = :gameID", nativeQuery = true)
     void deleteByUserIdAndGameId(@Param("userID") Long userID, @Param("gameID") Long gameID);
+    
+    @Modifying
+    @Query(value = "DELETE FROM wishlist WHERE gameID = :gameID", nativeQuery = true)
+    void deleteByGameId(@Param("gameID") Long gameID);
 }

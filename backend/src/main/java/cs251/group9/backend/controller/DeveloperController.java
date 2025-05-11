@@ -28,11 +28,21 @@ public class DeveloperController {
     @Autowired 
     private PhotoService photoService;
     
-    // Get all developers
-    @GetMapping
-    public ResponseEntity<List<Developer3x>> getAllDevelopers() {
-        List<Developer3x> developers = developerRepository.findAll();
-        return ResponseEntity.ok(developers);
+///////////////////////// Get all developers //////////////////////
+    @GetMapping("/all")
+    public ResponseEntity<Map<String, Object>> getAllDevelopers() {
+        Map<String, Object> response = new HashMap<>();
+
+        try {
+            List<Developer3x> developers = developerRepository.findAll();
+            response.put("success", true);
+            response.put("developer", developers);
+            return ResponseEntity.ok(response);
+        } catch (RuntimeException e) {
+            response.put("success", false);
+            response.put("message", e.getMessage());
+            return ResponseEntity.badRequest().body(response);
+        }
     }
     
 /////////////////////// Get developer by ID //////////////////////

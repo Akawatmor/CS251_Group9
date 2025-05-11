@@ -172,5 +172,13 @@ public class Customer1xService {
     public boolean isUsernameTaken(String uName) {
         return customerRepo.existsByUName(uName);
     }
+
+    /**
+     * Get all customers
+     * @return List of all customers
+     */
+    public List<Customer1x> getAllCustomers() {
+        return customerRepo.findAll();
+    }
 }
 
