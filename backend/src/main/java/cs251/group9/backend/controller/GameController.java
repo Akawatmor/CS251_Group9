@@ -114,7 +114,7 @@ public class GameController {
     }
     
     /////////////////// Upload Game Picture ////////////////////////
-    @PostMapping("/id?{id}/picture/{position}")
+    @PostMapping("/id={id}/picture/{position}")
     public ResponseEntity<String> uploadPicture(@PathVariable Long id, 
                                                @PathVariable int position,
                                                @RequestParam("file") MultipartFile file) {
@@ -292,7 +292,8 @@ public class GameController {
         }
     }
     
-    ///////////////// Get Game Picture /////////////////////    @GetMapping("/id={id}/picture={position}")
+    ///////////////// Get Game Picture /////////////////////
+    @GetMapping("/id={id}/picture={position}")
     public ResponseEntity<?> getGamePicture(@PathVariable Long id, @PathVariable int position) {
         if (position < 1 || position > 5) {
             return ResponseEntity.badRequest().build();
