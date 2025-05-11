@@ -6,10 +6,8 @@ const path = require('path');
 
 router.get("/", (req, res) => {
 
+    //No need to check session. Load the page because it is login anyway
     res.sendFile(path.join(__dirname, "../public/REGISTER.html"));
-
-    
-
   });
 
 module.exports = router;

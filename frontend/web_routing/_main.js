@@ -11,6 +11,9 @@ const csettingRoutes = require('./CSETTING');
 const buypageRoutes = require('./BUYPAGE');
 const logoutRoutes = require('./LOGOUT');
 const paymentRoutes = require('./PAYMENT');
+const useraccountController = require('./USERACCOUNT');
+const staffpageController = require('./STAFFPAGE');
+const devpageController = require('./DEVPAGE');
 
 // Mount routes
 router.use('/home', homeRoutes);
@@ -21,6 +24,9 @@ router.use('/csetting', csettingRoutes);
 router.use('/buypage', buypageRoutes);
 router.use('/logout', logoutRoutes);
 router.use('/payment', paymentRoutes);
+router.use('/useraccount', useraccountController);
+router.use('/staffpage', staffpageController);
+router.use('/devpage', devpageController);
 
 // Handle root route
 router.get('/', (req, res) => {
