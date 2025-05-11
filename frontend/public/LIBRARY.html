@@ -401,10 +401,10 @@
         apiEndpoint = 'http://localhost:8080/api/games/search/all';
         break;
       case 'wishlist':
-        apiEndpoint = `http://localhost:8080/api/customers/id=${userId}/wishlist`;
+        apiEndpoint = `http://localhost:8080/api/wishlist/user=${userId}`;
         break;
       case 'owned':
-        apiEndpoint = `http://localhost:8080/api/customers/id=${userId}/games`;
+        apiEndpoint = `http://localhost:8080/api/customers/user=${userId}/own`;
         break;
       case 'best-rated':
         apiEndpoint = 'http://localhost:8080/api/games/search/top-rated';
@@ -421,9 +421,18 @@
         }
         return response.json();
       })
-      .then(games => {
-        console.log(`Loaded ${games.length} games for ${sectionId} section`);
-        displayGames(games, gridId);
+      .then(data => {
+        console.log(`Loaded data for ${sectionId} section:`, data);
+        
+        // Process data differently based on section
+        if (sectionId === 'wishlist') {
+          // Extract game objects from wishlist response
+          const wishlistGames = data.map(item => item.game);
+          displayGames(wishlistGames, gridId);
+        } else {
+          // For other sections, use data directly
+          displayGames(data, gridId);
+        }
       })
       .catch(error => {
         console.error(`Error fetching ${sectionId} games:`, error);
