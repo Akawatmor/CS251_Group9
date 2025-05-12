@@ -13,7 +13,7 @@ import java.nio.file.StandardCopyOption;
 @Service
 public class GameFileService {
 
-    @Value("${file.upload-dir:./backend/uploads/}")
+    @Value("${file.upload-dir}")
     private String baseUploadDir;
     
     // Updated standardized directory paths
