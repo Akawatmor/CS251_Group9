@@ -10,7 +10,7 @@ import java.util.List;
 
 public interface CountryRepository extends JpaRepository<Country, String> {
     
-    @Query(value = "SELECT * FROM country WHERE countryName LIKE %:name%", nativeQuery = true)
+    @Query(value = "SELECT * FROM country WHERE countryName LIKE :name", nativeQuery = true)
     List<Country> findByCountryNameContaining(@Param("name") String name);
     
     @Query(value = "SELECT * FROM country WHERE region = :region", nativeQuery = true)

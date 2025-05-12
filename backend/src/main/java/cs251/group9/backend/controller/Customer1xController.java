@@ -48,6 +48,8 @@ public class Customer1xController {
             return "Game";
         } else if (data instanceof Developer3x) {
             return "String";
+        } else if (data instanceof String) {
+            return "message";
         } else {
             return null;
         }
@@ -80,12 +82,13 @@ public class Customer1xController {
         return ResponseEntity.ok(response);
     }
 
-    private ResponseEntity<Map<String, Object>> errorResponse(String message, Integer cause) {
+
+    private ResponseEntity<Map<String, Object>> errorResponse(String cause, Integer causecode){
         Map<String, Object> response = new HashMap<>();
         response.put("success", false);
-        response.put("message", message);
+        response.put("message", cause);
 
-        switch (cause) {
+        switch (causecode) {
             case 1:
                 response.put("error", "nodata");
                 break;
@@ -109,7 +112,7 @@ public class Customer1xController {
 
 
 ////////////////////// Login //////////////
-    // Move to AuthenticationController
+    // Use AuthenticationController Instead
 
 ///////////////////// Register /////////////
     @PostMapping("/register")
@@ -141,9 +144,7 @@ public class Customer1xController {
             if (customer == null) return errorResponse("No customer found", 2);
             return successResponse(customer);
         } catch (RuntimeException e) {
-            response.put("success", false);
-            response.put("message", e.getMessage());
-            return ResponseEntity.badRequest().body(response);
+            return errorResponse("Runtime Error", 99);
         }
     }
 
@@ -165,20 +166,13 @@ public class Customer1xController {
 ///////////////////////// Delete Customer by CustomerID /////////////////////////
     @DeleteMapping("/id={userId}")
     public ResponseEntity<Map<String, Object>> deleteCustomer(@PathVariable Long userId) {
-        Map<String, Object> response = new HashMap<>();
     
         // Check if the customer exists
         if(findCustomer1xById(userId) == null) {
-            response.put("success", false);
-            response.put("message", "No customer found");
-            response.put("error", "not_found");
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
+            return errorResponse("Customer not found", 2);
         }
         else{
-            customer1xService.deleteCustomer(userId);
-            response.put("success", true);
-            response.put("message", "Customer deleted successfully");
-            return ResponseEntity.ok(response);
+           return successResponse("Customer deleted successfully");
         }
     
     }

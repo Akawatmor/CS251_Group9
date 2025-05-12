@@ -15,7 +15,7 @@ public interface ModDLCRepository extends JpaRepository<ModDLC7x, Long> {
     @Query(value = "SELECT * FROM mod_dlc WHERE gameID = :gameId", nativeQuery = true)
     List<ModDLC7x> findByGame(@Param("gameId") Long gameId);
     
-    @Query(value = "SELECT * FROM mod_dlc WHERE modName LIKE %:name%", nativeQuery = true)
+    @Query(value = "SELECT * FROM mod_dlc WHERE modName LIKE :name", nativeQuery = true)
     List<ModDLC7x> findByModNameContaining(@Param("name") String name);
 
     @Query("SELECT m FROM ModDLC7x m WHERE m.modName LIKE %:name%")
