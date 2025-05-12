@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payment Successful</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #1a1a1a;
+            color: #ffffff;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            text-align: center;
+        }
+        .success-container {
+            background-color: #212121;
+            border-radius: 8px;
+            padding: 40px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+            max-width: 600px;
+            width: 100%;
+        }
+        .success-icon {
+            color: #4CAF50;
+            font-size: 80px;
+            margin-bottom: 20px;
+        }
+        h1 {
+            color: #4CAF50;
+            margin-bottom: 20px;
+        }
+        .game-info {
+            margin: 30px 0;
+            padding: 20px;
+            background-color: #2d2d2d;
+            border-radius: 8px;
+        }
+        .game-title {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        .game-details {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 15px;
+            border-top: 1px solid #3a3a3a;
+            padding-top: 15px;
+        }
+        .detail-label {
+            color: #aaaaaa;
+        }
+        .btn {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            cursor: pointer;
+            font-size: 16px;
+            border-radius: 4px;
+            transition: background-color 0.3s;
+            text-decoration: none;
+            display: inline-block;
+            margin-top: 20px;
+        }
+        .btn:hover {
+            background-color: #45a049;
+        }
+        .receipt-number {
+            font-family: monospace;
+            background-color: #333;
+            padding: 8px;
+            border-radius: 4px;
+            margin-top: 10px;
+            letter-spacing: 1px;
+        }
+        #countdown {
+            margin-top: 15px;
+            font-size: 14px;
+            color: #aaaaaa;
+        }
+        .loader {
+            border: 4px solid #333;
+            border-radius: 50%;
+            border-top: 4px solid #4CAF50;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 20px auto;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="success-container">
+        <div class="success-icon">✓</div>
+        <h1>Payment Successful!</h1>
+        <p>Your purchase has been confirmed and the game has been added to your library.</p>
+        
+        <div class="game-info">
+            <div class="game-title" id="gameName">Loading...</div>
+            <div class="receipt-number" id="receiptNumber">Receipt: Processing...</div>
+            
+            <div class="game-details">
+                <div>
+                    <div class="detail-label">Date</div>
+                    <div id="purchaseDate"></div>
+                </div>
+                <div>
+                    <div class="detail-label">Payment Method</div>
+                    <div id="paymentMethod">Credit Card</div>
+                </div>
+            </div>
+        </div>
+        
+        <p>You will be redirected to the game page in <span id="countdown">5</span> seconds</p>
+        <div class="loader"></div>
+        
+        <a href="#" class="btn" id="continueBtn">Continue to Game Page</a>
+    </div>
+
+    <script>
+        // Get URL parameters
+        const urlParams = new URLSearchParams(window.location.search);
+        const gameId = urlParams.get('gameId');
+        const receipt = urlParams.get('receipt') || 'RECEIPT-' + Math.random().toString(36).substring(2, 10).toUpperCase();
+        
+        // Get user ID from session (we'll assume it's stored in a global variable)
+        // In a real application, you might want to get this from the server-side
+        let userId;
+        
+        // Set current date
+        const currentDate = new Date();
+        document.getElementById('purchaseDate').textContent = currentDate.toLocaleDateString();
+        
+        // Display receipt number
+        document.getElementById('receiptNumber').textContent = `Receipt: ${receipt}`;
+        
+        // Function to fetch the user info
+        async function getUserInfo() {
+            try {
+                const response = await fetch('/service/useraccount/info');
+                if (response.ok) {
+                    const userData = await response.json();
+                    userId = userData.userID;
+                    return userData;
+                } else {
+                    throw new Error('Failed to fetch user data');
+                }
+            } catch (error) {
+                console.error('Error fetching user info:', error);
+                return null;
+            }
+        }
+        
+        // Function to confirm purchase
+        async function confirmPurchase(userId, gameId) {
+            try {
+                const response = await fetch(`/service/payment/confirm`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        userId: userId,
+                        gameId: gameId,
+                        receiptInfo: receipt
+                    })
+                });
+                
+                if (response.ok) {
+                    return await response.json();
+                } else {
+                    throw new Error('Failed to confirm purchase');
+                }
+            } catch (error) {
+                console.error('Error confirming purchase:', error);
+                return { success: false };
+            }
+        }
+        
+        // Function to get game details
+        async function getGameDetails(gameId) {
+            try {
+                const response = await fetch(`/service/buypage/details/${gameId}`);
+                if (response.ok) {
+                    return await response.json();
+                } else {
+                    throw new Error('Failed to fetch game details');
+                }
+            } catch (error) {
+                console.error('Error fetching game details:', error);
+                return null;
+            }
+        }
+        
+        // Initialize the page
+        async function init() {
+            // First get user info to get the user ID
+            const userData = await getUserInfo();
+            
+            if (userData) {
+                // Then confirm the purchase
+                const purchaseResult = await confirmPurchase(userData.userID, gameId);
+                
+                if (purchaseResult.success) {
+                    // Get game details to show the game name
+                    const gameData = await getGameDetails(gameId);
+                    if (gameData) {
+                        document.getElementById('gameName').textContent = gameData.gameName;
+                    } else {
+                        document.getElementById('gameName').textContent = 'Game #' + gameId;
+                    }
+                } else {
+                    console.error('Failed to confirm purchase');
+                }
+            }
+        }
+        
+        // Call the init function to start the process
+        init();
+        
+        // Redirect countdown
+        let seconds = 5;
+        const countdownElement = document.getElementById('countdown');
+        const countdownInterval = setInterval(() => {
+            seconds--;
+            countdownElement.textContent = seconds;
+            
+            if (seconds <= 0) {
+                clearInterval(countdownInterval);
+                window.location.href = `/buypage?gameId=${gameId}`;
+            }
+        }, 1000);
+        
+        // Set continue button link
+        document.getElementById('continueBtn').href = `/buypage?gameId=${gameId}`;
+    </script>
+</body>
+</html>

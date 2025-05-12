@@ -218,7 +218,7 @@ module.exports = {
                 res.status(500).json({ error: 'Failed to fetch game details' });
             }
         });
-    
+
         // Game image endpoint
         app.get('/service/buypage/image/:gameId/:imageType', async (req, res) => {
             try {
@@ -261,11 +261,12 @@ module.exports = {
         
         // Related games endpoint
         app.get('/service/buypage/related/:gameId', async (req, res) => {
+            
             try {
                 const currentGameId = req.params.gameId;
                 const allGames = await BuyPageService.getAllGames();
+                console.log('All games:', allGames);
                 allGames = allGames.game;
-                
                 // Filter out current game
                 const otherGames = allGames.filter(game => game.gameID != currentGameId);
                 

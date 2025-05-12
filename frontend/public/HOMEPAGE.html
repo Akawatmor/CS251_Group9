@@ -137,7 +137,7 @@
           return response.json();
         })
         .then(userData => {
-          userData = userData.user
+          userData = userData.Customer;
           console.log('User data:', userData);
           // Update display name
           if (userData.dName != null) {
