@@ -47,6 +47,7 @@ public class GameService {
             return false;
         }
         
+        
         // Delete all wishlists containing this game
         wishlistRepo.deleteByGameId(gameId);
         
