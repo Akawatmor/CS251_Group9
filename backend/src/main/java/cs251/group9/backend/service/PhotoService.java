@@ -14,7 +14,7 @@ import java.nio.file.StandardCopyOption;
 public class PhotoService {
 
     //File Base Directory
-    @Value("${file.upload-dir:/backend/uploads/}")
+    @Value("${file.upload-dir:./backend/uploads/}")
     private String baseUploadDir;
     
     // Updated standardized directory paths
