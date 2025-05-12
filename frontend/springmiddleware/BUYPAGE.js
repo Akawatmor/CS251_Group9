@@ -261,20 +261,28 @@ module.exports = {
         
         // Related games endpoint
         app.get('/service/buypage/related/:gameId', async (req, res) => {
-            
             try {
                 const currentGameId = req.params.gameId;
-                const allGames = await BuyPageService.getAllGames();
-                console.log('All games:', allGames);
-                allGames = allGames.game;
-                // Filter out current game
+                const allGamesResponse = await BuyPageService.getAllGames();
+                
+                // Access the "game" array from the response
+                const allGames = allGamesResponse.game;
+
+                // Filter out the current game
                 const otherGames = allGames.filter(game => game.gameID != currentGameId);
                 
-                // Shuffle and get random games
+                // Shuffle and get 5 random games
                 const shuffled = otherGames.sort(() => 0.5 - Math.random());
-                const relatedGames = shuffled.slice(0, 4); // Get 4 random games
+                const relatedGames = shuffled.slice(0, 5); // Get 5 random games
                 
-                res.json(relatedGames);
+                // Return only necessary fields (gameID, gName, gPrice)
+                const response = relatedGames.map(game => ({
+                    gameID: game.gameID,
+                    gName: game.gName,
+                    gPrice: game.gPrice
+                }));
+                
+                res.json(response);
             } catch (error) {
                 console.error('Error in related games endpoint:', error);
                 res.status(500).json({ error: 'Failed to fetch related games' });

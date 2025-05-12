@@ -104,16 +104,26 @@ router.get("/related/:id", async (req, res) => {
             });
         }
         
-        const allGames = await BuyPageService.getAllGames();
+        const allGamesResponse = await BuyPageService.getAllGames();
         
-        // Filter out current game
+        // Access the "game" array from the response
+        const allGames = allGamesResponse.game;
+
+        // Filter out the current game
         const otherGames = allGames.filter(game => game.gameID != gameId);
         
-        // Shuffle and get random games
+        // Shuffle and get 5 random games
         const shuffled = otherGames.sort(() => 0.5 - Math.random());
-        const relatedGames = shuffled.slice(0, 4); // Get 4 random games
+        const relatedGames = shuffled.slice(0, 5); // Get 5 random games
         
-        return res.json(relatedGames);
+        // Return only necessary fields (gameID, gName, gPrice)
+        const response = relatedGames.map(game => ({
+            gameID: game.gameID,
+            gName: game.gName,
+            gPrice: game.gPrice
+        }));
+        
+        return res.json(response);
     } catch (error) {
         console.error('Error fetching related games:', error);
         return res.status(500).json({
