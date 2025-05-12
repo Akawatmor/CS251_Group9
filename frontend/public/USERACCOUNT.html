@@ -85,7 +85,7 @@
           
           <div class="form-group">
             <label for="payment-method">Payment Method</label>
-            <select id="payment-method" name="payment-method" required>
+            <select id="payment-method" name="payment-method" class="payment-method" required>
               <option value="">Select payment method</option>
               <option value="credit-card">Credit Card</option>
               <option value="paypal">PayPal</option>
@@ -730,7 +730,10 @@
     .form-actions {
       margin-top: 30px;
     }
-    
+    .payment-method {
+      color: white; /* Set font color */
+      background: none; /* Remove background color */
+    }
     .payment-details {
       display: none;
       margin-top: 20px;
