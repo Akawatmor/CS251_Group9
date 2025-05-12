@@ -149,6 +149,7 @@
         display: flex;
         flex-direction: column;
         gap: 15px;
+        color: white;
     }
 
     .requirements {
@@ -962,21 +963,36 @@ $(document).ready(function() {
                     return;
                 }
                 
-                games.forEach(game => {
+                // Limit to 5 games
+                games.slice(0, 5).forEach(game => {
                     const $gameCard = createGameCard(game);
                     $relatedGamesContainer.append($gameCard);
                 });
             },
             error: function(xhr, status, error) {
                 console.error('Error fetching related games:', error);
-                $('#related-games').html('<p>Failed to load related games</p>');
+                const $relatedGamesContainer = $('#related-games');
+                $relatedGamesContainer.empty();
+                
+                // Fallback: Show 5 hardcoded suggestions
+                const fallbackGames = [
+                    { gameID: 1, gName: 'Fallback Game 1', gPrice: 9.99 },
+                    { gameID: 2, gName: 'Fallback Game 2', gPrice: 14.99 },
+                    { gameID: 3, gName: 'Fallback Game 3', gPrice: 19.99 },
+                    { gameID: 4, gName: 'Fallback Game 4', gPrice: 24.99 },
+                    { gameID: 5, gName: 'Fallback Game 5', gPrice: 29.99 }
+                ];
+                
+                fallbackGames.forEach(game => {
+                    const $gameCard = createGameCard(game);
+                    $relatedGamesContainer.append($gameCard);
+                });
             }
         });
     }
     
     // Function to create a game card
     function createGameCard(game) {
-        // Use proper image URL (banner is picture1)
         const imageUrl = `/service/buypage/image/${game.gameID}/main`;
         
         const $card = $('<div>').addClass('game-card');
