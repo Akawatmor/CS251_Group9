@@ -101,7 +101,7 @@ public class Customer1x {
      * Password for authentication
      */
     @NotBlank(message = "Password is required")
-    @Size(min = 6, message = "Password must be at least 6 characters long")
+    @Size(min = 3, message = "Password must be at least 3 characters long")
     @Column(name = "password", nullable = false)
     private String password;
 

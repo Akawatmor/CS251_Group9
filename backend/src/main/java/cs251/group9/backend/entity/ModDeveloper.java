@@ -17,4 +17,23 @@ public class ModDeveloper {
     @JoinColumn(name = "devID")
     private Developer3x developer;
     // getters and setters
+    public ModDeveloperId getId() {
+        return id;
+    }
+    public void setId(ModDeveloperId id) {
+        this.id = id;
+    }
+    public ModDLC7x getMod() {
+        return mod;
+    }
+    public void setMod(ModDLC7x mod) {
+        this.mod = mod;
+    }
+    public Developer3x getDeveloper() {
+        return developer;
+    }
+    public void setDeveloper(Developer3x developer) {
+        this.developer = developer;
+    }
+    
 }

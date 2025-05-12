@@ -38,21 +38,91 @@ public class Customer1xController {
         }
     }
 
+////////////////////// Response /////////////////
+/// 
+/// 
+    private String findObjectType(Object data) {
+        if (data instanceof Customer1x || data instanceof List && ((List<?>) data).get(0) instanceof Customer1x) {
+            return "Customer";
+        } else if (data instanceof Game2x || data instanceof List && ((List<?>) data).get(0) instanceof Game2x) {
+            return "Game";
+        } else if (data instanceof Developer3x) {
+            return "String";
+        } else {
+            return null;
+        }
+    }
+
+    private ResponseEntity<Map<String, Object>> successResponse(Object data1) {
+        Map<String, Object> response = new HashMap<>();
+        response.put("success", true);
+
+        String o1 = findObjectType(data1);
+        if (o1 != null) response.put(o1, data1);
+
+        return ResponseEntity.ok(response);
+    }
+     private ResponseEntity<Map<String, Object>> successResponse(Object data1, Object data2) {
+        Map<String, Object> response = new HashMap<>();
+        response.put("success", true);
+
+        String o1 = findObjectType(data1); String o2 = findObjectType(data2);
+        if (o1 != null) response.put(o1, data1); if (o2 != null) response.put(o2, data2);
+        return ResponseEntity.ok(response);
+    }
+     private ResponseEntity<Map<String, Object>> successResponse(Object data1, Object data2, Object data3) {
+        Map<String, Object> response = new HashMap<>();
+        response.put("success", true);
+
+        String o1 = findObjectType(data1); String o2 = findObjectType(data2); String o3 = findObjectType(data3);
+        if (o1 != null) response.put(o1, data1); if (o2 != null) response.put(o2, data2); if (o3 != null) response.put(o3, data3);
+
+        return ResponseEntity.ok(response);
+    }
+
+    private ResponseEntity<Map<String, Object>> errorResponse(String message, Integer cause) {
+        Map<String, Object> response = new HashMap<>();
+        response.put("success", false);
+        response.put("message", message);
+
+        switch (cause) {
+            case 1:
+                response.put("error", "nodata");
+                break;
+            case 2:
+                response.put("error", "not_found");
+                break;
+            case 3:
+                response.put("error", "validation_error");
+                break;
+            case 4:
+                response.put("error", "update_failed");
+                break;
+            case 5:
+                response.put("error", "transaction_failed");
+                break;
+            default:
+                response.put("error", "unknown_error");
+        }
+        return ResponseEntity.badRequest().body(response);
+    }
+
 
 ////////////////////// Login //////////////
     // Move to AuthenticationController
 
 ///////////////////// Register /////////////
     @PostMapping("/register")
-    public ResponseEntity<String> register(@RequestBody Customer1x customer) {
+    public ResponseEntity<Map<String, Object>> register(@RequestBody Customer1x customer) {
+        
         if (customer1xService.isUsernameTaken(customer.getuName())) {
-            return ResponseEntity.badRequest().body("Username is already taken");
+            return errorResponse("Username is already taken", 3);
         }
         try {
-            customer1xService.register(customer);
-            return ResponseEntity.ok("Customer registered successfully");
+            Customer1x registered = customer1xService.register(customer);
+            return successResponse(registered);
         } catch (IllegalArgumentException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
+            return errorResponse(e.getMessage(), 3);
         }
     }
 
@@ -68,9 +138,8 @@ public class Customer1xController {
         
         try {
             Customer1x customer = customer1xService.getCustomerById(userId);
-            response.put("success", true);
-            response.put("user", customer);
-            return ResponseEntity.ok(response);
+            if (customer == null) return errorResponse("No customer found", 2);
+            return successResponse(customer);
         } catch (RuntimeException e) {
             response.put("success", false);
             response.put("message", e.getMessage());
@@ -81,17 +150,15 @@ public class Customer1xController {
 ///////////////////////// Get All Customers /////////////////////////
     @GetMapping("/all")
     public ResponseEntity<Map<String, Object>> getAllCustomers() {
-        Map<String, Object> response = new HashMap<>();
         
         try {
             List<Customer1x> customers = customer1xService.getAllCustomers();
-            response.put("success", true);
-            response.put("users", customers);
-            return ResponseEntity.ok(response);
+            if (customers.isEmpty()) {
+                return errorResponse("No customers found", 1);
+            }
+            return successResponse(customers);
         } catch (RuntimeException e) {
-            response.put("success", false);
-            response.put("message", e.getMessage());
-            return ResponseEntity.badRequest().body(response);
+            return errorResponse("Error retrieving customers: " + e.getMessage(), 1);
         }
     }
 
@@ -103,8 +170,9 @@ public class Customer1xController {
         // Check if the customer exists
         if(findCustomer1xById(userId) == null) {
             response.put("success", false);
-            response.put("message", "User not found");
-            return ResponseEntity.badRequest().body(response);
+            response.put("message", "No customer found");
+            response.put("error", "not_found");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
         }
         else{
             customer1xService.deleteCustomer(userId);
@@ -129,6 +197,7 @@ public class Customer1xController {
         } catch (RuntimeException e) {
             response.put("success", false);
             response.put("message", e.getMessage());
+            response.put("error", "update_failed");
             return ResponseEntity.badRequest().body(response);
         }
     }
@@ -143,6 +212,7 @@ public class Customer1xController {
             if (am.getAmount() <= 0) {
                 response.put("success", false);
                 response.put("message", "Amount must be greater than 0");
+                response.put("error", "invalid_amount");
                 return ResponseEntity.badRequest().body(response);
             }
             
@@ -154,15 +224,18 @@ public class Customer1xController {
                 response.put("success", true);
                 response.put("message", "Money added successfully");
                 response.put("money", customer.getMoney());
+                response.put("user", customer);
                 return ResponseEntity.ok(response);
             } else {
                 response.put("success", false);
                 response.put("message", "User not found");
+                response.put("error", "not_found");
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
             }
         } catch (RuntimeException e) {
             response.put("success", false);
             response.put("message", "Error adding money: " + e.getMessage());
+            response.put("error", "transaction_failed");
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
         }
     }
@@ -182,6 +255,7 @@ public class Customer1xController {
         } catch (Exception e) {
             response.put("success", false);
             response.put("message", "Failed to upload: " + e.getMessage());
+            response.put("error", "upload_failed");
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
         }
     }
@@ -199,6 +273,7 @@ public class Customer1xController {
             Map<String, Object> response = new HashMap<>();
             response.put("success", false);
             response.put("message", e.getMessage());
+            response.put("error", "photo_retrieval_failed");
             return ResponseEntity.badRequest().body(response);
         }
     }

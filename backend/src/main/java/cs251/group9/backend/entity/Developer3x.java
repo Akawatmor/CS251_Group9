@@ -46,6 +46,8 @@ public class Developer3x {
     private String devDesc;
     private String socialMedia;
     private String teamName;
+
+	@Transient
     private String teamPicture;
 	
     
