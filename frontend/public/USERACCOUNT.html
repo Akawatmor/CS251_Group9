@@ -167,9 +167,25 @@
           </div>
         </div>
         
-        <div class="stats-placeholder">
-          <p>Detailed statistics will be available soon.</p>
-        </div>
+        <h2>Statement</h2>
+        <!--div class="stats-placeholder"-->
+          <div class="statement-table-container">
+            <table class="statement-table">
+              <thead>
+                <tr>
+                  <th>Date</th>
+                  <th>Type</th>
+                  <th>Amount</th>
+                  <th>Information</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
+              <tbody id="statement-body">
+                <!-- Transaction rows will be inserted here -->
+              </tbody>
+            </table>
+          </div>
+        <!--/div-->
       </section>
       
       <!-- Delete Account Section -->
@@ -236,6 +252,9 @@
       
       // Setup profile picture upload
       document.getElementById('profile-upload').addEventListener('change', uploadProfilePicture);
+      
+      // Fetch user statistics
+      fetchUserStatistics();
     });
     
     // Fetch user data from API
@@ -512,6 +531,73 @@
         messageElement.className = 'message';
       }, 5000);
     }
+    
+    // Function to fetch and populate user statistics
+    async function fetchUserStatistics() {
+      try {
+        // Fetch orders (purchases)
+        const ordersResponse = await fetch(`http://localhost:8080/api/orders/user=${currentUserId}`);
+        if (!ordersResponse.ok) {
+          throw new Error('Failed to fetch user statistics');
+        }
+        const orders = await ordersResponse.json();
+        
+        // Calculate stats for cards
+        const gamesOwned = orders.length;
+        const totalSpent = orders.reduce((sum, order) => {
+          const gamePrice = order.game.gPrice !== null ? parseFloat(order.game.gPrice) : 0;
+          return sum + gamePrice;
+        }, 0);
+        
+        // Update stats cards
+        document.querySelector('#statistics-section .stats-card:nth-child(1) .stats-value').textContent = gamesOwned;
+        document.querySelector('#statistics-section .stats-card:nth-child(2) .stats-value').textContent = `$${totalSpent.toFixed(2)}`;
+
+        // Populate statement table
+        const statementBody = document.getElementById('statement-body');
+        statementBody.innerHTML = '';
+
+        // Add orders to statement
+        orders.forEach(order => {
+          const row = document.createElement('tr');
+          const dateObj = new Date(order.date);
+          const dateStr = dateObj.toLocaleDateString();
+          const timeStr = dateObj.toLocaleTimeString();
+          const price = order.game.gPrice ? parseFloat(order.game.gPrice) : 0;
+          
+          row.innerHTML = `
+            <td>${dateStr}<br>${timeStr}</td>
+            <td>Game Purchase</td>
+            <td class="amount-negative">-$${price.toFixed(2)}</td>
+            <td>Purchase: ${order.game.gName}</td>
+            <td><span class="status-badge ${order.receipt ? 'success' : 'pending'}">${order.receipt ? 'Successful' : 'Pending'}</span></td>
+          `;
+          
+          statementBody.appendChild(row);
+        });
+
+        // Add deposits to statement (if your API supports this)
+        // Note: You'll need to implement this when the API is available
+        // Example of how a deposit would look:
+        /*
+        deposits.forEach(deposit => {
+          const row = document.createElement('tr');
+          row.innerHTML = `
+            <td>${new Date(deposit.date).toLocaleString()}</td>
+            <td>Deposit</td>
+            <td class="amount-positive">+$${deposit.amount.toFixed(2)}</td>
+            <td>Account Deposit</td>
+            <td><span class="status-badge success">Successful</span></td>
+          `;
+          statementBody.appendChild(row);
+        });
+        */
+
+      } catch (error) {
+        console.error('Error fetching user statistics:', error);
+        showMessage('profile-message', 'Failed to load user statistics. Please try again.', 'error');
+      }
+    }
   </script>
 
   <style>
@@ -661,7 +747,7 @@
     }
     
     .form-group {
-      width: 50%;
+      width: auto;
       margin-bottom: 20px;
     }
     
@@ -676,13 +762,17 @@
     }
     
     input, select {
-      width: 100%;
+      
       padding: 12px;
       background-color: rgba(255, 255, 255, 0.1);
       border: 1px solid rgba(255, 255, 255, 0.3);
       border-radius: 8px;
       color: white;
       font-size: 16px;
+    }
+
+    input[type="text"] {
+      width: 100%;
     }
     
     input:focus, select:focus {
@@ -764,10 +854,10 @@
     }
     
     .stats-placeholder {
-      padding: 50px;
+      /*padding: 50px;*/
       text-align: center;
       background-color: rgba(255, 255, 255, 0.05);
-      border-radius: 8px;
+      border-radius: 60px;
     }
     
     .warning-box {
@@ -831,6 +921,77 @@
       .stats-container {
         flex-direction: column;
       }
+    }
+
+    .statement-table-container {
+      margin-top: 20px;
+      overflow-x: auto;
+    }
+
+    .statement-table {
+      width: 100%;
+      border-collapse: collapse;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 8px;
+    }
+
+    .statement-table th,
+    .statement-table td {
+      padding: 12px 15px;
+      text-align: left;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      border-right: 1px solid rgba(255, 255, 255, 0.1); /* Add vertical borders */
+    }
+
+    /* Remove the right border from the last column */
+    .statement-table th:last-child,
+    .statement-table td:last-child {
+      border-right: none;
+    }
+
+    .statement-table th {
+      background: rgba(0, 0, 0, 0.2);
+      font-weight: 600;
+    }
+
+    .status-badge {
+      padding: 4px 8px;
+      border-radius: 4px;
+      font-size: 0.9em;
+    }
+
+    .status-badge.success {
+      background-color: rgba(76, 175, 80, 0.2);
+      color: #4CAF50;
+    }
+
+    .status-badge.pending {
+      background-color: rgba(255, 193, 7, 0.2);
+      color: #FFC107;
+    }
+
+    .status-badge.unsuccessful {
+      background-color: rgba(244, 67, 54, 0.2);
+      color: #F44336;
+    }
+
+    .amount-positive {
+      color: #4CAF50;
+      font-weight: 600;
+    }
+
+    .amount-negative {
+      color: #F44336;
+      font-weight: 600;
+    }
+
+    .statement-table td {
+      padding: 15px;
+      vertical-align: middle;
+    }
+
+    .statement-table tr:hover {
+      background: rgba(255, 255, 255, 0.05);
     }
   </style>
 </body>

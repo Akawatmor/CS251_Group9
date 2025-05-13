@@ -89,11 +89,11 @@
                         <textarea id="review-comment" placeholder="Write your review here..."></textarea>
                         <div class="review-form-bottom">
                           <div class="star-rating">
-                            <input type="radio" id="star5" name="rating" value="5" /><label for="star5">★</label>
-                            <input type="radio" id="star4" name="rating" value="4" /><label for="star4">★</label>
-                            <input type="radio" id="star3" name="rating" value="3" /><label for="star3">★</label>
-                            <input type="radio" id="star2" name="rating" value="2" /><label for="star2">★</label>
-                            <input type="radio" id="star1" name="rating" value="1" /><label for="star1">★</label>
+                            <input type="radio" id="star5" name="rating" value="5.0" /><label for="star5">★</label>
+                            <input type="radio" id="star4" name="rating" value="4.0" /><label for="star4">★</label>
+                            <input type="radio" id="star3" name="rating" value="3.0" /><label for="star3">★</label>
+                            <input type="radio" id="star2" name="rating" value="2.0" /><label for="star2">★</label>
+                            <input type="radio" id="star1" name="rating" value="1.0" /><label for="star1">★</label>
                           </div>
                           <button id="submit-review" class="submit-review">Submit Review</button>
                         </div>
@@ -814,6 +814,16 @@
         list-style-type: none;
         padding-left: 0;
     }
+    .review-message {
+        background-color: #471C1A;
+        padding: 15px;
+        border-radius: 8px;
+        border: 1px solid #5E1F1B;
+        margin-bottom: 15px;
+        text-align: center;
+        color: #C9A24E;
+        font-weight: bold;
+    }
 </style>
 
 <script>
@@ -1041,14 +1051,14 @@ $(document).ready(function() {
             }
             
             const comment = $('#review-comment').val().trim();
-            const rating = $('input[name="rating"]:checked').val() || "0"; // Default to 0 if no rating selected
+            const rating = $('input[name="rating"]:checked').val() || "0.0"; // Default to 0.0 if no rating selected
             
             // Prepare review data
             const reviewData = {
                 customerId: userId,
                 gameId: gameId,
                 comment: comment,
-                score: parseInt(rating) // Score is now directly mapped to stars (1-5)
+                score: parseFloat(rating) // Parse as float to ensure decimal value
             };
             
             // Check if this is an update or a new review
@@ -1062,19 +1072,39 @@ $(document).ready(function() {
     
     // Function to submit a new review
     function submitNewReview(reviewData) {
+        // First check if user owns the game
         $.ajax({
-            url: '/service/buypage/reviews/add',
-            method: 'POST',
-            contentType: 'application/json',
-            data: JSON.stringify(reviewData),
+            url: `http://localhost:8080/api/orders/user=${reviewData.customerId}/game=${reviewData.gameId}/own`,
+            method: 'GET',
             success: function(response) {
-                alert('Review submitted successfully!');
-                // Refresh reviews to show the new one
-                fetchGameReviews(reviewData.gameId);
+                if (response.success !== true) {
+                    alert('You must own this game to submit a review.');
+                    return;
+                }
+                
+                // User owns the game, proceed with review submission
+                $.ajax({
+                    url: `http://localhost:8080/api/reviews/user=${reviewData.customerId}/game=${reviewData.gameId}`,
+                    method: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify({
+                        comment: reviewData.comment,
+                        score: reviewData.score
+                    }),
+                    success: function(response) {
+                        alert('Review submitted successfully!');
+                        // Refresh reviews to show the new one
+                        fetchGameReviews(reviewData.gameId);
+                    },
+                    error: function(xhr, status, error) {
+                        console.error('Error submitting review:', error);
+                        alert('Failed to submit review. Please try again later.');
+                    }
+                });
             },
             error: function(xhr, status, error) {
-                console.error('Error submitting review:', error);
-                alert('Failed to submit review. Please try again later.');
+                console.error('Error checking game ownership:', error);
+                alert('Could not verify game ownership. Please try again later.');
             }
         });
     }
@@ -1082,10 +1112,13 @@ $(document).ready(function() {
     // Function to update an existing review
     function updateReview(reviewData) {
         $.ajax({
-            url: '/service/buypage/reviews/update',
+            url: `http://localhost:8080/api/reviews/user=${reviewData.customerId}/game=${reviewData.gameId}`,
             method: 'PUT',
             contentType: 'application/json',
-            data: JSON.stringify(reviewData),
+            data: JSON.stringify({
+                comment: reviewData.comment,
+                score: reviewData.score
+            }),
             success: function(response) {
                 alert('Review updated successfully!');
                 // Refresh reviews to show the updated one
@@ -1279,26 +1312,36 @@ $(document).ready(function() {
             userReview = reviews.find(review => review.customer && review.customer.id == userId);
         }
         
-        // Show the review form if user is logged in and hasn't submitted a review yet
+        // Check if user owns the game before showing review form
         if (userId) {
-            $reviewFormContainer.show();
-            
-            // If user has already submitted a review, populate the form with their review
-            if (userReview) {
-                $('#review-comment').val(userReview.comment || '');
-                // Set the rating in the star selection
-                const userScore = userReview.score || 0;
-                $(`#star${Math.round(userScore)}`).prop('checked', true);
-                
-                // Change submit button to update
-                $('#submit-review').text('Update Review');
-            } else {
-                $('#review-comment').val('');
-                // Clear the rating
-                $('input[name="rating"]').prop('checked', false);
-                $('#submit-review').text('Submit Review');
-            }
+            checkGameOwnershipForReview(userId, gameId, function(ownsGame) {
+                if (ownsGame) {
+                    // User owns the game, show the review form
+                    $reviewFormContainer.show();
+                    
+                    // If user has already submitted a review, populate the form with their review
+                    if (userReview) {
+                        $('#review-comment').val(userReview.comment || '');
+                        // Set the rating in the star selection - convert to nearest integer for star selection
+                        const userScore = userReview.score || 0;
+                        $(`#star${Math.round(userScore)}`).prop('checked', true);
+                        
+                        // Change submit button to update
+                        $('#submit-review').text('Update Review');
+                    } else {
+                        $('#review-comment').val('');
+                        // Clear the rating
+                        $('input[name="rating"]').prop('checked', false);
+                        $('#submit-review').text('Submit Review');
+                    }
+                } else {
+                    // User doesn't own the game, hide the review form and show a message
+                    $reviewFormContainer.hide();
+                    $reviewsList.prepend('<div class="review-message">You must own this game to submit a review.</div>');
+                }
+            });
         } else {
+            // User is not logged in
             $reviewFormContainer.hide();
         }
         
@@ -1316,9 +1359,9 @@ $(document).ready(function() {
         const displayReviews = reviews.slice(0, 5);
         
         displayReviews.forEach(review => {
-            // Score is now directly mapped to stars (1 star = 1 point)
+            // Score is now directly mapped to stars (1.0 to 5.0)
             const starRating = review.score || 0;
-            const recommended = starRating >= 3;  // 3+ stars is a recommendation
+            const recommended = starRating >= 3.0;  // 3+ stars is a recommendation
             
             // Get user name (use dName if available, otherwise uName)
             const userName = review.customer.dName || review.customer.uName || 'Anonymous';
@@ -1387,9 +1430,9 @@ $(document).ready(function() {
             stars += '★';
         }
         
-        // Add half star if needed (½)
+        // Add half star if needed (⯨)
         if (hasHalfStar) {
-            stars += '½';
+            stars += '⯨';
         }
         
         // Add empty stars (☆)
@@ -1423,7 +1466,7 @@ $(document).ready(function() {
         
         // Add half star if needed
         if (hasHalfStar) {
-            starsHTML += '½';
+            starsHTML += '⯨';
         }
         
         // Add empty stars
@@ -1626,6 +1669,26 @@ $(document).ready(function() {
         // Close dropdown when clicking elsewhere on the page
         $(document).click(function() {
             $('#account-dropdown').removeClass('show');
+        });
+    }
+    // Function to check if user owns the game for review purposes
+    function checkGameOwnershipForReview(userId, gameId, callback) {
+        if (!userId) {
+            callback(false);
+            return;
+        }
+        
+        // Call API to check if user owns this game
+        $.ajax({
+            url: `http://localhost:8080/api/orders/user=${userId}/game=${gameId}/own`,
+            method: 'GET',
+            success: function(body) {
+                callback(body.success === true);
+            },
+            error: function(xhr, status, error) {
+                console.error('Error checking game ownership for review:', error);
+                callback(false);
+            }
         });
     }
 });
