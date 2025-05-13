@@ -18,8 +18,17 @@
                 <a href="/library">Library</a>
               </div>
               <div class="account">
-                <img id="user-profile-photo" src="https://placehold.co/30x30" alt="Profile Icon" style="width: 32px; height: 32px; object-fit: fill;">
-                <span id="user-display-name">Account</span>
+                <div class="account-container" id="account-container">
+                  <img id="user-profile-photo" src="https://placehold.co/30x30" alt="Profile Icon" class="profile-circle">
+                  <div class="account-dropdown" id="account-dropdown">
+                    <div class="dropdown-user-info">
+                      <span id="user-display-name">Loading...</span>
+                    </div>
+                    <div class="dropdown-divider"></div>
+                    <a href="/csetting" class="dropdown-item">Settings</a>
+                    <a href="/logout" class="dropdown-item">Logout</a>
+                  </div>
+                </div>
               </div>
             </header>            
             <div class="store">
@@ -564,6 +573,77 @@
     .game-card button:hover {
         background-color: #e7c55b;
     }
+    
+    .account-container {
+        display: flex;
+        align-items: center;
+        cursor: pointer;
+        position: relative;
+        padding: 5px;
+    }
+    
+    .account-container:hover {
+        background-color: rgba(255, 255, 255, 0.1);
+        border-radius: 50%;
+    }
+    
+    .profile-circle {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        object-fit: cover;
+        border: 2px solid #C9A24E;
+        transition: transform 0.2s ease;
+    }
+    
+    .account-container:hover .profile-circle {
+        transform: scale(1.05);
+    }
+    
+    .account-dropdown {
+        position: absolute;
+        top: 110%;
+        right: 0;
+        background-color: #230706;
+        border: 1px solid #471C1A;
+        border-radius: 4px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+        width: 180px;
+        display: none;
+        flex-direction: column;
+        overflow: hidden;
+        z-index: 100;
+    }
+    
+    .account-dropdown.show {
+        display: flex;
+    }
+    
+    .dropdown-user-info {
+        padding: 12px 15px;
+        color: white;
+        background-color: #471C1A;
+        font-weight: bold;
+        text-align: center;
+        word-break: break-word;
+    }
+    
+    .dropdown-divider {
+        height: 1px;
+        background-color: rgba(255, 255, 255, 0.2);
+    }
+    
+    .dropdown-item {
+        padding: 12px 15px;
+        color: white;
+        text-decoration: none;
+        transition: background-color 0.2s ease;
+        font-size: 16px;
+    }
+    
+    .dropdown-item:hover {
+        background-color: #471C1A;
+    }
 </style>
 
 <script>
@@ -593,7 +673,10 @@ $(document).ready(function() {
     
     // Initialize account data
     initAccount();
-
+    
+    // Initialize account dropdown
+    initAccountDropdown();
+    
     // Function to initialize UI
     function initUI() {        // Buy button functionality
         $('#buy-button').on('click', function() {
@@ -1126,6 +1209,25 @@ $(document).ready(function() {
         if (price === undefined || price === null) return 'Free';
         if (price === 0) return 'Free';
         return `$${parseFloat(price).toFixed(2)}`;
+    }
+    
+    // Account dropdown functionality
+    function initAccountDropdown() {
+        const accountContainer = document.getElementById('account-container');
+        const accountDropdown = document.getElementById('account-dropdown');
+        const userDisplayName = document.getElementById('user-display-name');
+        const userProfilePhoto = document.getElementById('user-profile-photo');
+        
+        // Toggle dropdown when clicking on account
+        accountContainer.addEventListener('click', function(e) {
+            e.stopPropagation(); // Prevent event from bubbling to document
+            accountDropdown.classList.toggle('show');
+        });
+        
+        // Close dropdown when clicking elsewhere on the page
+        document.addEventListener('click', function() {
+            accountDropdown.classList.remove('show');
+        });
     }
 });
 </script>

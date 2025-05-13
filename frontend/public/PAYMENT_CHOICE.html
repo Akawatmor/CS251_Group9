@@ -21,8 +21,17 @@
                     <a href="LIBRARY.html">Library</a>
                 </div>
                 <div class="account">
-                    <img src="https://placehold.co/30x30" alt="Profile Icon" style="width: 32px; height: 32px; object-fit: fill;">
-                    <span id="user-display-name">Account</span>
+                    <div class="account-container" id="account-container">
+                        <img id="user-profile-photo" src="https://placehold.co/30x30" alt="Profile Icon" class="profile-circle">
+                        <div class="account-dropdown" id="account-dropdown">
+                          <div class="dropdown-user-info">
+                            <span id="user-display-name">Loading...</span>
+                          </div>
+                          <div class="dropdown-divider"></div>
+                          <a href="/csetting" class="dropdown-item">Settings</a>
+                          <a href="/logout" class="dropdown-item">Logout</a>
+                        </div>
+                    </div>
                 </div>
             </header>
             <div class="payment-choice">
@@ -292,6 +301,77 @@ body, html {
 
 .free-game-notice i {
     color: #E6C000;
+}
+
+.account-container {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    position: relative;
+    padding: 5px;
+}
+
+.account-container:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+    border-radius: 50%;
+}
+
+.profile-circle {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid #C9A24E;
+    transition: transform 0.2s ease;
+}
+
+.account-container:hover .profile-circle {
+    transform: scale(1.05);
+}
+
+.account-dropdown {
+    position: absolute;
+    top: 110%;
+    right: 0;
+    background-color: #230706;
+    border: 1px solid #471C1A;
+    border-radius: 4px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    width: 180px;
+    display: none;
+    flex-direction: column;
+    overflow: hidden;
+    z-index: 100;
+}
+
+.account-dropdown.show {
+    display: flex;
+}
+
+.dropdown-user-info {
+    padding: 12px 15px;
+    color: white;
+    background-color: #471C1A;
+    font-weight: bold;
+    text-align: center;
+    word-break: break-word;
+}
+
+.dropdown-divider {
+    height: 1px;
+    background-color: rgba(255, 255, 255, 0.2);
+}
+
+.dropdown-item {
+    padding: 12px 15px;
+    color: white;
+    text-decoration: none;
+    transition: background-color 0.2s ease;
+    font-size: 16px;
+}
+
+.dropdown-item:hover {
+    background-color: #471C1A;
 }
 
 /* Responsive design improvements */
@@ -573,6 +653,36 @@ $(document).ready(function() {
                 <button onclick="window.location.href='HOMEPAGE.html'" class="action-button">Back to Homepage</button>
             </div>
         `);
+    }
+
+    // Initialize account dropdown
+    initAccountDropdown();
+    
+    // Account dropdown functionality
+    function initAccountDropdown() {
+        const accountContainer = document.getElementById('account-container');
+        const accountDropdown = document.getElementById('account-dropdown');
+        const userDisplayName = document.getElementById('user-display-name');
+        const userProfilePhoto = document.getElementById('user-profile-photo');
+        
+        // Toggle dropdown when clicking on account
+        accountContainer.addEventListener('click', function(e) {
+            e.stopPropagation(); // Prevent event from bubbling to document
+            accountDropdown.classList.toggle('show');
+        });
+        
+        // Close dropdown when clicking elsewhere on the page
+        document.addEventListener('click', function() {
+            accountDropdown.classList.remove('show');
+        });
+        
+        // Fetch user information using the existing loadUserProfile function
+        const userId = getUserId();
+        if (userId) {
+            // Update user display name and profile photo using dedicated functions
+            loadUserProfile(userId);
+            updateProfilePhoto(userId);
+        }
     }
 });
 </script>

@@ -8,11 +8,10 @@
   <link rel="stylesheet" href="styles.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
-<body>
-  <div class="layout">
+<body>  <div class="layout">
     <!-- Sidebar Section -->
     <aside class="sidebar">
-      <div class="logo"><a href="/logout"><i class="fas fa-arrow-left"></i> TVaporr</a></div>
+      <div class="logo"><a href="/"><i class="fas fa-gamepad"></i> TVaporr</a></div>
       <div class="dev-profile">
         <img id="dev-avatar" src="https://placehold.co/80x80" alt="Developer Avatar">
         <h3 id="dev-name">Developer Name</h3>
@@ -23,6 +22,7 @@
         <a href="#" class="nav-link" data-tab="pricing">Pricing</a><hr>
         <a href="#" class="nav-link" data-tab="team">Team Management</a><hr>
         <a href="#" class="nav-link" data-tab="contact">Contact Platform</a><hr>
+        <a href="/logout" class="nav-link logout-link"><i class="fas fa-sign-out-alt"></i> Logout</a><hr>
       </div>
     </aside>
 
@@ -361,6 +361,17 @@ body, html {
 .tags a:hover {
   background-color: #3c1211;
   transform: translateX(5px);
+}
+
+.logout-link {
+  margin-top: 20px;
+  color: #ff6b6b !important;
+  font-weight: 600;
+}
+
+.logout-link:hover {
+  color: #ff4f4f !important;
+  background-color: rgba(169, 47, 47, 0.2) !important;
 }
 
 /* Main Content Area Styling */
@@ -884,6 +895,54 @@ button:hover {
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
+  // Get developer ID from localStorage
+  const devId = localStorage.getItem('userId');
+  
+  // Fetch developer information if ID is available
+  if (devId) {
+    fetchDeveloperInfo(devId);
+  } else {
+    console.error('Developer ID not found in localStorage');
+    // Redirect to login or handle the error as needed
+    // window.location.href = '/login';
+  }
+  
+  // Function to fetch developer information
+  function fetchDeveloperInfo(id) {
+    fetch(`http://localhost:8080/api/developers/id=${id}`)
+      .then(response => response.json())
+      .then(data => {
+        if (data.success) {
+          const developer = data.developer;
+          
+          // Update developer name
+          const devNameElement = document.getElementById('dev-name');
+          if (devNameElement) {
+            devNameElement.textContent = developer.devName || 'Developer';
+          }
+          
+          // Update form fields if they exist
+          const devNameInput = document.getElementById('devName');
+          if (devNameInput) {
+            devNameInput.value = developer.devName || '';
+          }
+          
+          const devBioInput = document.getElementById('devBio');
+          if (devBioInput) {
+            devBioInput.value = developer.devDesc || '';
+          }
+          
+          // Note: Since there's no developer photo in the response, we keep the placeholder image
+          console.log('Developer data loaded successfully:', developer);
+        } else {
+          console.error('Failed to load developer data:', data.message || 'Unknown error');
+        }
+      })
+      .catch(error => {
+        console.error('Error fetching developer information:', error);
+      });
+  }
+  
   // Tab navigation
   const navLinks = document.querySelectorAll('.nav-link');
   const tabPanes = document.querySelectorAll('.tab-pane');
@@ -1009,36 +1068,81 @@ document.addEventListener('DOMContentLoaded', function() {
       // Here you would load the game data based on the selected game
     });
   });
-  
-  // Form submissions - prevent default and add placeholders for API calls
+    // Form submissions - handle API calls
   const forms = document.querySelectorAll('form');
   
   forms.forEach(form => {
     form.addEventListener('submit', function(e) {
       e.preventDefault();
       
-      // Show a simple feedback message
       const formData = new FormData(this);
       console.log('Form submitted:', this.id);
       
-      // Create a toast notification
-      const toast = document.createElement('div');
-      toast.className = 'toast';
-      toast.textContent = 'Changes saved successfully!';
-      document.body.appendChild(toast);
-      
-      // Remove toast after 3 seconds
-      setTimeout(() => {
-        toast.classList.add('show');
-        setTimeout(() => {
-          toast.classList.remove('show');
-          setTimeout(() => {
-            document.body.removeChild(toast);
-          }, 300);
-        }, 3000);
-      }, 100);
+      // Handle personal info form separately to update developer info
+      if (this.id === 'personalInfoForm') {
+        const devId = localStorage.getItem('userId');
+        if (!devId) {
+          showToast('Error: Developer ID not found', 'error');
+          return;
+        }
+        
+        // Prepare the data to update
+        const updateData = {
+          devName: formData.get('devName'),
+          devDesc: formData.get('devBio')
+          // Add other fields as needed based on your API
+        };
+        
+        // Send the update request to the API
+        fetch(`http://localhost:8080/api/developers/update/${devId}`, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(updateData)
+        })
+        .then(response => response.json())
+        .then(data => {
+          if (data.success) {
+            showToast('Developer information updated successfully!');
+            // Update the displayed name
+            document.getElementById('dev-name').textContent = updateData.devName;
+          } else {
+            showToast('Failed to update developer information', 'error');
+          }
+        })
+        .catch(error => {
+          console.error('Error updating developer information:', error);
+          showToast('Error connecting to server', 'error');
+        });
+      } else {
+        // General form handling for other forms
+        showToast('Changes saved successfully!');
+      }
     });
   });
+  
+  // Function to show toast notifications
+  function showToast(message, type = 'success') {
+    const toast = document.createElement('div');
+    toast.className = 'toast';
+    if (type === 'error') {
+      toast.style.backgroundColor = '#a92f2f';
+    }
+    toast.textContent = message;
+    document.body.appendChild(toast);
+    
+    // Remove toast after 3 seconds
+    setTimeout(() => {
+      toast.classList.add('show');
+      setTimeout(() => {
+        toast.classList.remove('show');
+        setTimeout(() => {
+          document.body.removeChild(toast);
+        }, 300);
+      }, 3000);
+    }, 100);
+  }
   
   // Team member removal
   document.querySelectorAll('.remove-member').forEach(btn => {

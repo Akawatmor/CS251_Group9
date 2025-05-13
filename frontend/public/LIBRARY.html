@@ -28,9 +28,12 @@
             </div>
             <div class="account">
               <div class="account-container" id="account-container">
-                <img id="user-profile-photo" src="https://placehold.co/30x30" alt="Profile Icon" style="width: 32px; height: 32px; object-fit: fill;">
-                <span id="user-display-name">Loading...</span>
+                <img id="user-profile-photo" src="https://placehold.co/30x30" alt="Profile Icon" class="profile-circle">
                 <div class="account-dropdown" id="account-dropdown">
+                  <div class="dropdown-user-info">
+                    <span id="user-display-name">Loading...</span>
+                  </div>
+                  <div class="dropdown-divider"></div>
                   <a href="/csetting" class="dropdown-item">Settings</a>
                   <a href="/logout" class="dropdown-item">Logout</a>
                 </div>
@@ -854,7 +857,6 @@
   .account-container {
     display: flex;
     align-items: center;
-    gap: 10px;
     cursor: pointer;
     position: relative;
     padding: 5px;
@@ -862,18 +864,31 @@
   
   .account-container:hover {
     background-color: rgba(255, 255, 255, 0.1);
-    border-radius: 4px;
+    border-radius: 50%;
+  }
+  
+  .profile-circle {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid #C9A24E;
+    transition: transform 0.2s ease;
+  }
+  
+  .account-container:hover .profile-circle {
+    transform: scale(1.05);
   }
   
   .account-dropdown {
     position: absolute;
-    top: 100%;
+    top: 110%;
     right: 0;
     background-color: #230706;
     border: 1px solid #471C1A;
     border-radius: 4px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-    width: 150px;
+    width: 180px;
     display: none;
     flex-direction: column;
     overflow: hidden;
@@ -882,6 +897,20 @@
   
   .account-dropdown.show {
     display: flex;
+  }
+  
+  .dropdown-user-info {
+    padding: 12px 15px;
+    color: white;
+    background-color: #471C1A;
+    font-weight: bold;
+    text-align: center;
+    word-break: break-word;
+  }
+  
+  .dropdown-divider {
+    height: 1px;
+    background-color: rgba(255, 255, 255, 0.2);
   }
   
   .dropdown-item {
