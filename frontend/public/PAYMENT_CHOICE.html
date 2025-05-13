@@ -58,27 +58,25 @@
                 <div id="payment-options" class="payment-options">
                     <h2>Select Payment Method</h2>
                     
-                    <div id="wallet-payment-option" class="payment-method">
-                        <div class="payment-header">
-                            <i class="fas fa-wallet"></i>
-                            <h3>Pay with Wallet</h3>
-                        </div>
-                        <div class="payment-details">
-                            <p>Current Balance: <span id="user-balance">฿0.00</span></p>
-                            <p id="balance-status" class="balance-status"></p>
-                            <button id="wallet-pay-button" class="action-button">Pay Now</button>
-                        </div>
+                    <div class="form-group">
+                        <label for="payment-method">Payment Method</label>
+                        <select id="payment-method" name="payment-method" class="payment-method" required>
+                            <option value="">Select payment method</option>
+                            <option value="wallet">Pay with Wallet</option>
+                            <option value="bank-transfer">Bank Transfer</option>
+                            <option value="coming-soon">Coming Soon</option>
+                        </select>
                     </div>
                     
-                    <div class="payment-method">
-                        <div class="payment-header">
-                            <i class="fas fa-university"></i>
-                            <h3>Bank Transfer</h3>
-                        </div>
-                        <div class="payment-details">
-                            <p>Transfer money and upload payment slip</p>
-                            <button id="bank-transfer-button" class="action-button">Choose This Method</button>
-                        </div>
+                    <div class="payment-details" id="wallet-details">
+                        <p>Current Balance: <span id="user-balance">฿0.00</span></p>
+                        <p id="balance-status" class="balance-status"></p>
+                        <button id="wallet-pay-button" class="action-button">Pay Now</button>
+                    </div>
+                    
+                    <div class="payment-details" id="bank-transfer-details">
+                        <p>Transfer money and upload payment slip</p>
+                        <button id="bank-transfer-button" class="action-button">Choose This Method</button>
                     </div>
                 </div>
             </div>
@@ -97,16 +95,16 @@ body, html {
     height: 100%;
     font-family: 'Poppins', sans-serif;
     background: linear-gradient(0deg, #E6C000 0%, #5D110D 66%, #480E0C 78%, #340C0A 100%);
-    overflow: hidden;
+    overflow: auto; /* Changed from hidden to auto */
     position: relative;
 }
 
 .background-img {
-    position: absolute;
+    position: fixed; /* Changed from absolute to fixed */
     width: 100%;
     height: 100%;
     background: url('./PICTURE/LOGIN_BG1.png') no-repeat center;
-    background-size: 100% 100%;
+    background-size: cover; /* Ensure the image covers the entire viewport */
     opacity: 0.9;
     z-index: 0;
 }
@@ -118,15 +116,17 @@ body, html {
 }
 
 .main-content {
-    flex: 1;
+    flex: 1; /* Allow main content to grow and fill available space */
     display: flex;
     flex-direction: column;
     z-index: 2;
+    margin-bottom: 0; /* Remove unwanted spacing at the bottom */
 }
 
 .layout {
     display: flex;
-    height: 100vh;
+    flex-direction: column; /* Ensure proper stacking of content */
+    min-height: 100vh; /* Ensure layout spans the full viewport height */
 }
 
 .navbar {
@@ -212,18 +212,31 @@ body, html {
     text-align: center;
     color: #E6C000;
     margin-bottom: 20px;
+    border-radius: 8px;
 }
 
 .payment-method {
     background-color: rgba(138, 58, 47, 0.7);
-    border-radius: 10px;
-    overflow: hidden;
-    transition: all 0.3s ease;
+    border-radius: 8px; /* Modified border-radius */
+    height: 30px; /* Adjusted height */
+    color: white;
+    text-align: center; /* Center the text horizontally */
+    text-align-last: center; /* Ensure the selected option is centered */
+    padding: 0px; /* Remove extra padding for proper alignment */
+    margin-left: 8px; /* Move dropdown 8px to the right of the label */
 }
 
-.payment-method:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+.payment-method option {
+    background: none;
+    color: black;
+}
+
+.payment-details {
+    display: none; /* Ensure payment details are hidden by default */
+    padding: 20px;
+    background-color: rgba(255, 255, 255, 0.05);
+    border-radius: 8px;
+    margin-top: 20px;
 }
 
 .payment-header {
@@ -431,6 +444,15 @@ $(document).ready(function() {
         processFreeGame(userId, gameId);
     });
     
+    // Handle payment method selection
+    $('#payment-method').on('change', function() {
+        const selectedMethod = $(this).val();
+        $('.payment-details').hide(); // Hide all payment details
+        if (selectedMethod) {
+            $(`#${selectedMethod}-details`).show(); // Show selected payment method details
+        }
+    });
+
     // Function to get user ID from storage
     function getUserId() {
         return sessionStorage.getItem('userId') || localStorage.getItem('userId');
@@ -569,7 +591,7 @@ $(document).ready(function() {
         $('#wallet-pay-button').prop('disabled', true).text('Processing...');
         
         // Create receipt data for wallet payment
-        const receiptData = {
+        let receiptData = {
             paymentMethod: 'wallet',
             paymentDate: new Date().toISOString(),
             transactionId: 'wallet-' + Date.now()

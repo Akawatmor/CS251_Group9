@@ -23,7 +23,7 @@
       </div>
       <nav class="side-nav">
         <a href="#" class="nav-item active" data-section="profile">Account Information</a>
-        <a href="#" class="nav-item" data-section="add-money">Add Money</a>
+        <a href="#" class="nav-item" data-section="add-money">Deposit</a>
         <a href="#" class="nav-item" data-section="statistics">Statistics</a>
         <a href="#" class="nav-item danger" data-section="delete-account">Delete Account</a>
       </nav>
@@ -76,10 +76,10 @@
       
       <!-- Add Money Section -->
       <section id="add-money-section" class="content-section">
-        <h2>Add Money to Your Account</h2>
+        <h2>Deposit in Your Account</h2>
         <form id="add-money-form">
           <div class="form-group">
-            <label for="amount">Amount to Add ($)</label>
+            <label for="amount">Amount to Deposit ($)</label>
             <input type="number" id="amount" name="amount" min="5" step="5" value="20" required>
           </div>
           
@@ -87,11 +87,7 @@
             <label for="payment-method">Payment Method</label>
             <select id="payment-method" name="payment-method" class="payment-method" required>
               <option value="">Select payment method</option>
-              <option value="credit-card">Credit Card</option>
-              <option value="paypal">PayPal</option>
               <option value="bank-transfer">Bank Transfer</option>
-              <option value="cryptocurrency">Cryptocurrency</option>
-              <option value="gift-card">Gift Card</option>
             </select>
           </div>
           
@@ -732,7 +728,7 @@
     }
     .payment-method {
       color: white; /* Set font color */
-      background: none; /* Remove background color */
+      background-color: rgba(255, 255, 255, 0.1); /* Remove background color */
     }
 
     .payment-method option {
