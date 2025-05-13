@@ -41,11 +41,6 @@ public class WishlistService {
             throw new IllegalArgumentException("User ID and Game ID cannot be null");
         }
         
-        // Check if user already owns the game
-        if (orderService.checkOwnership(userID, gameID)) {
-            throw new RuntimeException("User already owns this game");
-        }
-        
         // Check if game is already in wishlist
         WishlistId wishlistId = new WishlistId(userID, gameID);
         if (wishlistRepo.findById(wishlistId).isPresent()) {
