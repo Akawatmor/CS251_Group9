@@ -404,10 +404,10 @@
         apiEndpoint = `http://localhost:8080/api/wishlist/user=${userId}`;
         break;
       case 'owned':
-        apiEndpoint = `http://localhost:8080/api/customers/user=${userId}/own`;
+        apiEndpoint = `http://localhost:8080/api/orders/user=${userId}`;
         break;
       case 'best-rated':
-        apiEndpoint = 'http://localhost:8080/api/games/search/top-rated';
+        apiEndpoint = 'http://localhost:8080/api/games/rating';
         break;
       default:
         apiEndpoint = 'http://localhost:8080/api/games/all';
@@ -429,7 +429,13 @@
           // Extract game objects from wishlist response
           const wishlistGames = data.map(item => item.game);
           displayGames(wishlistGames, gridId);
-        } else {
+        } 
+        else if (sectionId === 'owned') {
+          // Extract game objects from orders response
+          const ownedGames = data.map(item => item.game);
+          displayGames(ownedGames, gridId);
+        } 
+        else {
           // For other sections, use data directly
           displayGames(data.game, gridId);
         }

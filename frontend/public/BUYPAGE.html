@@ -721,6 +721,7 @@ $(document).ready(function() {
             url: `/service/buypage/reviews/${gameId}`,
             method: 'GET',
             success: function(reviews) {
+                console.log('Game reviews received:', reviews);
                 console.log(`Received ${reviews.length} reviews for game ${gameId}`);
                 displayReviews(reviews);
             },
@@ -1012,9 +1013,9 @@ $(document).ready(function() {
         $.ajax({
             url: `http://localhost:8080/api/orders/user=${userId}/game=${gameId}/own`,
             method: 'GET',
-            success: function(success) {
+            success: function(body) {
                 
-                if (success == true) {
+                if (body.success == true) {
                     // Update UI to show the user owns this game
                     const $buyButton = $('#buy-button');
                     const $playButton = $('#play-button');
