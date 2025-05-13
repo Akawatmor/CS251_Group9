@@ -22,7 +22,7 @@
                   <img id="user-profile-photo" src="https://placehold.co/30x30" alt="Profile Icon" class="profile-circle">
                   <div class="account-dropdown" id="account-dropdown">
                     <div class="dropdown-user-info">
-                      <span id="user-display-name">Loading...</span>
+                      <span id="user-display-name">Guest</span>
                     </div>
                     <div class="dropdown-divider"></div>
                     <a href="/csetting" class="dropdown-item">Settings</a>
@@ -46,8 +46,8 @@
                         <h1 id="game-title" class="game-title">Loading...</h1>
                         <div class="game-meta">
                           <div class="rating">
-                            <span id="game-stars" class="stars">★★★★★</span>
-                            <span id="game-rating" class="rating-count">0/5</span>
+                            <span id="game-stars" class="stars">☆☆☆☆☆</span>
+                            <span id="game-rating" class="rating-count">0.0/5.0</span>
                           </div>
                           <div id="game-price" class="price">$0.00</div>
                           <div class="game-actions">
@@ -76,8 +76,28 @@
                       </div>
                     </div>
                     
+                    <div class="achievements-section">
+                      <h3>Achievements</h3>
+                      <ul id="achievements-list">
+                        <!-- Achievements will be loaded here -->
+                      </ul>
+                    </div>
+
                     <div class="reviews-section">
                       <h3>User Reviews</h3>
+                      <div id="review-form-container" class="review-form" style="display: none;">
+                        <textarea id="review-comment" placeholder="Write your review here..."></textarea>
+                        <div class="review-form-bottom">
+                          <div class="star-rating">
+                            <input type="radio" id="star5" name="rating" value="5" /><label for="star5">★</label>
+                            <input type="radio" id="star4" name="rating" value="4" /><label for="star4">★</label>
+                            <input type="radio" id="star3" name="rating" value="3" /><label for="star3">★</label>
+                            <input type="radio" id="star2" name="rating" value="2" /><label for="star2">★</label>
+                            <input type="radio" id="star1" name="rating" value="1" /><label for="star1">★</label>
+                          </div>
+                          <button id="submit-review" class="submit-review">Submit Review</button>
+                        </div>
+                      </div>
                       <div id="reviews-list" class="reviews-list">
                         <p>No reviews available for this game yet.</p>
                       </div>
@@ -309,15 +329,48 @@
     }
 
     .rating {
-        font-size: 20px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
         margin-bottom: 10px;
     }
-
+    
     .stars {
         color: #C9A24E;
-        margin-right: 10px;
+        font-size: 20px;
+        letter-spacing: 2px;
     }
-
+    
+    .rating-count {
+        color: #C9A24E;
+        font-weight: bold;
+    }
+    
+    .recommendation {
+        margin-left: 10px;
+        font-size: 14px;
+    }
+    
+    .recommended {
+        color: #5cb85c;
+    }
+    
+    .not-recommended {
+        color: #d9534f;
+    }
+    
+    .review-date {
+        margin-left: 10px;
+        font-size: 12px;
+        color: #aaa;
+    }
+    
+    .review-actions {
+        display: flex;
+        justify-content: flex-end;
+        margin-top: 10px;
+    }
+    
     .price {
         font-size: 28px;
         font-weight: bold;
@@ -343,7 +396,7 @@
 
     .buy-button {
         background-color: #C9A24E;
-        color: #1a1a1a;
+        color: white;
     }
 
     .buy-button:hover {
@@ -374,6 +427,11 @@
         display: flex;
         align-items: center;
         gap: 8px;
+        width: 180px; /* Fixed width instead of min-width to maintain consistent size */
+        justify-content: center;
+        white-space: nowrap; /* Prevent text from wrapping */
+        overflow: hidden; /* Hide any overflow text */
+        box-sizing: border-box; /* Include padding and border in width calculation */
     }
     
     .wishlist-button:hover {
@@ -384,6 +442,7 @@
     .wishlist-button.wishlisted {
         border-color: #C9A24E;
         color: #C9A24E;
+        width: 180px; /* Explicit width when wishlisted to ensure consistency */
     }
     
     .wishlist-button.wishlisted .wishlist-icon {
@@ -457,6 +516,112 @@
         border-radius: 10px;
         padding: 20px;
         box-shadow: 0 4px 10px rgba(0,0,0,0.4);
+    }
+    
+    /* Achievements styles */
+    .achievement-item {
+        display: flex;
+        background-color: #471C1A;
+        padding: 10px 15px;
+        border-radius: 8px;
+        margin-bottom: 10px;
+        align-items: center;
+    }
+    
+    .achievement-icon {
+        font-size: 24px;
+        margin-right: 15px;
+        color: #C9A24E;
+    }
+    
+    .achievement-info h4 {
+        margin: 0 0 5px 0;
+        color: #C9A24E;
+    }
+    
+    .achievement-info p {
+        margin: 0;
+        font-size: 14px;
+    }
+    
+    /* Review form styles */
+    .review-form {
+        background-color: #471C1A;
+        padding: 15px;
+        border-radius: 8px;
+        margin-bottom: 20px;
+    }
+    
+    .review-form textarea {
+        width: 100%;
+        min-height: 80px;
+        background-color: #3c1211;
+        border: 1px solid #5E1F1B;
+        color: white;
+        padding: 10px;
+        border-radius: 5px;
+        margin-bottom: 15px;
+        resize: vertical;
+    }
+    
+    .review-form-bottom {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+    
+    .star-rating {
+        display: flex;
+        flex-direction: row-reverse;
+        justify-content: flex-end;
+    }
+    
+    .star-rating input {
+        display: none;
+    }
+    
+    .star-rating label {
+        cursor: pointer;
+        color: #5E1F1B;
+        font-size: 25px;
+        padding: 0 2px;
+    }
+    
+    .star-rating input:checked ~ label,
+    .star-rating label:hover,
+    .star-rating label:hover ~ label {
+        color: #C9A24E;
+    }
+    
+    .submit-review {
+        background-color: #C9A24E;
+        color: white;
+        border: none;
+        padding: 8px 20px;
+        border-radius: 5px;
+        cursor: pointer;
+        font-weight: bold;
+        transition: all 0.3s ease;
+    }
+    
+    .submit-review:hover {
+        background-color: #e7c55b;
+        transform: translateY(-2px);
+    }
+    
+    .edit-review, .delete-review {
+        background-color: transparent;
+        color: #C9A24E;
+        border: 1px solid #C9A24E;
+        padding: 5px 10px;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 12px;
+        margin-left: 10px;
+    }
+    
+    .edit-review:hover, .delete-review:hover {
+        background-color: rgba(201, 162, 78, 0.2);
     }
 
     .markdown-content {
@@ -644,6 +809,11 @@
     .dropdown-item:hover {
         background-color: #471C1A;
     }
+    
+    ul {
+        list-style-type: none;
+        padding-left: 0;
+    }
 </style>
 
 <script>
@@ -700,22 +870,25 @@ $(document).ready(function() {
             }
             
             const $wishlistBtn = $(this);
-            const $wishlistIcon = $wishlistBtn.find('.wishlist-icon');
             
             // Toggle wishlist state
             if ($wishlistBtn.hasClass('wishlisted')) {
                 // Remove from wishlist
                 $wishlistBtn.removeClass('wishlisted');
-                $wishlistIcon.text('♡');
-                $wishlistBtn.html('').append($wishlistIcon).append(' Add to Wishlist');
+                
+                // Clear and re-add content with consistent structure
+                $wishlistBtn.empty(); // Clear all contents
+                $wishlistBtn.append('<span class="wishlist-icon">♡</span> Add to Wishlist');
                 
                 // Make API call to remove from wishlist
                 removeFromWishlist(userId, gameId);
             } else {
                 // Add to wishlist
                 $wishlistBtn.addClass('wishlisted');
-                $wishlistIcon.text('♥');
-                $wishlistBtn.html('').append($wishlistIcon).append(' In Wishlist');
+                
+                // Clear and re-add content with consistent structure
+                $wishlistBtn.empty(); // Clear all contents
+                $wishlistBtn.append('<span class="wishlist-icon">♥</span> In Wishlist');
                 
                 // Make API call to add to wishlist
                 addToWishlist(userId, gameId);
@@ -728,16 +901,27 @@ $(document).ready(function() {
         const userId = getUserId();
         
         if (userId) {
+            // Get username from storage first to avoid showing placeholder
+            const username = sessionStorage.getItem('username') || localStorage.getItem('username');
+            if (username) {
+                $('#user-display-name').text(username);
+            }
+            
             // Fetch user profile data
             $.ajax({
                 url: `http://localhost:8080/api/customers/id=${userId}`,
                 method: 'GET',
                 success: function(userData) {
+                    // Extract customer data
+                    userData = userData.Customer;
+                    
                     // Update display name
-                    if (userData && userData.dName) {
+                    if (userData.dName != null) {
                         $('#user-display-name').text(userData.dName);
-                    } else if (userData && userData.uName) {
+                    } else if (userData.uName != null) {
                         $('#user-display-name').text(userData.uName);
+                    } else {
+                        $('#user-display-name').text("Unknown User");
                     }
                     
                     // Load profile photo if available
@@ -754,17 +938,19 @@ $(document).ready(function() {
     function fetchProfilePhoto(userId) {
         const photoUrl = `http://localhost:8080/api/customers/id=${userId}/photo`;
         
-        // Test if the image exists
-        $.ajax({
-            url: photoUrl,
-            method: 'GET',
-            success: function() {
-                $('#user-profile-photo').attr('src', photoUrl);
-            },
-            error: function(xhr, status, error) {
-                console.error('Error loading profile photo:', error);
-            }
-        });
+        // Create a new image to test if the URL is valid
+        const testImg = new Image();
+        testImg.onload = function() {
+            // If image loads successfully, update the profile photo
+            $('#user-profile-photo').attr('src', photoUrl);
+        };
+        testImg.onerror = function() {
+            // If image fails to load, keep the default image
+            console.log('Failed to load profile photo, using default');
+        };
+        
+        // Start loading the image
+        testImg.src = photoUrl;
     }
     
     // Function to get user ID from storage
@@ -804,18 +990,131 @@ $(document).ready(function() {
             url: `/service/buypage/reviews/${gameId}`,
             method: 'GET',
             success: function(reviews) {
-                console.log('Game reviews received:', reviews);
-                console.log(`Received ${reviews.length} reviews for game ${gameId}`);
+                // Calculate and display average rating
+                calculateAverageRating(reviews);
+                
+                // Display reviews
                 displayReviews(reviews);
+                
+                // Set up review submission event
+                setupReviewSubmission(gameId);
             },
             error: function(xhr, status, error) {
-                console.error('Error fetching game reviews:', error);
-                // Just show no reviews message
-                $('#reviews-list').html('<p>No reviews available for this game yet.</p>');
+                console.error('Error fetching reviews:', error);
+                $('#reviews-list').html('<p>Unable to load reviews at this time.</p>');
             }
         });
     }
     
+    // Function to calculate average rating from reviews
+    function calculateAverageRating(reviews) {
+        if (!reviews || reviews.length === 0) {
+            setRating(0);
+            return;
+        }
+        
+        // Sum all review scores
+        let totalScore = 0;
+        let validReviews = 0;
+        
+        reviews.forEach(review => {
+            if (review.score !== undefined && review.score !== null) {
+                totalScore += review.score;
+                validReviews++;
+            }
+        });
+        
+        // Calculate average score (1 decimal place)
+        const avgScore = validReviews > 0 ? totalScore / validReviews : 0;
+        
+        // Set the game rating display
+        setRating(avgScore);
+    }
+    
+    // Function to set up review submission
+    function setupReviewSubmission(gameId) {
+        $('#submit-review').off('click').on('click', function() {
+            const userId = getUserId();
+            if (!userId) {
+                alert('Please log in to submit a review');
+                return;
+            }
+            
+            const comment = $('#review-comment').val().trim();
+            const rating = $('input[name="rating"]:checked').val() || "0"; // Default to 0 if no rating selected
+            
+            // Prepare review data
+            const reviewData = {
+                customerId: userId,
+                gameId: gameId,
+                comment: comment,
+                score: parseInt(rating) // Score is now directly mapped to stars (1-5)
+            };
+            
+            // Check if this is an update or a new review
+            if ($('#submit-review').text() === 'Update Review') {
+                updateReview(reviewData);
+            } else {
+                submitNewReview(reviewData);
+            }
+        });
+    }
+    
+    // Function to submit a new review
+    function submitNewReview(reviewData) {
+        $.ajax({
+            url: '/service/buypage/reviews/add',
+            method: 'POST',
+            contentType: 'application/json',
+            data: JSON.stringify(reviewData),
+            success: function(response) {
+                alert('Review submitted successfully!');
+                // Refresh reviews to show the new one
+                fetchGameReviews(reviewData.gameId);
+            },
+            error: function(xhr, status, error) {
+                console.error('Error submitting review:', error);
+                alert('Failed to submit review. Please try again later.');
+            }
+        });
+    }
+    
+    // Function to update an existing review
+    function updateReview(reviewData) {
+        $.ajax({
+            url: '/service/buypage/reviews/update',
+            method: 'PUT',
+            contentType: 'application/json',
+            data: JSON.stringify(reviewData),
+            success: function(response) {
+                alert('Review updated successfully!');
+                // Refresh reviews to show the updated one
+                fetchGameReviews(reviewData.gameId);
+            },
+            error: function(xhr, status, error) {
+                console.error('Error updating review:', error);
+                alert('Failed to update review. Please try again later.');
+            }
+        });
+    }
+    
+    // Function to delete a review
+    function deleteReview(userId, reviewId) {
+        $.ajax({
+            url: `/service/buypage/reviews/delete/${reviewId}`,
+            method: 'DELETE',
+            success: function(response) {
+                alert('Review deleted successfully!');
+                // Refresh the page to update reviews
+                location.reload();
+            },
+            error: function(xhr, status, error) {
+                console.error('Error deleting review:', error);
+                alert('Failed to delete review. Please try again later.');
+            }
+        });
+    }
+
     // Function to display game details
     function displayGameDetails(game) {
         // Hide loading indicator and show game details
@@ -845,6 +1144,48 @@ $(document).ready(function() {
         
         // Set up gallery images (picture2-picture5)
         setupGallery(game);
+        
+        // Set up achievements
+        fetchAchievements(game.gameID);
+    }
+    
+    // Function to fetch achievements
+    function fetchAchievements(gameId) {
+        $.ajax({
+            url: `/service/buypage/achievements/${gameId}`,
+            method: 'GET',
+            success: function(achievements) {
+                displayAchievements(achievements);
+            },
+            error: function(xhr, status, error) {
+                console.error('Error fetching achievements:', error);
+                $('#achievements-list').html('<li>No achievements available for this game yet.</li>');
+            }
+        });
+    }
+    
+    // Function to display achievements
+    function displayAchievements(achievements) {
+        const $achievementsList = $('#achievements-list');
+        
+        if (!achievements || achievements.length === 0) {
+            $achievementsList.html('<li>No achievements available for this game yet.</li>');
+            return;
+        }
+        
+        $achievementsList.empty();
+        
+        achievements.forEach(achievement => {
+            const $achievementItem = $('<li>').addClass('achievement-item');
+            const $achievementIcon = $('<div>').addClass('achievement-icon').text('🏆');
+            const $achievementInfo = $('<div>').addClass('achievement-info');
+            const $achievementTitle = $('<h4>').text(achievement.title || 'Unnamed Achievement');
+            const $achievementDesc = $('<p>').text(achievement.description || 'No description available.');
+            
+            $achievementInfo.append($achievementTitle, $achievementDesc);
+            $achievementItem.append($achievementIcon, $achievementInfo);
+            $achievementsList.append($achievementItem);
+        });
     }
     
     // Function to set up the gallery
@@ -929,6 +1270,37 @@ $(document).ready(function() {
     // Function to format and display reviews
     function displayReviews(reviews) {
         const $reviewsList = $('#reviews-list');
+        const $reviewFormContainer = $('#review-form-container');
+        const userId = getUserId();
+        let userReview = null;
+        
+        // Check if the current user has already submitted a review
+        if (userId && reviews && reviews.length > 0) {
+            userReview = reviews.find(review => review.customer && review.customer.id == userId);
+        }
+        
+        // Show the review form if user is logged in and hasn't submitted a review yet
+        if (userId) {
+            $reviewFormContainer.show();
+            
+            // If user has already submitted a review, populate the form with their review
+            if (userReview) {
+                $('#review-comment').val(userReview.comment || '');
+                // Set the rating in the star selection
+                const userScore = userReview.score || 0;
+                $(`#star${Math.round(userScore)}`).prop('checked', true);
+                
+                // Change submit button to update
+                $('#submit-review').text('Update Review');
+            } else {
+                $('#review-comment').val('');
+                // Clear the rating
+                $('input[name="rating"]').prop('checked', false);
+                $('#submit-review').text('Submit Review');
+            }
+        } else {
+            $reviewFormContainer.hide();
+        }
         
         if (!reviews || reviews.length === 0) {
             $reviewsList.html('<p>No reviews available for this game yet.</p>');
@@ -944,9 +1316,9 @@ $(document).ready(function() {
         const displayReviews = reviews.slice(0, 5);
         
         displayReviews.forEach(review => {
-            // Convert score (1-10) to stars (1-5)
-            const starRating = Math.round((review.score / 2) * 10) / 10;
-            const recommended = review.score >= 5;
+            // Score is now directly mapped to stars (1 star = 1 point)
+            const starRating = review.score || 0;
+            const recommended = starRating >= 3;  // 3+ stars is a recommendation
             
             // Get user name (use dName if available, otherwise uName)
             const userName = review.customer.dName || review.customer.uName || 'Anonymous';
@@ -972,25 +1344,56 @@ $(document).ready(function() {
                 <p class="review-content">${review.comment || 'No comment provided.'}</p>
             `);
             
+            // Add edit/delete buttons if this is the user's review
+            if (userId && review.customer && review.customer.id == userId) {
+                const $actionButtons = $('<div>').addClass('review-actions');
+                $actionButtons.append(
+                    $('<button>').addClass('edit-review').text('Edit').on('click', function() {
+                        // Scroll to review form and populate with current review
+                        $('#review-comment').val(review.comment || '');
+                        $(`#star${Math.round(review.score || 0)}`).prop('checked', true);
+                        $('#submit-review').text('Update Review');
+                        $('#review-form-container')[0].scrollIntoView({ behavior: 'smooth' });
+                    })
+                );
+                
+                $actionButtons.append(
+                    $('<button>').addClass('delete-review').text('Delete').on('click', function() {
+                        if (confirm('Are you sure you want to delete your review?')) {
+                            deleteReview(userId, review.id);
+                        }
+                    })
+                );
+                
+                $reviewElement.append($actionButtons);
+            }
+            
             $reviewsList.append($reviewElement);
         });
     }
     
     // Helper function to render stars for reviews
     function renderStars(rating) {
-        const fullStars = Math.floor(rating);
-        const hasHalfStar = rating % 1 >= 0.5;
+        // Make sure rating is a number between 0 and 5
+        const numRating = parseFloat(rating) || 0;
+        const safeRating = Math.max(0, Math.min(5, numRating));
+        
+        const fullStars = Math.floor(safeRating);
+        const hasHalfStar = safeRating % 1 >= 0.5;
         let stars = '';
         
+        // Add full stars (★)
         for (let i = 0; i < fullStars; i++) {
             stars += '★';
         }
         
+        // Add half star if needed (½)
         if (hasHalfStar) {
-            stars += '☆';
+            stars += '½';
         }
         
-        const emptyStars = 5 - Math.ceil(rating);
+        // Add empty stars (☆)
+        const emptyStars = 5 - Math.ceil(safeRating);
         for (let i = 0; i < emptyStars; i++) {
             stars += '☆';
         }
@@ -1000,15 +1403,16 @@ $(document).ready(function() {
     
     // Function to set rating display
     function setRating(rating) {
-        // Format rating to one decimal place
-        const formattedRating = parseFloat(rating).toFixed(1);
+        // Make sure rating is a number and round to 1 decimal place
+        const numRating = parseFloat(rating) || 0;
+        const formattedRating = numRating.toFixed(1);
         
-        // Update rating text
-        $('#game-rating').text(`${formattedRating}/5`);
+        // Update rating text - show as x.x/5.0
+        $('#game-rating').text(`${formattedRating}/5.0`);
         
         // Update stars visual
-        const fullStars = Math.floor(rating);
-        const hasHalfStar = rating % 1 >= 0.5;
+        const fullStars = Math.floor(numRating);
+        const hasHalfStar = numRating % 1 >= 0.5;
         
         let starsHTML = '';
         
@@ -1023,7 +1427,7 @@ $(document).ready(function() {
         }
         
         // Add empty stars
-        const emptyStars = 5 - Math.ceil(rating);
+        const emptyStars = 5 - Math.ceil(numRating);
         for (let i = 0; i < emptyStars; i++) {
             starsHTML += '☆';
         }
@@ -1135,13 +1539,13 @@ $(document).ready(function() {
                 if (isWishlisted) {
                     // Update UI to show the game is wishlisted
                     const $wishlistButton = $('#wishlist-button');
-                    const $wishlistIcon = $wishlistButton.find('.wishlist-icon'); 
                     
+                    // Apply the wishlisted class
                     $wishlistButton.addClass('wishlisted');
-                    $wishlistIcon.text('♥');
-                    $wishlistButton.html('');
-                    $wishlistButton.append($wishlistIcon);
-                    $wishlistButton.append(' In Wishlist');
+                    
+                    // Clear and rebuild the button contents consistently
+                    $wishlistButton.empty();
+                    $wishlistButton.append('<span class="wishlist-icon">♥</span> In Wishlist');
                 }
             },
             error: function(xhr, status, error) {
@@ -1213,20 +1617,15 @@ $(document).ready(function() {
     
     // Account dropdown functionality
     function initAccountDropdown() {
-        const accountContainer = document.getElementById('account-container');
-        const accountDropdown = document.getElementById('account-dropdown');
-        const userDisplayName = document.getElementById('user-display-name');
-        const userProfilePhoto = document.getElementById('user-profile-photo');
-        
         // Toggle dropdown when clicking on account
-        accountContainer.addEventListener('click', function(e) {
+        $('#account-container').click(function(e) {
             e.stopPropagation(); // Prevent event from bubbling to document
-            accountDropdown.classList.toggle('show');
+            $('#account-dropdown').toggleClass('show');
         });
         
         // Close dropdown when clicking elsewhere on the page
-        document.addEventListener('click', function() {
-            accountDropdown.classList.remove('show');
+        $(document).click(function() {
+            $('#account-dropdown').removeClass('show');
         });
     }
 });
