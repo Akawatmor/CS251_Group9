@@ -111,8 +111,7 @@ public class OrderService {
         }
         // Make sure the repository method returns a boolean
         // If the query actually returns a Long count, we convert it to boolean
-        Long count = wishlistRepo.countByUserIdAndGameId(userID, gameID);
-        return count != null && count > 0;
+         return orderRepo.findByUserIDAndGameID(userID, gameID).isPresent();
     }
     
     /**

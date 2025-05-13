@@ -83,6 +83,22 @@ public class GameController {
     public List<Game2x> getGamesByCategory(@PathVariable Long categoryId) {
         return gameRepo.findByCategoryId(categoryId);
     }
+
+    ///////////////////// Search All Game by Best Rating ////////////////////////
+    @GetMapping("/rating")
+    public ResponseEntity<?> getGamesByRating() {
+        Map<String, Object> response = new HashMap<>();
+        try {
+            List<Game2x> game = gameRepo.findAllByOrderByRatingDesc();
+            response.put("success", true);
+            response.put("game", game);
+            return ResponseEntity.ok(response);
+        } catch (RuntimeException e) {
+            response.put("success", false);
+            response.put("message", e.getMessage());
+            return ResponseEntity.badRequest().body(response);
+        }
+    }
     
     ///////////////////// Update Game Data ////////////////////////
     @PutMapping("/id={id}")

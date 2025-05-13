@@ -24,4 +24,8 @@ public interface GameRepository extends JpaRepository<Game2x, Long> {
     @Query(value = "SELECT g.* FROM game g JOIN game_category gc ON g.gameID = gc.gameID WHERE gc.cid = :categoryId", 
            nativeQuery = true)
     List<Game2x> findByCategoryId(@Param("categoryId") Long categoryId);
+
+    // find best rated game
+    @Query("SELECT g FROM Game2x g ORDER BY g.rating DESC")
+    List<Game2x> findAllByOrderByRatingDesc();
 }

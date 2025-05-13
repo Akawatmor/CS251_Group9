@@ -26,7 +26,7 @@ public class ReviewService {
     @Transactional
     public Review addOrUpdateReview(Long userID, Long gameID, String comment, Integer score) {
         // Validate score
-        if (score < 1 || score > 5) {
+        if (score <= 0 || score > 10) {
             throw new IllegalArgumentException("Score must be between 1 and 5");
         }
         
@@ -37,6 +37,7 @@ public class ReviewService {
         
         // Get customer and game
         Customer1x customer = customerRepo.findByuserID(userID);
+            if (customer == null) throw new RuntimeException("Customer not found"); 
         Game2x game = gameRepo.findBygameID(gameID)
             .orElseThrow(() -> new RuntimeException("Game not found"));
         
