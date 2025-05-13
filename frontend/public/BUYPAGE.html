@@ -5,7 +5,6 @@
     <title>Game Details - TVaporr</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="styles.css">
     <!-- Add jQuery -->
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 </head>
@@ -596,11 +595,10 @@ $(document).ready(function() {
     initAccount();
 
     // Function to initialize UI
-    function initUI() {
-        // Buy button functionality
+    function initUI() {        // Buy button functionality
         $('#buy-button').on('click', function() {
-            // Redirect to payment page with game ID
-            window.location.href = `/payment?gameId=${gameId}`;
+            // Redirect to payment choice page with game ID
+            window.location.href = `PAYMENT_CHOICE.html?gameId=${gameId}`;
         });
         
         $('#play-button').on('click', function() {
@@ -1010,14 +1008,13 @@ $(document).ready(function() {
         
         if (!userId) return;
         
-        // Call API to check if user owns this game
+        // Call API to check if user owns this gamelocalhost:8080/api/orders/user=8/game=1/own
         $.ajax({
-            url: `http://localhost:8080/api/customers/games/id=${userId}`,
+            url: `http://localhost:8080/api/orders/user=${userId}/game=${gameId}/own`,
             method: 'GET',
-            success: function(ownedGames) {
-                const ownsGame = ownedGames.some(game => game.gameID == gameId);
+            success: function(success) {
                 
-                if (ownsGame) {
+                if (success == true) {
                     // Update UI to show the user owns this game
                     const $buyButton = $('#buy-button');
                     const $playButton = $('#play-button');

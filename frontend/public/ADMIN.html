@@ -756,13 +756,13 @@
                 type: 'GET',
                 success: function(response) {
                     // Update users in the table
-                    updateUsersTable(response.users);
+                    updateUsersTable(response.Customer);
                     // Update dashboard counts
-                    $('#userCount').text(response.users.length);
+                    $('#userCount').text(response.Customer.length);
                     
                     // Update recent users table
                     let recentUsersHTML = '';
-                    const recentUsers = response.users.slice(0, 3);
+                    const recentUsers = response.Customer.slice(0, 3);
                     recentUsers.forEach(user => {
                         recentUsersHTML += `
                             <tr>

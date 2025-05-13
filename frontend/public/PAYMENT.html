@@ -45,9 +45,8 @@
       </div>
     </div>
 
-    <!-- ขวา: แบบฟอร์มกรอกข้อมูล -->
-    <div class="payment-right">
-      <form>
+    <!-- ขวา: แบบฟอร์มกรอกข้อมูล -->    <div class="payment-right">
+      <form id="payment-form">
         <label for="accountName">Bank Account Name:</label>
         <input type="text" id="accountName" name="accountName" placeholder="Enter your bank account name" required>
 
@@ -391,14 +390,26 @@
         }
     }
         
-    </style>
-
-    <script>
+    </style>    <script>
     document.addEventListener('DOMContentLoaded', function() {
+        // Get game ID from URL parameters
+        const urlParams = new URLSearchParams(window.location.search);
+        const gameId = urlParams.get('gameId');
+        
+        if (!gameId) {
+            showError('No game ID provided. Please try again.');
+            return;
+        }
+        
         // Get user ID and name for account section
         function getUserInfo() {
             // Try to get from sessionStorage first
-            const userId = sessionStorage.getItem('userId') || localStorage.getItem('userId') || '1';
+            const userId = sessionStorage.getItem('userId') || localStorage.getItem('userId');
+            
+            if (!userId) {
+                window.location.href = 'LOGIN.html';
+                return;
+            }
             
             // Update user display name
             fetch(`http://localhost:8080/api/customers/id=${userId}`)
@@ -422,6 +433,8 @@
                     }
                 })
                 .catch(error => console.error('Error loading profile photo:', error));
+            
+            return userId;
         }
         
         // File upload preview
@@ -452,9 +465,89 @@
                 });
             });
         }
+          // Initialize user info
+        const userId = getUserInfo();
         
-        // Initialize user info
-        getUserInfo();
+        // Handle form submission
+        const paymentForm = document.getElementById('payment-form');
+        
+        if (paymentForm) {
+            paymentForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                // Check if all required fields are filled
+                const accountName = document.getElementById('accountName').value;
+                const bankType = document.getElementById('bankType').value;
+                const slipUpload = document.getElementById('slipUpload').files[0];
+                
+                if (!accountName || !bankType || !slipUpload) {
+                    alert('Please fill all required fields.');
+                    return;
+                }
+                
+                // Disable submit button and show loading state
+                const submitButton = this.querySelector('button[type="submit"]');
+                const originalButtonText = submitButton.innerHTML;
+                submitButton.disabled = true;
+                submitButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing...';
+                
+                // Create receipt data
+                const receiptData = {
+                    paymentMethod: 'bank_transfer',
+                    paymentDate: new Date().toISOString(),
+                    accountName: accountName,
+                    bankType: bankType,
+                    transactionId: 'bank-' + Date.now(),
+                    slipUploaded: true
+                };
+                
+                // Process payment
+                processPayment(userId, gameId, receiptData, function(success) {
+                    if (success) {                        // Redirect to success page
+                        window.location.href = `/SERVICE/PAYMENT_SUCCESS.html?gameId=${gameId}&method=bank_transfer`;
+                    } else {
+                        // Show error and enable button again
+                        alert('Payment processing failed. Please try again.');
+                        submitButton.disabled = false;
+                        submitButton.innerHTML = originalButtonText;
+                    }
+                });
+            });
+        }
+        
+        // Function to process payment
+        function processPayment(userId, gameId, receiptData, callback) {
+            // Make API call to create order
+            fetch(`http://localhost:8080/api/orders/user=${userId}/game=${gameId}/receipt=${JSON.stringify(receiptData)}`, {
+                method: 'POST'
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data && data.success) {
+                    callback(true);
+                } else {
+                    callback(false);
+                }
+            })
+            .catch(error => {
+                console.error('Payment error:', error);
+                callback(false);
+            });
+        }
+        
+        // Function to show error message
+        function showError(message) {
+            document.querySelector('.payment').innerHTML = `
+                <div class="error-message" style="text-align: center; padding: 40px;">
+                    <i class="fas fa-exclamation-circle fa-3x" style="color: #FF8A8A; margin-bottom: 20px;"></i>
+                    <h2>Error</h2>
+                    <p>${message}</p>
+                    <button onclick="window.location.href='HOMEPAGE.html'" class="back-button">
+                        Back to Homepage
+                    </button>
+                </div>
+            `;
+        }
     });
     </script>
 </body>

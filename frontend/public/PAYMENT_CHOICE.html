@@ -1,0 +1,582 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Choose Payment Method - TVaporr</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <!-- Add jQuery -->
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+</head>
+<body>
+    <div class="background-img"></div>
+    <div class="layout">
+        <main class="main-content">
+            <header class="navbar">
+                <div class="nav-links">
+                    <a href="HOMEPAGE.html">Homepage</a>
+                    <span>|</span>
+                    <a href="LIBRARY.html">Library</a>
+                </div>
+                <div class="account">
+                    <img src="https://placehold.co/30x30" alt="Profile Icon" style="width: 32px; height: 32px; object-fit: fill;">
+                    <span id="user-display-name">Account</span>
+                </div>
+            </header>
+            <div class="payment-choice">
+                <h1><i class="fas fa-shopping-cart"></i> Checkout</h1>
+                <div class="game-summary">
+                    <div class="game-image">
+                        <img id="game-image" src="https://placehold.co/150x150" alt="Game Image">
+                    </div>
+                    <div class="game-details">
+                        <h2 id="game-title">Game Title</h2>
+                        <p><strong>Price:</strong> <span id="game-price">$0.00</span></p>
+                    </div>
+                </div>
+
+                <div id="free-game-section" style="display: none;">
+                    <div class="free-game-notice">
+                        <i class="fas fa-gift fa-3x"></i>
+                        <h2>This game is free!</h2>
+                        <p>Click below to add it to your library immediately.</p>
+                        <button id="acquire-free-game" class="action-button">Add to Library</button>
+                    </div>
+                </div>
+
+                <div id="payment-options" class="payment-options">
+                    <h2>Select Payment Method</h2>
+                    
+                    <div id="wallet-payment-option" class="payment-method">
+                        <div class="payment-header">
+                            <i class="fas fa-wallet"></i>
+                            <h3>Pay with Wallet</h3>
+                        </div>
+                        <div class="payment-details">
+                            <p>Current Balance: <span id="user-balance">฿0.00</span></p>
+                            <p id="balance-status" class="balance-status"></p>
+                            <button id="wallet-pay-button" class="action-button">Pay Now</button>
+                        </div>
+                    </div>
+                    
+                    <div class="payment-method">
+                        <div class="payment-header">
+                            <i class="fas fa-university"></i>
+                            <h3>Bank Transfer</h3>
+                        </div>
+                        <div class="payment-details">
+                            <p>Transfer money and upload payment slip</p>
+                            <button id="bank-transfer-button" class="action-button">Choose This Method</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+<style>
+* {
+    box-sizing: border-box;
+}
+
+body, html {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+    font-family: 'Poppins', sans-serif;
+    background: linear-gradient(0deg, #E6C000 0%, #5D110D 66%, #480E0C 78%, #340C0A 100%);
+    overflow: hidden;
+    position: relative;
+}
+
+.background-img {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background: url('./PICTURE/LOGIN_BG1.png') no-repeat center;
+    background-size: 100% 100%;
+    opacity: 0.9;
+    z-index: 0;
+}
+
+.account {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.main-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    z-index: 2;
+}
+
+.layout {
+    display: flex;
+    height: 100vh;
+}
+
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #230706;
+    color: white;
+    padding: 0 30px;
+    height: 60px;
+}
+
+.nav-links {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    width: 100%;
+}
+
+.nav-links a {
+    text-decoration: none;
+    color: white;
+    font-size: 20px;
+}
+
+.payment-choice {
+    background-color: rgba(71, 28, 26, 0.9);
+    width: 80%;
+    max-width: 800px;
+    margin: 20px auto;
+    padding: 30px;
+    border-radius: 15px;
+    color: white;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+}
+
+.payment-choice h1 {
+    text-align: center;
+    margin-bottom: 25px;
+    font-size: 32px;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+}
+
+.payment-choice h1 i {
+    margin-right: 10px;
+    color: #E6C000;
+}
+
+.game-summary {
+    display: flex;
+    align-items: center;
+    background-color: rgba(138, 58, 47, 0.7);
+    padding: 20px;
+    border-radius: 10px;
+    margin-bottom: 30px;
+}
+
+.game-image {
+    margin-right: 20px;
+}
+
+.game-image img {
+    width: 100px;
+    height: 100px;
+    object-fit: cover;
+    border-radius: 8px;
+    border: 2px solid #E6C000;
+}
+
+.game-details h2 {
+    margin-top: 0;
+    margin-bottom: 10px;
+    color: #E6C000;
+}
+
+.payment-options {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.payment-options h2 {
+    text-align: center;
+    color: #E6C000;
+    margin-bottom: 20px;
+}
+
+.payment-method {
+    background-color: rgba(138, 58, 47, 0.7);
+    border-radius: 10px;
+    overflow: hidden;
+    transition: all 0.3s ease;
+}
+
+.payment-method:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+}
+
+.payment-header {
+    background-color: #E6C000;
+    color: #230706;
+    padding: 15px;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.payment-header i {
+    font-size: 24px;
+}
+
+.payment-header h3 {
+    margin: 0;
+    font-size: 20px;
+}
+
+.payment-details {
+    padding: 20px;
+    color: white;
+}
+
+.action-button {
+    background-color: #E6C000;
+    color: #230706;
+    border: none;
+    padding: 12px 20px;
+    border-radius: 5px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin-top: 10px;
+    font-size: 16px;
+    width: 100%;
+}
+
+.action-button:hover {
+    background-color: #d4b000;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+}
+
+.action-button:disabled {
+    background-color: #929292;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+}
+
+.balance-status {
+    font-weight: bold;
+}
+
+.balance-status.sufficient {
+    color: #8AFF8A;
+}
+
+.balance-status.insufficient {
+    color: #FF8A8A;
+}
+
+.free-game-notice {
+    background-color: rgba(138, 58, 47, 0.7);
+    border-radius: 10px;
+    padding: 30px;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
+}
+
+.free-game-notice i {
+    color: #E6C000;
+}
+
+/* Responsive design improvements */
+@media (max-width: 768px) {
+    .payment-choice {
+        width: 95%;
+        padding: 20px;
+    }
+    
+    .game-summary {
+        flex-direction: column;
+        text-align: center;
+    }
+    
+    .game-image {
+        margin-right: 0;
+        margin-bottom: 15px;
+    }
+}
+</style>
+
+<script>
+$(document).ready(function() {
+    // Get game ID from URL parameters
+    const urlParams = new URLSearchParams(window.location.search);
+    const gameId = urlParams.get('gameId');
+    
+    if (!gameId) {
+        showError('No game ID provided');
+        return;
+    }
+    
+    // Initialize user info
+    const userId = getUserId();
+    if (!userId) {
+        // Redirect to login if no user ID
+        window.location.href = '/LOGIN.html';
+        return;
+    }
+    
+    // Load user profile and game data
+    loadUserProfile(userId);
+    loadGameDetails(gameId);
+    
+    // Add event listeners
+    $('#wallet-pay-button').on('click', function() {
+        if ($(this).prop('disabled')) return;
+        
+        processWalletPayment(userId, gameId);
+    });
+    
+    $('#bank-transfer-button').on('click', function() {
+        window.location.href = `/PAYMENT.html?gameId=${gameId}`;
+    });
+    
+    $('#acquire-free-game').on('click', function() {
+        processFreeGame(userId, gameId);
+    });
+    
+    // Function to get user ID from storage
+    function getUserId() {
+        return sessionStorage.getItem('userId') || localStorage.getItem('userId');
+    }
+    
+    // Function to load user profile details
+    function loadUserProfile(userId) {
+        $.ajax({
+            url: `http://localhost:8080/api/customers/id=${userId}`,
+            method: 'GET',
+            success: function(data) {
+                if (data && data.success) {
+                    const user = data.Customer;
+                    $('#user-display-name').text(user.dName || 'Account');
+                    
+                    // Update balance
+                    const balance = user.money || 0;
+                    $('#user-balance').text(`฿${balance.toFixed(2)}`);
+                    
+                    // Update profile photo if available
+                    updateProfilePhoto(userId);
+                }
+            },
+            error: function(xhr, status, error) {
+                console.error('Error fetching user data:', error);
+            }
+        });
+    }
+    
+    // Function to update user profile photo
+    function updateProfilePhoto(userId) {
+        const photoUrl = `http://localhost:8080/api/customers/id=${userId}/photo`;
+        
+        $.ajax({
+            url: photoUrl,
+            method: 'GET',
+            success: function() {
+                $('.account img').attr('src', photoUrl);
+            },
+            error: function() {
+                // Keep default photo on error
+            }
+        });
+    }
+    
+    // Function to load game details
+    function loadGameDetails(gameId) {
+        $.ajax({
+            url: `/service/buypage/details/${gameId}`,
+            method: 'GET',
+            success: function(game) {
+                // Update game details in the UI
+                $('#game-title').text(game.gName || 'Untitled Game');
+                
+                // Set game price and check if it's free
+                const price = game.gPrice;
+                const isFree = price === 0 || price === null || price === undefined;
+                
+                if (isFree) {
+                    $('#game-price').text('Free');
+                    $('#free-game-section').show();
+                    $('#payment-options').hide();
+                } else {
+                    $('#game-price').text(`฿${parseFloat(price).toFixed(2)}`);
+                    
+                    // Check if user has enough balance
+                    checkUserBalance(price);
+                }
+                
+                // Set game image
+                const gameImageUrl = `/service/buypage/image/${gameId}/main`;
+                $('#game-image').attr('src', gameImageUrl).on('error', function() {
+                    $(this).attr('src', 'https://placehold.co/150x150/3c1211/E6C000?text=Game');
+                });
+                
+                // Check if user already owns the game
+                checkGameOwnership(gameId);
+            },
+            error: function(xhr, status, error) {
+                showError('Failed to load game details');
+                console.error('Error:', error);
+            }
+        });
+    }
+    
+    // Function to check if user already owns the game
+    function checkGameOwnership(gameId) {
+        const userId = getUserId();
+        
+        $.ajax({
+            url: `http://localhost:8080/api/orders/user=${userId}/game=${gameId}/own`,
+            method: 'GET',
+            success: function(data) {
+                if (data && data.success) {
+                    // User already owns this game
+                    $('.payment-choice').html(`
+                        <div class="already-owned">
+                            <i class="fas fa-check-circle fa-3x" style="color: #8AFF8A;"></i>
+                            <h2>You already own this game!</h2>
+                            <p>This game is already in your library.</p>
+                            <button onclick="window.location.href='LIBRARY.html'" class="action-button">Go to Library</button>
+                            <button onclick="window.location.href='HOMEPAGE.html'" class="action-button" style="background-color: #5E1F1B; color: white; margin-top: 10px;">Back to Store</button>
+                        </div>
+                    `);
+                }
+            }
+        });
+    }
+    
+    // Function to check if user has enough balance
+    function checkUserBalance(gamePrice) {
+        const userId = getUserId();
+        
+        $.ajax({
+            url: `http://localhost:8080/api/customers/id=${userId}`,
+            method: 'GET',
+            success: function(data) {
+                if (data && data.success) {
+                    const userBalance = data.Customer.money || 0;
+                    const $balanceStatus = $('#balance-status');
+                    const $walletPayButton = $('#wallet-pay-button');
+                    
+                    if (userBalance >= gamePrice) {
+                        $balanceStatus.text('You have enough funds!').addClass('sufficient').removeClass('insufficient');
+                        $walletPayButton.prop('disabled', false);
+                    } else {
+                        $balanceStatus.text('Insufficient funds').addClass('insufficient').removeClass('sufficient');
+                        $walletPayButton.prop('disabled', true);
+                    }
+                }
+            }
+        });
+    }        // Function to process wallet payment
+    function processWalletPayment(userId, gameId) {
+        // Disable the button during processing
+        $('#wallet-pay-button').prop('disabled', true).text('Processing...');
+        
+        // Create receipt data for wallet payment
+        const receiptData = {
+            paymentMethod: 'wallet',
+            paymentDate: new Date().toISOString(),
+            transactionId: 'wallet-' + Date.now()
+        };
+
+        receiptData = toString(receiptData);
+        
+        // Make the order
+        $.ajax({
+            url: `http://localhost:8080/api/orders/user=${userId}/game=${gameId}`,
+            method: 'POST',
+            contentType: 'application/json',
+            data: JSON.stringify({
+                receipt: receiptData
+            }),
+            success: function(data) {
+                if (data && data.success) {
+                    // Redirect to success page
+                    window.location.href = `/SERVICE/PAYMENT_SUCCESS.html?gameId=${gameId}&method=wallet`;
+                } else {
+                    showError('Payment failed. Please try again later.');
+                    // Re-enable button
+                    $('#wallet-pay-button').prop('disabled', false).text('Pay Now');
+                }
+            },
+            error: function(xhr, status, error) {
+                showError('Payment failed. Please try again later.');
+                console.error('Payment error:', error);
+                // Re-enable button
+                $('#wallet-pay-button').prop('disabled', false).text('Pay Now');
+            }
+        });
+    }
+    
+    // Function to process free game acquisition
+    function processFreeGame(userId, gameId) {
+        // Disable the button during processing
+        $('#acquire-free-game').prop('disabled', true).text('Processing...');
+        
+        // Create receipt data for free game
+        const receiptData = {
+            paymentMethod: 'free',
+            paymentDate: new Date().toISOString(),
+            transactionId: 'free-' + Date.now()
+        };
+        
+        // Make the order
+        $.ajax({
+            url: `http://localhost:8080/api/orders/user=${userId}/game=${gameId}`,
+            method: 'POST',
+            contentType: 'application/json',
+            data: JSON.stringify({
+                receipt: receiptData
+            }),
+            success: function(data) {
+                if (data && data.success) {
+                    // Redirect to success page
+                    window.location.href = `/SERVICE/PAYMENT_SUCCESS.html?gameId=${gameId}&method=free`;
+                } else {
+                    showError('Failed to acquire game. Please try again later.');
+                    // Re-enable button
+                    $('#acquire-free-game').prop('disabled', false).text('Add to Library');
+                }
+            },
+            error: function(xhr, status, error) {
+                showError('Failed to acquire game. Please try again later.');
+                console.error('Error:', error);
+                // Re-enable button
+                $('#acquire-free-game').prop('disabled', false).text('Add to Library');
+            }
+        });
+    }
+    
+    // Function to show error message
+    function showError(message) {
+        $('.payment-choice').html(`
+            <div class="error-message" style="text-align: center;">
+                <i class="fas fa-exclamation-circle fa-3x" style="color: #FF8A8A;"></i>
+                <h2>Error</h2>
+                <p>${message}</p>
+                <button onclick="window.location.href='HOMEPAGE.html'" class="action-button">Back to Homepage</button>
+            </div>
+        `);
+    }
+});
+</script>
+
+</body>
+</html>

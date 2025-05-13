@@ -143,15 +143,20 @@
         
         // Display receipt number
         document.getElementById('receiptNumber').textContent = `Receipt: ${receipt}`;
-        
-        // Function to fetch the user info
+          // Function to fetch the user info
         async function getUserInfo() {
             try {
-                const response = await fetch('/service/useraccount/info');
+                // Get user ID from session or local storage
+                userId = sessionStorage.getItem('userId') || localStorage.getItem('userId');
+                
+                if (!userId) {
+                    throw new Error('No user ID found');
+                }
+                
+                const response = await fetch(`http://localhost:8080/api/customers/id=${userId}`);
                 if (response.ok) {
                     const userData = await response.json();
-                    userId = userData.userID;
-                    return userData;
+                    return userData.Customer;
                 } else {
                     throw new Error('Failed to fetch user data');
                 }
@@ -160,39 +165,14 @@
                 return null;
             }
         }
-        
-        // Function to confirm purchase
-        async function confirmPurchase(userId, gameId) {
-            try {
-                const response = await fetch(`/service/payment/confirm`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({
-                        userId: userId,
-                        gameId: gameId,
-                        receiptInfo: receipt
-                    })
-                });
-                
-                if (response.ok) {
-                    return await response.json();
-                } else {
-                    throw new Error('Failed to confirm purchase');
-                }
-            } catch (error) {
-                console.error('Error confirming purchase:', error);
-                return { success: false };
-            }
-        }
-        
-        // Function to get game details
+          // No need for confirm purchase function as it's already handled by PAYMENT_CHOICE.html or PAYMENT.html
+          // Function to get game details
         async function getGameDetails(gameId) {
             try {
-                const response = await fetch(`/service/buypage/details/${gameId}`);
+                const response = await fetch(`http://localhost:8080/api/games/id=${gameId}`);
                 if (response.ok) {
-                    return await response.json();
+                    const data = await response.json();
+                    return data; // This contains game details
                 } else {
                     throw new Error('Failed to fetch game details');
                 }
@@ -201,26 +181,37 @@
                 return null;
             }
         }
-        
-        // Initialize the page
+          // Initialize the page
         async function init() {
             // First get user info to get the user ID
             const userData = await getUserInfo();
             
             if (userData) {
-                // Then confirm the purchase
-                const purchaseResult = await confirmPurchase(userData.userID, gameId);
-                
-                if (purchaseResult.success) {
-                    // Get game details to show the game name
-                    const gameData = await getGameDetails(gameId);
-                    if (gameData) {
-                        document.getElementById('gameName').textContent = gameData.gameName;
-                    } else {
-                        document.getElementById('gameName').textContent = 'Game #' + gameId;
+                // Get game details to show the game name
+                const gameData = await getGameDetails(gameId);
+                if (gameData) {
+                    document.getElementById('gameName').textContent = gameData.gName || 'Game #' + gameId;
+                    // Update payment method if it's known
+                    const paymentMethod = urlParams.get('method');
+                    if (paymentMethod) {
+                        let methodText = '';
+                        switch(paymentMethod) {
+                            case 'wallet':
+                                methodText = 'Account Balance';
+                                break;
+                            case 'bank_transfer':
+                                methodText = 'Bank Transfer';
+                                break;
+                            case 'free':
+                                methodText = 'Free Game';
+                                break;
+                            default:
+                                methodText = paymentMethod;
+                        }
+                        document.getElementById('paymentMethod').textContent = methodText;
                     }
                 } else {
-                    console.error('Failed to confirm purchase');
+                    document.getElementById('gameName').textContent = 'Game #' + gameId;
                 }
             }
         }
@@ -236,13 +227,12 @@
             countdownElement.textContent = seconds;
             
             if (seconds <= 0) {
-                clearInterval(countdownInterval);
-                window.location.href = `/buypage?gameId=${gameId}`;
+                clearInterval(countdownInterval);                window.location.href = `../HOMEPAGE.html`;
             }
         }, 1000);
         
         // Set continue button link
-        document.getElementById('continueBtn').href = `/buypage?gameId=${gameId}`;
+        document.getElementById('continueBtn').href = '../LIBRARY.html';
     </script>
 </body>
 </html>
