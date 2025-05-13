@@ -91,7 +91,7 @@ public class ReviewController {
             return ResponseEntity.ok(review);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                .body(null);
+                .body(e.getMessage());
         }
     }
     

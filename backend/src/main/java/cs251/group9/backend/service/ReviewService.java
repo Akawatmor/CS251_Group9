@@ -26,8 +26,8 @@ public class ReviewService {
     @Transactional
     public Review addOrUpdateReview(Long userID, Long gameID, String comment, Integer score) {
         // Validate score
-        if (score <= 0 || score > 10) {
-            throw new IllegalArgumentException("Score must be between 1 and 5");
+        if (score < 0 || score > 5) {
+            throw new IllegalArgumentException("Score must be between 0 and 5");
         }
         
         // Check if user owns the game

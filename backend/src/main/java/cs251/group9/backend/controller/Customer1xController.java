@@ -165,15 +165,21 @@ public class Customer1xController {
 
 ///////////////////////// Delete Customer by CustomerID /////////////////////////
     @DeleteMapping("/id={userId}")
-    public ResponseEntity<Map<String, Object>> deleteCustomer(@PathVariable Long userId) {
+    public ResponseEntity<?> deleteCustomer(@PathVariable Long userId) {
     
         // Check if the customer exists
         if(findCustomer1xById(userId) == null) {
             return errorResponse("Customer not found", 2);
         }
-        else{
-           return successResponse("Customer deleted successfully");
+    
+        try{
+            customer1xService.deleteCustomer(userId);
+            return successResponse("Customer deleted successfully");
+        } catch (IllegalArgumentException e) {
+            return errorResponse("Error deleting customer: " + e.getMessage(), 99);
         }
+
+        
     
     }
 
