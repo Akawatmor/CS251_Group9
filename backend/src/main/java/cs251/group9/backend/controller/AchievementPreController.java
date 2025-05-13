@@ -11,7 +11,7 @@ import cs251.group9.backend.repository.*;
 import java.util.*;
 
 @RestController
-@RequestMapping("/api/achievement-prerequisites")
+@RequestMapping("/api/achievement-pre")
 public class AchievementPreController {
     
     @Autowired
@@ -27,7 +27,7 @@ public class AchievementPreController {
     }
     
     // Get prerequisites for a specific achievement
-    @GetMapping("/achievement/{achievementId}")
+    @GetMapping("/achievement={achievementId}")
     public ResponseEntity<List<AchievementPre>> getPrerequisitesForAchievement(@PathVariable Long achievementId) {
         // Assuming you have a method to find by achievement ID
         // You might need to add this method to your repository
@@ -103,7 +103,7 @@ public class AchievementPreController {
     }
     
     // Check if all prerequisites are met for an achievement by a user
-    @GetMapping("/check/user/{userId}/achievement/{achievementId}")
+    @GetMapping("/check/user={userId}/achievement={achievementId}")
     public ResponseEntity<?> checkPrerequisitesMet(@PathVariable Long userId, @PathVariable Long achievementId) {
         // This would need additional functionality from your repositories
         // to check if the user has earned all prerequisite achievements

@@ -68,17 +68,24 @@ public class OrderService {
         }
         
         // Check if user has enough money
-        if (customer.getMoney() < game.getgPrice()) {
+        
+
+        Integer remainingMoney = 0;
+
+        if(game.getgPrice() == null || game.getgPrice() <= 0) {
+
+        }
+        else if (customer.getMoney() < game.getgPrice()) {
             System.out.println("Not enough money to purchase the game");
             throw new RuntimeException("Insufficient funds: Need " + 
                 (game.getgPrice() - customer.getMoney()) + " more to purchase");
         }
-        
-        // Deduct money from user
-        Integer remainingMoney = customer.getMoney() - game.getgPrice();
-        customer.setMoney(remainingMoney);
+        else{
+            remainingMoney = customer.getMoney() - game.getgPrice();
+            customer.setMoney(remainingMoney);
+        }
         customerRepo.save(customer);
-        
+
         // Create order
         Order3x order = new Order3x();
         order.setCustomer(customer);

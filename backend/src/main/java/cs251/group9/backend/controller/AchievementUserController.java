@@ -11,7 +11,7 @@ import cs251.group9.backend.repository.*;
 import java.util.*;
 
 @RestController
-@RequestMapping("/api/user-achievements")
+@RequestMapping("/api/uachievements")
 public class AchievementUserController {
     
     @Autowired
@@ -30,7 +30,7 @@ public class AchievementUserController {
     }
     
     // Get achievements for a specific user
-    @GetMapping("/user/{userId}")
+    @GetMapping("/user={userId}")
     public ResponseEntity<?> getUserAchievements(@PathVariable Long userId) {
         // Assuming you have a method to find by user ID
         // You might need to add this method to your repository
@@ -43,7 +43,7 @@ public class AchievementUserController {
     }
     
     // Get users who have earned a specific achievement
-    @GetMapping("/achievement/{achievementId}")
+    @GetMapping("/achievement={achievementId}")
     public ResponseEntity<?> getUsersByAchievement(@PathVariable Long achievementId) {
         // Assuming you have a method to find by achievement ID
         // You might need to add this method to your repository
@@ -56,7 +56,7 @@ public class AchievementUserController {
     }
     
     // Award an achievement to a user
-    @PostMapping("/user/{userId}/achievement/{achievementId}")
+    @PostMapping("/user={userId}/achievement={achievementId}")
     public ResponseEntity<?> awardAchievement(@PathVariable Long userId, @PathVariable Long achievementId) {
         try {
             // Check if user exists
@@ -95,7 +95,7 @@ public class AchievementUserController {
     }
     
     // Check if a user has a specific achievement
-    @GetMapping("/check/user/{userId}/achievement/{achievementId}")
+    @GetMapping("/check/user={userId}/achievement={achievementId}")
     public ResponseEntity<?> hasAchievement(@PathVariable Long userId, @PathVariable Long achievementId) {
         AchievementUserId id = new AchievementUserId();
         id.setUserID(userId);
@@ -106,7 +106,7 @@ public class AchievementUserController {
     }
     
     // Remove an achievement from a user
-    @DeleteMapping("/user/{userId}/achievement/{achievementId}")
+    @DeleteMapping("/user={userId}/achievement={achievementId}")
     public ResponseEntity<?> revokeAchievement(@PathVariable Long userId, @PathVariable Long achievementId) {
         try {
             AchievementUserId id = new AchievementUserId();

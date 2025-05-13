@@ -21,6 +21,12 @@ public interface OrderRepository extends JpaRepository<Order3x, Long> {
     @Query(value = "SELECT * FROM orders WHERE userID = :userID AND orderID = :orderID", nativeQuery = true)
     Optional<Order3x> findByCustomerUserIDAndOrderID(@Param("userID") Long userID, @Param("orderID") Long orderID);
 
+    @Query(value = "SELECT * FROM orders WHERE gameID = :gameID", nativeQuery = true)
+    List<Order3x> findByGameID(@Param("gameID") Long gameID);
+
+    @Query(value = "SELECT * FROM orders WHERE userID = :userID AND gameID = :gameID", nativeQuery = true)
+    Optional<Order3x> findByUserIDAndGameID(@Param("userID") Long userID, @Param("gameID") Long gameID);
+
     @Modifying
     @Query(value = "DELETE FROM orders WHERE gameID = :gameID", nativeQuery = true)
     void deleteByGameId(@Param("gameID") Long gameID);
