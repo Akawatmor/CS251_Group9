@@ -17,6 +17,50 @@ public class CategoryController {
     @Autowired
     private CategoryRepository categoryRepo;
     
+    // Generate default categories
+    @PostMapping("/generate-defaults")
+    public ResponseEntity<?> generateDefaultCategories() {
+        Map<String, Object> response = new HashMap<>();
+        List<Category5x> createdCategories = new ArrayList<>();
+        
+        try {
+            // Define standard game categories
+            String[] categoryNames = {
+                "Action", "Adventure", "RPG", "Strategy", "Simulation", 
+                "Sports", "Racing", "Puzzle", "Shooter", "Platformer",
+                "Horror", "Survival", "Open World", "Fighting", "Music",
+                "Educational", "Card Game", "Board Game", "Family", "Casual"
+            };
+            
+            // For each category name, check if it exists, if not create it
+            for (int i = 0; i < categoryNames.length; i++) {
+                String name = categoryNames[i];
+                List<Category5x> existing = categoryRepo.findByCName(name);
+                
+                if (existing.isEmpty()) {
+                    // Create new category with auto-generated ID (starting from 5000000001)
+                    Category5x category = new Category5x();
+                    category.setCid(5000000001L + i);
+                    category.setcName(name);
+                    createdCategories.add(categoryRepo.save(category));
+                } else {
+                    // Include existing category in the response
+                    createdCategories.add(existing.get(0));
+                }
+            }
+            
+            response.put("success", true);
+            response.put("message", createdCategories.size() + " default categories available");
+            response.put("categories", createdCategories);
+            return ResponseEntity.status(HttpStatus.CREATED).body(response);
+            
+        } catch (Exception e) {
+            response.put("success", false);
+            response.put("message", "Error generating default categories: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
+        }
+    }
+    
     // Get all categories
     @GetMapping
     public List<Category5x> getAllCategories() {
