@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.Optional;
 
 @Service
 public class ReviewService {
@@ -64,8 +65,7 @@ public class ReviewService {
         
         return savedReview;
     }
-    
-    private void updateGameRating(Long gameID) {
+      private void updateGameRating(Long gameID) {
         Float avgRating = reviewRepo.calculateAverageRatingByGameId(gameID);
         if (avgRating != null) {
             Game2x game = gameRepo.findBygameID(gameID)
@@ -73,5 +73,37 @@ public class ReviewService {
             game.setRating(avgRating);
             gameRepo.save(game);
         }
+    }
+    
+    /**
+     * Delete a review
+     * @param userID User's ID
+     * @param gameID Game's ID
+     * @return true if deleted, false if not found
+     */
+    @Transactional
+    public boolean deleteReview(Long userID, Long gameID) {
+        ReviewId reviewId = new ReviewId(userID, gameID);
+        Optional<Review> existingReview = reviewRepo.findById(reviewId);
+        
+        if (existingReview.isPresent()) {
+            reviewRepo.deleteById(reviewId);
+            
+            // Update game rating after deleting the review
+            updateGameRating(gameID);
+            return true;
+        }
+        return false;
+    }
+    
+    /**
+     * Get a specific review
+     * @param userID User's ID
+     * @param gameID Game's ID
+     * @return Optional containing the review if found
+     */
+    public Optional<Review> getReview(Long userID, Long gameID) {
+        ReviewId reviewId = new ReviewId(userID, gameID);
+        return reviewRepo.findById(reviewId);
     }
 }

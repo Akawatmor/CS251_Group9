@@ -115,4 +115,27 @@ public class ReviewController {
             .map(ResponseEntity::ok)
             .orElse(ResponseEntity.notFound().build());
     }
+    
+////////////////////// Delete review //////////////////////
+    @DeleteMapping("/user={userId}/game={gameId}")
+    public ResponseEntity<?> deleteReview(@PathVariable Long userId, @PathVariable Long gameId) {
+        HashMap<String, Object> response = new HashMap<>();
+        
+        try {
+            boolean deleted = reviewService.deleteReview(userId, gameId);
+            if (deleted) {
+                response.put("success", true);
+                response.put("message", "Review deleted successfully");
+                return ResponseEntity.ok(response);
+            } else {
+                response.put("success", false);
+                response.put("message", "Review not found");
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
+            }
+        } catch (Exception e) {
+            response.put("success", false);
+            response.put("message", "Failed to delete review: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
+        }
+    }
 }
