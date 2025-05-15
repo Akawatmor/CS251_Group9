@@ -921,6 +921,34 @@
     }
     
     /* Achievement section styles */
+    
+    /* Toast notification styles */
+    .toast {
+        position: fixed;
+        bottom: 30px;
+        left: 50%;
+        transform: translateX(-50%);
+        background-color: rgba(35, 7, 6, 0.9);
+        color: #fff;
+        padding: 12px 25px;
+        border-radius: 5px;
+        font-weight: bold;
+        z-index: 1000;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+        border: 1px solid #C9A24E;
+        opacity: 0;
+        visibility: hidden;
+        transition: opacity 0.3s, visibility 0.3s;
+    }
+    
+    .toast.show {
+        opacity: 1;
+        visibility: visible;
+    }
+    
+    .toast.error {
+        border-color: #9F3E3A;
+    }
 </style>
 
 <script>
@@ -954,6 +982,33 @@ $(document).ready(function() {
     // Initialize account dropdown
     initAccountDropdown();
     
+    // Function to show toast notification
+    function showToast(message, isError = false) {
+        // Remove any existing toast
+        $('.toast').remove();
+        
+        // Create new toast
+        const $toast = $('<div>').addClass('toast').text(message);
+        
+        if (isError) {
+            $toast.addClass('error');
+        }
+        
+        // Add to body
+        $('body').append($toast);
+        
+        // Show toast
+        setTimeout(() => {
+            $toast.addClass('show');
+            
+            // Hide and remove after 3 seconds
+            setTimeout(() => {
+                $toast.removeClass('show');
+                setTimeout(() => $toast.remove(), 300);
+            }, 3000);
+        }, 10);
+    }
+    
     // Function to initialize UI
     function initUI() {        // Buy button functionality
         $('#buy-button').on('click', function() {
@@ -963,8 +1018,8 @@ $(document).ready(function() {
         
         $('#play-button').on('click', function() {
             if (!$(this).prop('disabled')) {
-                // Download game file when play is clicked
-                downloadGameFile(gameId);
+                // Show toast that system is not implemented yet
+                showToast('Game launch feature is not implemented yet', false);
             }
         });
         
@@ -1254,8 +1309,13 @@ $(document).ready(function() {
         // Set game title
         $('#game-title').text(game.gName || 'Untitled Game');
         
-        // Set game price
-        $('#game-price').text(formatPrice(game.gPrice));
+        // Set game price and update buy button
+        const formattedPrice = formatPrice(game.gPrice);
+        $('#game-price').text(formattedPrice);
+        $('#buy-button').text('Buy ' + formattedPrice);
+        
+        // Hide play button by default until we check ownership
+        $('#play-button').hide();
         
         // Set game rating
         setRating(game.rating || 0);
@@ -1282,10 +1342,16 @@ $(document).ready(function() {
     // Function to fetch achievements
     function fetchAchievements(gameId) {
         $.ajax({
-            url: `/service/buypage/achievements/${gameId}`,
+            url: `http://localhost:8080/api/achievements/game=${gameId}`,
             method: 'GET',
             success: function(achievements) {
-                displayAchievements(achievements);
+                if (!achievements || achievements.length === 0) {
+                    // If body is empty, there are no achievements
+                    $('#achievements-list').html('<li>No achievements available for this game yet.</li>');
+                } else {
+                    // If body is not empty, display the achievements
+                    displayAchievements(achievements);
+                }
             },
             error: function(xhr, status, error) {
                 console.error('Error fetching achievements:', error);
@@ -1309,8 +1375,8 @@ $(document).ready(function() {
             const $achievementItem = $('<li>').addClass('achievement-item');
             const $achievementIcon = $('<div>').addClass('achievement-icon').text('🏆');
             const $achievementInfo = $('<div>').addClass('achievement-info');
-            const $achievementTitle = $('<h4>').text(achievement.title || 'Unnamed Achievement');
-            const $achievementDesc = $('<p>').text(achievement.description || 'No description available.');
+            const $achievementTitle = $('<h4>').text(achievement.aName || 'Unnamed Achievement');
+            const $achievementDesc = $('<p>').text(achievement.aDesc || 'No description available.');
             
             $achievementInfo.append($achievementTitle, $achievementDesc);
             $achievementItem.append($achievementIcon, $achievementInfo);
@@ -1636,26 +1702,37 @@ $(document).ready(function() {
         
         if (!userId) return;
         
-        // Call API to check if user owns this gamelocalhost:8080/api/orders/user=8/game=1/own
+        // First, hide the play button by default since user may not own the game
+        const $playButton = $('#play-button');
+        $playButton.hide();
+        
+        // Call API to check if user owns this game
         $.ajax({
             url: `http://localhost:8080/api/orders/user=${userId}/game=${gameId}/own`,
             method: 'GET',
             success: function(body) {
+                const $buyButton = $('#buy-button');
                 
                 if (body.success == true) {
                     // Update UI to show the user owns this game
-                    const $buyButton = $('#buy-button');
-                    const $playButton = $('#play-button');
-                    
                     $buyButton.text('Owned');
                     $buyButton.prop('disabled', true);
                     $buyButton.css('backgroundColor', '#5E1F1B');
                     
+                    // Show and enable play button if user owns the game
+                    $playButton.show();
                     $playButton.prop('disabled', false);
+                } else {
+                    // User doesn't own the game - update buy button to show price
+                    const price = $('#game-price').text();
+                    $buyButton.text('Buy ' + price);
+                    $playButton.hide();
                 }
             },
             error: function(xhr, status, error) {
                 console.error('Error checking game ownership:', error);
+                // In case of error, ensure play button is hidden as a fallback
+                $playButton.hide();
             }
         });
     }
