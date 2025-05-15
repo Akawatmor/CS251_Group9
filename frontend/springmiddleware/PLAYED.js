@@ -55,50 +55,11 @@ function makeRequest(requestUrl, options = {}, body = null) {
   });
 }
 
-class LibraryService {
+class PlayedService {
   /**
-   * Get all games
+   * Get all games played by a user
    */
-  static async getAllGames() {
-    try {
-      const response = await makeRequest(`${BASE_URL}/games/all`);
-      return response.data;
-    } catch (error) {
-      console.error('Error fetching all games:', error.message);
-      throw error;
-    }
-  }
-  
-  /**
-   * Get all banners
-   */
-  static async getAllBanners() {
-    try {
-      const response = await makeRequest(`${BASE_URL}/banners/all`);
-      return response.data;
-    } catch (error) {
-      console.error('Error fetching all banners:', error.message);
-      throw error;
-    }
-  }
-  
-  /**
-   * Get user's owned games
-   */
-  static async getUserOwnedGames(userId) {
-    try {
-      const response = await makeRequest(`${BASE_URL}/orders/user=${userId}`);
-      return response.data;
-    } catch (error) {
-      console.error(`Error fetching owned games for user ${userId}:`, error.message);
-      throw error;
-    }
-  }
-  
-  /**
-   * Get user's played games
-   */
-  static async getUserPlayedGames(userId) {
+  static async getPlayedGames(userId) {
     try {
       const response = await makeRequest(`${BASE_URL}/played/user/${userId}`);
       return response.data;
@@ -109,32 +70,51 @@ class LibraryService {
   }
   
   /**
-   * Get user's wishlist games
+   * Get all users who played a specific game
    */
-  static async getUserWishlist(userId) {
+  static async getUsersWhoPlayedGame(gameId) {
     try {
-      const response = await makeRequest(`${BASE_URL}/wishlist/user=${userId}`);
+      const response = await makeRequest(`${BASE_URL}/played/game/${gameId}`);
       return response.data;
     } catch (error) {
-      console.error(`Error fetching wishlist for user ${userId}:`, error.message);
+      console.error(`Error fetching users who played game ${gameId}:`, error.message);
       throw error;
     }
   }
   
   /**
-   * Get best rated games
+   * Update play time for a game
    */
-  static async getBestRatedGames() {
+  static async updatePlayTime(userId, gameId, additionalMinutes) {
     try {
-      const response = await makeRequest(`${BASE_URL}/games/best-rated`);
+      const response = await makeRequest(
+        `${BASE_URL}/played/user/${userId}/game/${gameId}/time/${additionalMinutes}`, 
+        { method: 'PUT' }
+      );
       return response.data;
     } catch (error) {
-      console.error('Error fetching best rated games:', error.message);
+      console.error(`Error updating play time for user ${userId}, game ${gameId}:`, error.message);
+      throw error;
+    }
+  }
+  
+  /**
+   * Mark a game as played
+   */
+  static async markGameAsPlayed(userId, gameId) {
+    try {
+      const response = await makeRequest(
+        `${BASE_URL}/orders/user=${userId}/game=${gameId}/play`,
+        { method: 'POST' }
+      );
+      return response.data;
+    } catch (error) {
+      console.error(`Error marking game ${gameId} as played for user ${userId}:`, error.message);
       throw error;
     }
   }
 }
 
 module.exports = {
-  LibraryService
+  PlayedService
 };

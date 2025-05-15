@@ -20,6 +20,8 @@ const registerController = require('./REGISTER');
 const useraccountController = require('./USERACCOUNT');
 const staffpageController = require('./STAFFPAGE');
 const devpageController = require('./DEVPAGE');
+const friendController = require('./FRIEND');
+const playedController = require('./PLAYED');
 
 
 // Mount controllers
@@ -34,6 +36,8 @@ router.use('/register', registerController);
 router.use('/useraccount', useraccountController);
 router.use('/staffpage', staffpageController);
 router.use('/devpage', devpageController);
+router.use('/friend', friendController);
+router.use('/played', playedController);
 
 
 // Default handler for unmatched routes

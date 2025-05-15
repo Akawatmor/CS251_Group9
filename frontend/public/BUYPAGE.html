@@ -76,6 +76,14 @@
                       </div>
                     </div>
                     
+                    <!-- New DLC & Mods section -->
+                    <div class="dlc-mods-section">
+                      <h3>DLC & Mods</h3>
+                      <div id="dlc-mods-container" class="dlc-mods-container">
+                        <p class="loading-message">Loading DLCs and Mods...</p>
+                      </div>
+                    </div>
+                    
                     <div class="achievements-section">
                       <h3>Achievements</h3>
                       <ul id="achievements-list">
@@ -824,6 +832,95 @@
         color: #C9A24E;
         font-weight: bold;
     }
+    
+    /* Achievements section */
+    .achievements-section {
+        background-color: #471C1A;
+        margin-bottom: 30px;
+        padding: 20px;
+        border-radius: 8px;
+    }
+    
+    /* DLC & Mods section */
+    .dlc-mods-section {
+        background-color: #471C1A;
+        margin-bottom: 30px;
+        padding: 20px;
+        border-radius: 8px;
+    }
+    
+    .dlc-mods-container {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+        gap: 20px;
+    }
+    
+    .dlc-mod-card {
+        background-color: #5E1F1B;
+        border-radius: 8px;
+        padding: 15px;
+        position: relative;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    
+    .dlc-mod-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 15px rgba(0, 0, 0, 0.2);
+    }
+    
+    .dlc-mod-card h4 {
+        font-size: 18px;
+        margin-bottom: 10px;
+        color: #C9A24E;
+    }
+    
+    .dlc-mod-card p {
+        margin: 8px 0;
+        font-size: 14px;
+    }
+    
+    .dlc-mod-price {
+        font-weight: bold;
+        color: #C9A24E;
+    }
+    
+    .dlc-mod-type {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        background-color: #9F3E3A;
+        border-radius: 4px;
+        padding: 2px 8px;
+        font-size: 12px;
+        text-transform: uppercase;
+    }
+    
+    .dlc-mod-card .buy-dlc-button {
+        background-color: #C9A24E;
+        color: #350B09;
+        border: none;
+        border-radius: 4px;
+        padding: 8px 12px;
+        margin-top: 10px;
+        cursor: pointer;
+        font-weight: bold;
+        width: 100%;
+        transition: background-color 0.3s ease;
+    }
+    
+    .dlc-mod-card .buy-dlc-button:hover {
+        background-color: #D9B25E;
+    }
+    
+    .no-dlc-mods-message {
+        text-align: center;
+        color: #9F3E3A;
+        font-style: italic;
+        grid-column: 1 / -1;
+        margin: 20px 0;
+    }
+    
+    /* Achievement section styles */
 </style>
 
 <script>
@@ -1690,6 +1787,98 @@ $(document).ready(function() {
                 callback(false);
             }
         });
+    }
+    // Function to fetch and display game data
+    async function fetchGameData(gameId) {
+      // ...existing code...
+      
+      // Additional calls after basic game data is loaded
+      try {
+        // Fetch DLCs and Mods
+        fetchGameDLCsAndMods(gameId);
+        
+        // ...existing code...
+      } catch (error) {
+        console.error('Error fetching additional game data:', error);
+      }
+    }
+    
+    // Function to fetch and display DLCs and Mods
+    async function fetchGameDLCsAndMods(gameId) {
+      try {
+        const response = await fetch(`/service/buypage/dlcmods/${gameId}`);
+        
+        if (!response.ok) {
+          throw new Error(`Error fetching DLCs and Mods: ${response.statusText}`);
+        }
+        
+        const dlcModsData = await response.json();
+        displayDLCsAndMods(dlcModsData);
+      } catch (error) {
+        console.error('Error fetching DLCs and Mods:', error);
+        const $container = $('#dlc-mods-container');
+        $container.html('<p class="no-dlc-mods-message">Failed to load DLCs and Mods.</p>');
+      }
+    }
+    
+    // Function to display DLCs and Mods
+    function displayDLCsAndMods(dlcMods) {
+      const $container = $('#dlc-mods-container');
+      $container.empty();
+      
+      if (!dlcMods || dlcMods.length === 0) {
+        $container.html('<p class="no-dlc-mods-message">No DLCs or Mods available for this game.</p>');
+        return;
+      }
+      
+      // Sort by type: DLC first, then Mods
+      dlcMods.sort((a, b) => {
+        if (a.type === 'DLC' && b.type !== 'DLC') return -1;
+        if (a.type !== 'DLC' && b.type === 'DLC') return 1;
+        return 0;
+      });
+      
+      dlcMods.forEach(item => {
+        const isDLC = item.type === 'DLC';
+        const typeLabel = isDLC ? 'DLC' : 'MOD';
+        const price = item.price ? `$${parseFloat(item.price).toFixed(2)}` : 'Free';
+        
+        const $card = $('<div>')
+          .addClass('dlc-mod-card')
+          .html(`
+            <span class="dlc-mod-type">${typeLabel}</span>
+            <h4>${item.name || 'Unnamed Content'}</h4>
+            <p>${item.description || 'No description available.'}</p>
+            <p class="dlc-mod-price">Price: ${price}</p>
+            <button class="buy-dlc-button" data-id="${item.id}" data-type="${item.type}">
+              ${item.price > 0 ? 'Buy Now' : 'Download'}
+            </button>
+          `);
+        
+        // Add click event for purchase/download button
+        $card.find('.buy-dlc-button').on('click', function() {
+          const itemId = $(this).data('id');
+          const itemType = $(this).data('type');
+          handleDLCModPurchase(itemId, itemType);
+        });
+        
+        $container.append($card);
+      });
+    }
+    
+    // Function to handle DLC or Mod purchase/download
+    function handleDLCModPurchase(itemId, itemType) {
+      const userId = getUserId();
+      
+      if (!userId) {
+        alert('Please log in to purchase or download this content.');
+        return;
+      }
+      
+      // For now, just show a confirmation dialog
+      if (confirm(`Do you want to ${itemType === 'DLC' ? 'purchase' : 'download'} this ${itemType}?`)) {
+        alert(`${itemType} ${itemType === 'DLC' ? 'purchase' : 'download'} initiated. This feature will be fully implemented soon.`);
+      }
     }
 });
 </script>

@@ -60,6 +60,8 @@
                 <span>|</span>
                 <a href="#" class="nav-link" data-section="owned">Owned</a>
                 <span>|</span>
+                <a href="#" class="nav-link" data-section="played">Played</a>
+                <span>|</span>
                 <a href="#" class="nav-link" data-section="best-rated">Best Rated</a>
                 <span>|</span>
               </div>
@@ -92,6 +94,14 @@
                 <h3 class="section-title">Your Games</h3>
                 <div class="cards" id="owned-games-grid">
                   <!-- Owned games will be loaded here -->
+                </div>
+              </div>
+              
+              <!-- Played Games Section -->
+              <div class="library-section" id="played-section">
+                <h3 class="section-title">Games You've Played</h3>
+                <div class="cards" id="played-games-grid">
+                  <!-- Played games will be loaded here -->
                 </div>
               </div>
               
@@ -410,6 +420,9 @@
       case 'owned':
         apiEndpoint = `http://localhost:8080/api/orders/user=${userId}`;
         break;
+      case 'played':
+        apiEndpoint = `http://localhost:8080/api/played/user=${userId}`;
+        break;
       case 'best-rated':
         apiEndpoint = 'http://localhost:8080/api/games/rating';
         break;
@@ -439,6 +452,17 @@
           const ownedGames = data.map(item => item.game);
           displayGames(ownedGames, gridId);
         } 
+        else if (sectionId === 'played') {
+          // Extract game objects from played response
+          const playedGames = data.map(item => {
+            // Add play time and last played info to the game object
+            const game = item.game;
+            game.playTime = item.playTime || 0;
+            game.lastPlayed = item.lastPlayed || null;
+            return game;
+          });
+          displayGames(playedGames, gridId, true); // true flag indicates these are played games
+        }
         else {
           // For other sections, use data directly
           displayGames(data.game, gridId);
@@ -496,7 +520,7 @@
   }
 
   // Function to display games in the specified grid
-  function displayGames(games, gridId) {
+  function displayGames(games, gridId, showPlayTime = false) {
     const gamesGrid = document.getElementById(gridId);
     gamesGrid.innerHTML = ''; // Clear existing cards
     
@@ -524,11 +548,43 @@
         imageHtml = `<div class="no-image-text">No Picture</div>`;
       }
       
+      let playTimeHtml = '';
+      if (showPlayTime && game.playTime !== undefined) {
+        // Format play time (convert from seconds to hours:minutes format)
+        const playTimeFormatted = formatPlayTime(game.playTime);
+        
+        // Format last played date if available
+        let lastPlayedText = '';
+        if (game.lastPlayed) {
+          const lastPlayed = new Date(game.lastPlayed);
+          const now = new Date();
+          const diffDays = Math.floor((now - lastPlayed) / (1000 * 60 * 60 * 24));
+          
+          if (diffDays < 1) {
+            lastPlayedText = 'Last played today';
+          } else if (diffDays === 1) {
+            lastPlayedText = 'Last played yesterday';
+          } else if (diffDays < 7) {
+            lastPlayedText = `Last played ${diffDays} days ago`;
+          } else {
+            lastPlayedText = `Last played on ${lastPlayed.toLocaleDateString()}`;
+          }
+        }
+        
+        playTimeHtml = `
+          <div class="play-time-info">
+            <span class="play-time">${playTimeFormatted}</span>
+            ${lastPlayedText ? `<span class="last-played-text">${lastPlayedText}</span>` : ''}
+          </div>
+        `;
+      }
+      
       card.innerHTML = `
         ${imageHtml}
         <div class="game-info">
           <h3 class="game-title">${game.gName || 'Unknown Game'}</h3>
           <p class="game-price">${formatPrice(game.gPrice)}</p>
+          ${playTimeHtml}
         </div>
       `;
       
@@ -540,6 +596,21 @@
       gamesGrid.appendChild(card);
     });
   }
+  
+  // Helper function to format play time
+  function formatPlayTime(seconds) {
+    if (!seconds || seconds === 0) return 'Never played';
+    
+    const hours = Math.floor(seconds / 3600);
+    const minutes = Math.floor((seconds % 3600) / 60);
+    
+    if (hours > 0) {
+      return `${hours} hr${hours !== 1 ? 's' : ''} ${minutes} min${minutes !== 1 ? 's' : ''}`;
+    } else {
+      return `${minutes} minute${minutes !== 1 ? 's' : ''}`;
+    }
+  }
+  
   // Helper function to format price
   function formatPrice(price) {
     if (price === undefined || price === null) return 'Free';
@@ -1219,6 +1290,23 @@
     margin: 5px 0 0;
     font-size: 14px;
     font-weight: bold;
+  }
+  
+  .play-time-info {
+    margin-top: 5px;
+    font-size: 12px;
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .play-time {
+    color: #C9A24E;
+    font-weight: bold;
+  }
+  
+  .last-played-text {
+    color: #aaa;
+    font-style: italic;
   }
   
   .error-message, .no-games, .loading-indicator {

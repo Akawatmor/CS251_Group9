@@ -24,6 +24,7 @@
       <nav class="side-nav">
         <a href="#" class="nav-item active" data-section="profile">Account Information</a>
         <a href="#" class="nav-item" data-section="add-money">Deposit</a>
+        <a href="#" class="nav-item" data-section="friends">Friends</a>
         <a href="#" class="nav-item" data-section="statistics">Statistics</a>
         <a href="#" class="nav-item danger" data-section="delete-account">Delete Account</a>
       </nav>
@@ -145,6 +146,26 @@
         </form>
         
         <div id="payment-message" class="message"></div>
+      </section>
+      
+      <!-- Friends Section -->
+      <section id="friends-section" class="content-section">
+        <h2>Your Friends</h2>
+        
+        <div class="friends-actions">
+          <input type="text" id="friend-search" placeholder="Search for users by username...">
+          <button id="add-friend-btn" class="primary-btn">Add Friend</button>
+        </div>
+        
+        <div class="friends-container">
+          <div id="friends-loading" class="loading-message">Loading friends...</div>
+          <div id="friends-list" class="friends-list"></div>
+          <div id="no-friends-message" class="no-content-message" style="display: none;">
+            You don't have any friends yet. Search for users to add them as friends.
+          </div>
+        </div>
+        
+        <div id="friends-message" class="message"></div>
       </section>
       
       <!-- Statistics Section -->
@@ -598,6 +619,383 @@
         showMessage('profile-message', 'Failed to load user statistics. Please try again.', 'error');
       }
     }
+
+    // Wait for DOM to be fully loaded
+    document.addEventListener('DOMContentLoaded', async function() {
+      // ...existing code...
+      
+      // Initialize friends functionality
+      await initFriends();
+      
+      // ...existing code...
+    });
+    
+    // Function to initialize friends section
+    async function initFriends() {
+      // Get the current user ID from localStorage
+      const currentUserId = localStorage.getItem('userId');
+      
+      // Set up add friend button
+      document.getElementById('add-friend-btn').addEventListener('click', showFriendSearch);
+      
+      // Fetch and display friends list
+      await fetchFriends();
+      
+      // Set up friend search functionality
+      document.getElementById('friend-search').addEventListener('input', debounce(searchUsers, 500));
+    }
+    
+    // Function to fetch and display friends list
+    async function fetchFriends() {
+      try {
+        const currentUserId = localStorage.getItem('userId');
+        
+        if (!currentUserId) {
+          showMessage('friends-message', 'Please log in to view your friends', 'error');
+          return;
+        }
+        
+        // Show loading message
+        document.getElementById('friends-loading').style.display = 'block';
+        document.getElementById('friends-list').style.display = 'none';
+        document.getElementById('no-friends-message').style.display = 'none';
+        
+        // Fetch friends from API
+        const response = await fetch(`/service/friend/user/${currentUserId}`);
+        
+        if (!response.ok) {
+          throw new Error('Failed to fetch friends');
+        }
+        
+        const friends = await response.json();
+        
+        // Hide loading message
+        document.getElementById('friends-loading').style.display = 'none';
+        
+        // If no friends found, show message
+        if (!friends || friends.length === 0) {
+          document.getElementById('no-friends-message').style.display = 'block';
+          return;
+        }
+        
+        // Show friends list
+        document.getElementById('friends-list').style.display = 'grid';
+        
+        // Clear previous list
+        const friendsList = document.getElementById('friends-list');
+        friendsList.innerHTML = '';
+        
+        // Add friends to list
+        friends.forEach(friend => {
+          // Determine which user is the friend (user1 or user2)
+          const friendUser = friend.user1.id == currentUserId ? friend.user2 : friend.user1;
+          
+          const friendCard = document.createElement('div');
+          friendCard.className = 'friend-card';
+          
+          const displayName = friendUser.dName || friendUser.uName || 'Unknown User';
+          const userName = friendUser.uName || '';
+          
+          friendCard.innerHTML = `
+            <div class="friend-avatar">
+              ${displayName.charAt(0).toUpperCase()}
+            </div>
+            <h3 class="friend-name">${displayName}</h3>
+            <p class="friend-username">@${userName}</p>
+            <div class="friend-actions">
+              <button class="friend-action-btn view-profile-btn" data-id="${friendUser.id}">View Profile</button>
+              <button class="friend-action-btn danger remove-friend-btn" data-id="${friendUser.id}">Remove</button>
+            </div>
+          `;
+          
+          // Add event listeners for buttons
+          const viewProfileBtn = friendCard.querySelector('.view-profile-btn');
+          const removeFriendBtn = friendCard.querySelector('.remove-friend-btn');
+          
+          viewProfileBtn.addEventListener('click', () => {
+            // For now, just alert
+            alert(`View profile of ${displayName}`);
+          });
+          
+          removeFriendBtn.addEventListener('click', () => {
+            removeFriend(friendUser.id, displayName);
+          });
+          
+          friendsList.appendChild(friendCard);
+        });
+        
+      } catch (error) {
+        console.error('Error fetching friends:', error);
+        document.getElementById('friends-loading').style.display = 'none';
+        showMessage('friends-message', 'Failed to load friends. Please try again.', 'error');
+      }
+    }
+    
+    // Function to remove a friend
+    async function removeFriend(friendId, friendName) {
+      if (!confirm(`Are you sure you want to remove ${friendName} from your friends?`)) {
+        return;
+      }
+      
+      try {
+        const currentUserId = localStorage.getItem('userId');
+        
+        if (!currentUserId) {
+          showMessage('friends-message', 'Please log in to remove friends', 'error');
+          return;
+        }
+        
+        const response = await fetch(`/service/friend/user1/${currentUserId}/user2/${friendId}`, {
+          method: 'DELETE'
+        });
+        
+        if (!response.ok) {
+          throw new Error('Failed to remove friend');
+        }
+        
+        const result = await response.json();
+        
+        if (result.success) {
+          showMessage('friends-message', `${friendName} has been removed from your friends`, 'success');
+          // Refresh friends list
+          await fetchFriends();
+        } else {
+          showMessage('friends-message', result.message || 'Failed to remove friend', 'error');
+        }
+        
+      } catch (error) {
+        console.error('Error removing friend:', error);
+        showMessage('friends-message', 'An error occurred while removing friend', 'error');
+      }
+    }
+    
+    // Function to show the friend search popup
+    function showFriendSearch() {
+      // Create search popup if it doesn't exist
+      if (!document.getElementById('search-results-popup')) {
+        const popup = document.createElement('div');
+        popup.id = 'search-results-popup';
+        popup.className = 'search-results-popup';
+        
+        popup.innerHTML = `
+          <div class="search-results-header">
+            <h3>Find Friends</h3>
+            <button class="close-search-btn">&times;</button>
+          </div>
+          <input type="text" id="popup-search-input" placeholder="Search by username...">
+          <div id="popup-search-loading" class="loading-message" style="display: none;">Searching...</div>
+          <div id="popup-search-results" class="search-results-list"></div>
+          <div id="popup-search-no-results" class="no-content-message" style="display: none;">No users found</div>
+        `;
+        
+        // Create overlay
+        const overlay = document.createElement('div');
+        overlay.id = 'search-overlay';
+        overlay.className = 'search-overlay';
+        
+        // Append to body
+        document.body.appendChild(overlay);
+        document.body.appendChild(popup);
+        
+        // Add event listeners
+        document.getElementById('popup-search-input').addEventListener('input', debounce(searchUsersPopup, 500));
+        
+        document.querySelector('.close-search-btn').addEventListener('click', closeFriendSearch);
+        
+        overlay.addEventListener('click', closeFriendSearch);
+      }
+      
+      // Show popup and overlay
+      document.getElementById('search-results-popup').style.display = 'block';
+      document.getElementById('search-overlay').style.display = 'block';
+      
+      // Focus on search input
+      setTimeout(() => {
+        document.getElementById('popup-search-input').focus();
+      }, 100);
+    }
+    
+    // Function to close the friend search popup
+    function closeFriendSearch() {
+      document.getElementById('search-results-popup').style.display = 'none';
+      document.getElementById('search-overlay').style.display = 'none';
+    }
+    
+    // Function to search for users (from popup)
+    async function searchUsersPopup() {
+      const searchInput = document.getElementById('popup-search-input').value.trim();
+      
+      // Clear results if search input is empty
+      if (!searchInput) {
+        document.getElementById('popup-search-results').innerHTML = '';
+        document.getElementById('popup-search-no-results').style.display = 'none';
+        return;
+      }
+      
+      // Show loading message
+      document.getElementById('popup-search-loading').style.display = 'block';
+      document.getElementById('popup-search-results').innerHTML = '';
+      document.getElementById('popup-search-no-results').style.display = 'none';
+      
+      try {
+        // Search for users by username
+        const response = await fetch(`/service/search/users?username=${encodeURIComponent(searchInput)}`);
+        
+        if (!response.ok) {
+          throw new Error('Failed to search for users');
+        }
+        
+        const users = await response.json();
+        
+        // Hide loading message
+        document.getElementById('popup-search-loading').style.display = 'none';
+        
+        // If no users found, show message
+        if (!users || users.length === 0) {
+          document.getElementById('popup-search-no-results').style.display = 'block';
+          return;
+        }
+        
+        // Show users
+        const searchResults = document.getElementById('popup-search-results');
+        searchResults.innerHTML = '';
+        
+        const currentUserId = localStorage.getItem('userId');
+        
+        // Filter out current user
+        const filteredUsers = users.filter(user => user.id != currentUserId);
+        
+        if (filteredUsers.length === 0) {
+          document.getElementById('popup-search-no-results').style.display = 'block';
+          return;
+        }
+        
+        // Add users to list
+        filteredUsers.forEach(async user => {
+          const userCard = document.createElement('div');
+          userCard.className = 'friend-card';
+          
+          const displayName = user.dName || user.uName || 'Unknown User';
+          const userName = user.uName || '';
+          
+          userCard.innerHTML = `
+            <div class="friend-avatar">
+              ${displayName.charAt(0).toUpperCase()}
+            </div>
+            <h3 class="friend-name">${displayName}</h3>
+            <p class="friend-username">@${userName}</p>
+            <div class="friend-actions">
+              <button class="friend-action-btn add-friend-btn" data-id="${user.id}">Add Friend</button>
+            </div>
+          `;
+          
+          // Check if already friends
+          const isFriend = await checkFriendship(currentUserId, user.id);
+          
+          if (isFriend) {
+            const addBtn = userCard.querySelector('.add-friend-btn');
+            addBtn.textContent = 'Friends';
+            addBtn.disabled = true;
+            addBtn.style.backgroundColor = '#561714';
+          } else {
+            // Add event listener for add button
+            userCard.querySelector('.add-friend-btn').addEventListener('click', () => {
+              addFriend(user.id, displayName);
+            });
+          }
+          
+          searchResults.appendChild(userCard);
+        });
+        
+      } catch (error) {
+        console.error('Error searching for users:', error);
+        document.getElementById('popup-search-loading').style.display = 'none';
+        
+        // Show error message
+        const searchResults = document.getElementById('popup-search-results');
+        searchResults.innerHTML = '<p class="error-message">An error occurred while searching for users</p>';
+      }
+    }
+    
+    // Function to check if two users are friends
+    async function checkFriendship(user1Id, user2Id) {
+      try {
+        const response = await fetch(`/service/friend/user1/${user1Id}/user2/${user2Id}`);
+        
+        if (!response.ok) {
+          return false;
+        }
+        
+        const result = await response.json();
+        return result.success && result.areFriends;
+      } catch (error) {
+        console.error('Error checking friendship:', error);
+        return false;
+      }
+    }
+    
+    // Function to add a friend
+    async function addFriend(friendId, friendName) {
+      try {
+        const currentUserId = localStorage.getItem('userId');
+        
+        if (!currentUserId) {
+          alert('Please log in to add friends');
+          return;
+        }
+        
+        const response = await fetch('/service/friend/add', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            user1Id: currentUserId,
+            user2Id: friendId
+          })
+        });
+        
+        if (!response.ok) {
+          throw new Error('Failed to add friend');
+        }
+        
+        const result = await response.json();
+        
+        if (result.success) {
+          showMessage('friends-message', `${friendName} has been added to your friends`, 'success');
+          
+          // Close the search popup
+          closeFriendSearch();
+          
+          // Refresh friends list
+          await fetchFriends();
+        } else {
+          alert(result.message || 'Failed to add friend');
+        }
+        
+      } catch (error) {
+        console.error('Error adding friend:', error);
+        alert('An error occurred while adding friend');
+      }
+    }
+    
+    // Function to search for users (from main page)
+    async function searchUsers() {
+      // This is a placeholder for the main page search functionality
+      // It would be similar to searchUsersPopup but integrate with the main page
+      console.log('Searching users from main page...');
+    }
+    
+    // Helper function to debounce input
+    function debounce(func, delay) {
+      let timeout;
+      return function() {
+        const context = this;
+        const args = arguments;
+        clearTimeout(timeout);
+        timeout = setTimeout(() => func.apply(context, args), delay);
+      };
+    }
   </script>
 
   <style>
@@ -993,6 +1391,179 @@
     .statement-table tr:hover {
       background: rgba(255, 255, 255, 0.05);
     }
+
+    /* Stats section styles */
+    .stats-cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 20px;
+      margin-bottom: 30px;
+    }
+    
+    /* Friends section styles */
+    .friends-actions {
+      display: flex;
+      gap: 15px;
+      margin-bottom: 20px;
+    }
+    
+    .friends-actions input {
+      flex: 1;
+    }
+    
+    .friends-list {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 15px;
+      margin-top: 20px;
+    }
+    
+    .friend-card {
+      background-color: #561714;
+      border-radius: 10px;
+      padding: 15px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      position: relative;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    
+    .friend-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+    }
+    
+    .friend-avatar {
+      width: 70px;
+      height: 70px;
+      border-radius: 50%;
+      background-color: #420d0a;
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+      color: #CF514C;
+      overflow: hidden;
+    }
+    
+    .friend-avatar img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    
+    .friend-name {
+      font-weight: 500;
+      font-size: 16px;
+      text-align: center;
+      margin: 5px 0;
+    }
+    
+    .friend-username {
+      font-size: 12px;
+      color: #CF514C;
+      margin-bottom: 10px;
+      text-align: center;
+    }
+    
+    .friend-actions {
+      display: flex;
+      gap: 10px;
+    }
+    
+    .friend-action-btn {
+      background-color: #CF514C;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      padding: 5px 10px;
+      font-size: 12px;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+    
+    .friend-action-btn:hover {
+      background-color: #d3645f;
+    }
+    
+    .friend-action-btn.danger {
+      background-color: #7e2a26;
+    }
+    
+    .friend-action-btn.danger:hover {
+      background-color: #913b37;
+    }
+    
+    .loading-message {
+      text-align: center;
+      margin: 20px 0;
+      color: #CF514C;
+    }
+    
+    .no-content-message {
+      text-align: center;
+      margin: 30px 0;
+      color: #9c4646;
+      font-style: italic;
+    }
+    
+    /* Search results popup */
+    .search-results-popup {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background-color: #350B09;
+      border-radius: 10px;
+      padding: 20px;
+      width: 90%;
+      max-width: 500px;
+      max-height: 80vh;
+      z-index: 1000;
+      box-shadow: 0 5px 30px rgba(0, 0, 0, 0.3);
+      display: none;
+      overflow: auto;
+    }
+    
+    .search-results-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+    
+    .search-results-header h3 {
+      margin: 0;
+    }
+    
+    .close-search-btn {
+      background: none;
+      border: none;
+      color: #CF514C;
+      font-size: 24px;
+      cursor: pointer;
+    }
+    
+    .search-results-list {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+      gap: 15px;
+    }
+    
+    .search-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.5);
+      z-index: 999;
+      display: none;
+    }
+    
+    /* Statement table styles */
   </style>
 </body>
 </html>

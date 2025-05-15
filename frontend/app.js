@@ -24,7 +24,7 @@ const http = require("http");
 ///// Import Dependencies /////
 const webroutes = require(`./web_routing/_main.js`); //Doing routing work
 const webctl = require(`./web_controller/_main.js`); //Doing web controller work
-//require('./springmiddleware/BUYPAGE')(app); // Import route handlers
+const { registerRoutes } = require('./springmiddleware/BUYPAGE'); // Import BUYPAGE route handlers
 
 //// Runner ////
 const app = express();
@@ -65,6 +65,8 @@ app.get("/login", (req, res) => {
 app.use(webroutes);
 app.use("/service", webctl);
 
+// Register BUYPAGE middleware routes
+registerRoutes(app);
 
 //// Running via Listening /////
 app.listen(WEBPORT, () => {

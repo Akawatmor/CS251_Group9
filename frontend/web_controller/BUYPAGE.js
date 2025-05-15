@@ -133,4 +133,74 @@ router.get("/related/:id", async (req, res) => {
     }
 });
 
+// Get game achievements
+router.get("/achievements/:id", async (req, res) => {
+    try {
+        const gameId = req.params.id;
+        
+        if (!gameId) {
+            return res.status(400).json({
+                success: false,
+                message: 'Game ID is required'
+            });
+        }
+        
+        const achievements = await BuyPageService.getGameAchievements(gameId);
+        return res.json(achievements);
+    } catch (error) {
+        console.error('Error fetching game achievements:', error);
+        return res.status(500).json({
+            success: false,
+            message: 'Failed to fetch game achievements'
+        });
+    }
+});
+
+// Get game DLCs and Mods
+router.get("/dlcmods/:id", async (req, res) => {
+    try {
+        const gameId = req.params.id;
+        
+        if (!gameId) {
+            return res.status(400).json({
+                success: false,
+                message: 'Game ID is required'
+            });
+        }
+        
+        const dlcModsData = await BuyPageService.getGameDLCsAndMods(gameId);
+        return res.json(dlcModsData);
+    } catch (error) {
+        console.error('Error fetching DLCs and Mods:', error);
+        return res.status(500).json({
+            success: false,
+            message: 'Failed to fetch DLCs and Mods'
+        });
+    }
+});
+
+// Check game ownership
+router.get("/ownership/:userId/:gameId", async (req, res) => {
+    try {
+        const userId = req.params.userId;
+        const gameId = req.params.gameId;
+        
+        if (!userId || !gameId) {
+            return res.status(400).json({
+                success: false,
+                message: 'User ID and Game ID are required'
+            });
+        }
+        
+        const ownsGame = await BuyPageService.checkGameOwnership(userId, gameId);
+        return res.json({ success: ownsGame });
+    } catch (error) {
+        console.error('Error checking game ownership:', error);
+        return res.status(500).json({
+            success: false,
+            message: 'Failed to check game ownership'
+        });
+    }
+});
+
 module.exports = router;

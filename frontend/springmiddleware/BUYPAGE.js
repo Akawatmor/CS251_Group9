@@ -199,6 +199,32 @@ class BuyPageService {
             throw error;
         }
     }
+
+    /**
+     * Get DLCs and Mods for a game
+     */
+    static async getGameDLCsAndMods(gameId) {
+        try {
+            const response = await makeRequest(`${BASE_URL}/moddlc/game/${gameId}`);
+            return response.data;
+        } catch (error) {
+            console.error(`Error fetching DLCs and Mods for game ${gameId}:`, error.message);
+            throw error;
+        }
+    }
+    
+    /**
+     * Check if user owns a game
+     */
+    static async checkGameOwnership(userId, gameId) {
+        try {
+            const response = await makeRequest(`${BASE_URL}/orders/user=${userId}/game=${gameId}/own`);
+            return response.status === 200 && response.data.success === true;
+        } catch (error) {
+            console.error(`Error checking if user ${userId} owns game ${gameId}:`, error.message);
+            return false;
+        }
+    }
 }
 
 // Export both the service class and the route handler function
@@ -286,6 +312,43 @@ module.exports = {
             } catch (error) {
                 console.error('Error in related games endpoint:', error);
                 res.status(500).json({ error: 'Failed to fetch related games' });
+            }
+        });
+
+        // Game achievements endpoint
+        app.get('/service/buypage/achievements/:gameId', async (req, res) => {
+            try {
+                const gameId = req.params.gameId;
+                const achievements = await BuyPageService.getGameAchievements(gameId);
+                res.json(achievements);
+            } catch (error) {
+                console.error('Error in game achievements endpoint:', error);
+                res.status(500).json({ error: 'Failed to fetch game achievements' });
+            }
+        });
+
+        // Game DLCs and Mods endpoint
+        app.get('/service/buypage/dlcmods/:gameId', async (req, res) => {
+            try {
+                const gameId = req.params.gameId;
+                const dlcModsData = await BuyPageService.getGameDLCsAndMods(gameId);
+                res.json(dlcModsData);
+            } catch (error) {
+                console.error('Error in game DLCs and Mods endpoint:', error);
+                res.status(500).json({ error: 'Failed to fetch game DLCs and Mods' });
+            }
+        });
+        
+        // Check game ownership endpoint
+        app.get('/service/buypage/ownership/:userId/:gameId', async (req, res) => {
+            try {
+                const userId = req.params.userId;
+                const gameId = req.params.gameId;
+                const ownsGame = await BuyPageService.checkGameOwnership(userId, gameId);
+                res.json({ success: ownsGame });
+            } catch (error) {
+                console.error('Error in game ownership endpoint:', error);
+                res.status(500).json({ error: 'Failed to check game ownership', success: false });
             }
         });
     }

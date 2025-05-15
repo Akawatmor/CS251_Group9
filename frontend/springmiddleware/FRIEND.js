@@ -55,86 +55,75 @@ function makeRequest(requestUrl, options = {}, body = null) {
   });
 }
 
-class LibraryService {
+class FriendService {
   /**
-   * Get all games
+   * Get all friends of a user
    */
-  static async getAllGames() {
+  static async getUserFriends(userId) {
     try {
-      const response = await makeRequest(`${BASE_URL}/games/all`);
+      const response = await makeRequest(`${BASE_URL}/friends/user/${userId}`);
       return response.data;
     } catch (error) {
-      console.error('Error fetching all games:', error.message);
+      console.error(`Error fetching friends for user ${userId}:`, error.message);
       throw error;
     }
   }
   
   /**
-   * Get all banners
+   * Check if two users are friends
    */
-  static async getAllBanners() {
+  static async checkFriendship(user1Id, user2Id) {
     try {
-      const response = await makeRequest(`${BASE_URL}/banners/all`);
+      const response = await makeRequest(`${BASE_URL}/friends/user1/${user1Id}/user2/${user2Id}`);
+      return response.status === 200;
+    } catch (error) {
+      console.error(`Error checking friendship between users ${user1Id} and ${user2Id}:`, error.message);
+      return false;
+    }
+  }
+  
+  /**
+   * Add a friend
+   */
+  static async addFriend(user1Id, user2Id) {
+    try {
+      const response = await makeRequest(
+        `${BASE_URL}/friends/add`, 
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        },
+        {
+          user1Id: user1Id,
+          user2Id: user2Id
+        }
+      );
       return response.data;
     } catch (error) {
-      console.error('Error fetching all banners:', error.message);
+      console.error(`Error adding friend ${user2Id} for user ${user1Id}:`, error.message);
       throw error;
     }
   }
   
   /**
-   * Get user's owned games
+   * Remove a friend
    */
-  static async getUserOwnedGames(userId) {
+  static async removeFriend(user1Id, user2Id) {
     try {
-      const response = await makeRequest(`${BASE_URL}/orders/user=${userId}`);
-      return response.data;
+      const response = await makeRequest(
+        `${BASE_URL}/friends/user1/${user1Id}/user2/${user2Id}`,
+        { method: 'DELETE' }
+      );
+      return response.status === 200;
     } catch (error) {
-      console.error(`Error fetching owned games for user ${userId}:`, error.message);
-      throw error;
-    }
-  }
-  
-  /**
-   * Get user's played games
-   */
-  static async getUserPlayedGames(userId) {
-    try {
-      const response = await makeRequest(`${BASE_URL}/played/user/${userId}`);
-      return response.data;
-    } catch (error) {
-      console.error(`Error fetching played games for user ${userId}:`, error.message);
-      throw error;
-    }
-  }
-  
-  /**
-   * Get user's wishlist games
-   */
-  static async getUserWishlist(userId) {
-    try {
-      const response = await makeRequest(`${BASE_URL}/wishlist/user=${userId}`);
-      return response.data;
-    } catch (error) {
-      console.error(`Error fetching wishlist for user ${userId}:`, error.message);
-      throw error;
-    }
-  }
-  
-  /**
-   * Get best rated games
-   */
-  static async getBestRatedGames() {
-    try {
-      const response = await makeRequest(`${BASE_URL}/games/best-rated`);
-      return response.data;
-    } catch (error) {
-      console.error('Error fetching best rated games:', error.message);
+      console.error(`Error removing friend ${user2Id} for user ${user1Id}:`, error.message);
       throw error;
     }
   }
 }
 
 module.exports = {
-  LibraryService
+  FriendService
 };
