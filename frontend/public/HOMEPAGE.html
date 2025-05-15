@@ -9,13 +9,12 @@
 <body>
 
       <div class="layout">
-        <aside class="sidebar">
-          <div class="logo">TVaporr</div>
+        <aside class="sidebar">          <div class="logo">TVaporr</div>
           <hr>
           <h2>All tags</h2>
-          <div class="tags">
-            <label><input type="checkbox"> tags1</label>
-            <label><input type="checkbox"> tags2</label>
+          <div class="tags" id="categories-container">
+            <!-- Categories will be loaded here dynamically -->
+            <div class="loading-tags">Loading categories...</div>
           </div>
         </aside>
     
@@ -74,6 +73,9 @@
     
     // Initialize account dropdown
     initAccountDropdown();
+    
+    // Load categories for the sidebar
+    loadCategories();
 
     const searchInput = document.querySelector('.search-section input');
     const searchButton = document.querySelector('.search-section button');
@@ -507,12 +509,71 @@
       cardsContainer.appendChild(card);
     });
   }
-
   // Helper function to display error message
   function displayError(message) {
     const cardsContainer = document.getElementById('game-cards');
     cardsContainer.innerHTML = `<p class="error-message">${message}</p>`;
   }
+  
+  // Function to load categories for the sidebar
+  function loadCategories() {
+    const categoriesContainer = document.getElementById('categories-container');
+    
+    // Show loading message
+    categoriesContainer.innerHTML = '<div class="loading-tags">Loading categories...</div>';
+    
+    // Fetch categories from the API
+    fetch('http://localhost:8080/api/categories')
+      .then(response => {
+        if (!response.ok) {
+          throw new Error('Failed to fetch categories');
+        }
+        return response.json();
+      })
+      .then(categories => {
+        // Clear loading message
+        categoriesContainer.innerHTML = '';
+        
+        // If no categories found
+        if (!categories || categories.length === 0) {
+          categoriesContainer.innerHTML = '<p class="no-categories">No categories available</p>';
+          return;
+        }
+        
+        // Sort categories alphabetically by name
+        categories.sort((a, b) => a.cName.localeCompare(b.cName));
+        
+        // Create a checkbox for each category
+        categories.forEach(category => {
+          const label = document.createElement('label');
+          
+          // Create a checkbox with category ID as value
+          const checkbox = document.createElement('input');
+          checkbox.type = 'checkbox';
+          checkbox.value = category.cid;
+          checkbox.dataset.categoryName = category.cName;
+          
+          // Add event listener to handle category selection
+          // Note: We're not implementing filtering yet as per requirements
+          checkbox.addEventListener('change', function() {
+            console.log(`Category ${category.cName} ${this.checked ? 'selected' : 'unselected'}`);
+            // Filter implementation would go here in the future
+          });
+          
+          // Add the checkbox and category name to the label
+          label.appendChild(checkbox);
+          label.appendChild(document.createTextNode(` ${category.cName}`));
+          
+          // Add the label to the container
+          categoriesContainer.appendChild(label);
+        });
+      })
+      .catch(error => {
+        console.error('Error loading categories:', error);
+        categoriesContainer.innerHTML = '<p class="error-message">Failed to load categories</p>';
+      });
+  }
+  
   // Helper function to format price
   function formatPrice(price) {
     if (price === undefined || price === null) return 'Free';
@@ -559,10 +620,50 @@ body, html {
   font-size: 20px;
 }
 
+.tags {
+  max-height: 300px;
+  overflow-y: auto;
+  padding-right: 5px;
+  margin-bottom: 15px;
+}
+
+.tags::-webkit-scrollbar {
+  width: 5px;
+}
+
+.tags::-webkit-scrollbar-thumb {
+  background-color: #9F3E3A;
+  border-radius: 5px;
+}
+
+.tags::-webkit-scrollbar-track {
+  background-color: rgba(255, 255, 255, 0.1);
+  border-radius: 5px;
+}
+
 .tags label {
   display: block;
   margin-top: 10px;
   font-size: 16px;
+  cursor: pointer;
+  transition: color 0.2s ease;
+  padding: 2px 0;
+}
+
+.tags label:hover {
+  color: #C9A24E;
+}
+
+.tags input[type="checkbox"] {
+  margin-right: 5px;
+  cursor: pointer;
+}
+
+.loading-tags, .no-categories, .error-message {
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 14px;
+  margin-top: 10px;
+  font-style: italic;
 }
 
 .main-content {

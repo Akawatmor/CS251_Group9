@@ -263,7 +263,27 @@ function generateQRCode() {
     });
 }
 
-document.getElementById('loginBtn').addEventListener('click', async () => {
+// Add event listener for Enter key on username and password fields
+document.getElementById('username').addEventListener('keypress', (e) => {
+  if (e.key === 'Enter') {
+    if (document.getElementById('password').value) {
+      document.getElementById('loginBtn').click();
+    } else {
+      document.getElementById('password').focus();
+    }
+  }
+});
+
+document.getElementById('password').addEventListener('keypress', (e) => {
+  if (e.key === 'Enter') {
+    document.getElementById('loginBtn').click();
+  }
+});
+
+document.getElementById('loginBtn').addEventListener('click', handleLogin);
+
+// Function to handle login
+async function handleLogin() {
   const loginBtn = document.getElementById('loginBtn');
   const user = document.getElementById('username').value;
   const pass = document.getElementById('password').value;
@@ -272,7 +292,7 @@ document.getElementById('loginBtn').addEventListener('click', async () => {
     showError('Username and password are required');
     return;
   }
-
+  
   try {
     // Disable button and show loading state
     loginBtn.disabled = true;
@@ -313,7 +333,7 @@ document.getElementById('loginBtn').addEventListener('click', async () => {
     loginBtn.disabled = false;
     loginBtn.classList.remove('loading');
   }
-});
+}
 </script>
 </body>
 </html>

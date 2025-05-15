@@ -273,9 +273,79 @@
       top: 12px;
       pointer-events: none;
     }
+    
+    /* Toast notification styles */
+    .toast-container {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      z-index: 1000;
+    }
+    
+    .toast {
+      background-color: #350B09;
+      color: white;
+      padding: 15px 25px;
+      border-radius: 8px;
+      margin-bottom: 10px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      min-width: 300px;
+      max-width: 400px;
+      animation: slideIn 0.3s, fadeOut 0.5s 4.5s;
+      opacity: 0;
+      transform: translateX(100%);
+      animation-fill-mode: forwards;
+    }
+    
+    .toast.error {
+      border-left: 4px solid #FF6B6B;
+    }
+    
+    .toast.success {
+      border-left: 4px solid #4CAF50;
+    }
+    
+    .toast-close {
+      background: none;
+      border: none;
+      color: rgba(255, 255, 255, 0.7);
+      cursor: pointer;
+      font-size: 16px;
+      padding: 0 5px;
+    }
+    
+    .toast-close:hover {
+      color: white;
+    }
+    
+    @keyframes slideIn {
+      from {
+        transform: translateX(100%);
+        opacity: 0;
+      }
+      to {
+        transform: translateX(0);
+        opacity: 1;
+      }
+    }
+    
+    @keyframes fadeOut {
+      from {
+        opacity: 1;
+      }
+      to {
+        opacity: 0;
+      }
+    }
   </style>
 </head>
 <body>
+  <!-- Toast container for notifications -->
+  <div class="toast-container" id="toastContainer"></div>
+  
   <div class="register-container">
     <div class="register-header">
       <h1>Create Account</h1>
@@ -399,6 +469,154 @@
       });
     }
 
+    // Function to generate username based on first name and last name
+    function generateUsername() {
+      const firstName = document.getElementById('name').value.trim().toLowerCase();
+      const lastName = document.getElementById('surname').value.trim().toLowerCase();
+      
+      if (firstName && lastName) {
+        // Generate username in format name.surname
+        const username = `${firstName}.${lastName}`;
+        document.getElementById('username').value = username;
+      }
+    }
+
+    // Format phone number according to the requirements
+    // Stored: XXXNNNNNNNNNNZ
+    // XXX = country code padded to 3 digits with leading zeros
+    // NNNNNNNNNN = phone number (up to 10 digits)
+    // Z = length of phone number (0 if 10 digits)
+    function formatPhoneNumber(phoneCode, phoneNumber) {
+      // Remove any non-digit characters from the phone code and phone number
+      const cleanPhoneCode = phoneCode.replace(/\D/g, '');
+      const cleanPhoneNumber = phoneNumber.replace(/\D/g, '');
+      
+      // Pad country code to 3 digits with leading zeros
+      const paddedPhoneCode = cleanPhoneCode.padStart(3, '0');
+      
+      // Get phone number length (max 10 digits)
+      const phoneLength = Math.min(cleanPhoneNumber.length, 10);
+      
+      // Get phone number digits (up to 10)
+      const phoneDigits = cleanPhoneNumber.substring(0, 10);
+      
+      // Calculate Z value (0 if phone number is exactly 10 digits)
+      const zValue = phoneLength === 10 ? '0' : phoneLength.toString();
+      
+      // Combine all parts
+      return paddedPhoneCode + phoneDigits + zValue;
+    }
+
+    // Calculate age from birthday
+    function calculateAge(birthday) {
+      const birthDate = flatpickr.parseDate(birthday, "d/m/Y");
+      const today = new Date();
+      let age = today.getFullYear() - birthDate.getFullYear();
+      const monthDiff = today.getMonth() - birthDate.getMonth();
+      
+      if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
+        age--;
+      }
+      
+      return age;
+    }
+
+    // Form validation functions
+    function validatePassword() {
+      const password = document.getElementById('password').value;
+      const error = document.getElementById('passwordError');
+      
+      if (password.length < 4) {
+        error.textContent = 'Password must be at least 4 characters long';
+        return false;
+      } else if (!/[0-9]/.test(password)) {
+        error.textContent = 'Password must contain at least one number';
+        return false;
+      } else {
+        error.textContent = '';
+        return true;
+      }
+    }
+
+    function validateConfirmPassword() {
+      const password = document.getElementById('password').value;
+      const confirmPassword = document.getElementById('confirmPassword').value;
+      const error = document.getElementById('confirmPasswordError');
+      
+      if (password !== confirmPassword) {
+        error.textContent = 'Passwords do not match';
+        return false;
+      } else {
+        error.textContent = '';
+        return true;
+      }
+    }
+
+    function validateEmail() {
+      const email = document.getElementById('email').value;
+      const error = document.getElementById('emailError');
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      
+      if (!emailRegex.test(email)) {
+        error.textContent = 'Please enter a valid email address';
+        return false;
+      } else {
+        error.textContent = '';
+        return true;
+      }
+    }
+
+    function validateTelephone() {
+      const telephone = document.getElementById('telephone').value;
+      const error = document.getElementById('telephoneError');
+      
+      // Phone number should be digits only and maximum 10 digits
+      if (!/^\d{1,10}$/.test(telephone)) {
+        error.textContent = 'Please enter a valid phone number (max 10 digits)';
+        return false;
+      } else {
+        error.textContent = '';
+        return true;
+      }
+    }
+
+    function validateBirthday() {
+      const birthday = document.getElementById('birthday').value;
+      const error = document.getElementById('birthdayError');
+      
+      if (!birthday) {
+        error.textContent = 'Please select your date of birth';
+        return false;
+      }
+      
+      // Check if user is at least 13 years old
+      const birthDate = flatpickr.parseDate(birthday, "d/m/Y");
+      const today = new Date();
+      const age = today.getFullYear() - birthDate.getFullYear();
+      const monthDiff = today.getMonth() - birthDate.getMonth();
+      
+      if (age < 13 || (age === 13 && monthDiff < 0) || 
+         (age === 13 && monthDiff === 0 && today.getDate() < birthDate.getDate())) {
+        error.textContent = 'You must be at least 13 years old to register';
+        return false;
+      } else {
+        error.textContent = '';
+        return true;
+      }
+    }
+
+    // Function to validate all fields for form submission
+    function validateForm() {
+      const isPasswordValid = validatePassword();
+      const isConfirmPasswordValid = validateConfirmPassword();
+      const isEmailValid = validateEmail();
+      const isTelephoneValid = validateTelephone();
+      const isBirthdayValid = validateBirthday();
+      
+      return isPasswordValid && isConfirmPasswordValid && isEmailValid && 
+             isTelephoneValid && isBirthdayValid;
+    }
+
     $(document).ready(function() {
       populateCountries();
       $('.country-select').select2({
@@ -413,7 +631,125 @@
         const phoneCode = selectedOption.attr('data-phone-code') || '';
         $('#phoneCountryCode').text(phoneCode);
       });
+
+      // Add event listeners for auto-generating username
+      document.getElementById('name').addEventListener('input', generateUsername);
+      document.getElementById('surname').addEventListener('input', generateUsername);
+
+      // Add event listeners for real-time validation
+      document.getElementById('password').addEventListener('input', validatePassword);
+      document.getElementById('confirmPassword').addEventListener('input', validateConfirmPassword);
+      document.getElementById('email').addEventListener('input', validateEmail);
+      document.getElementById('telephone').addEventListener('input', validateTelephone);
+      
+      // Form submission handling
+      document.getElementById('registerForm').addEventListener('submit', function(event) {
+        event.preventDefault();
+        
+        if (validateForm()) {
+          // Get form values
+          const firstName = document.getElementById('name').value;
+          const lastName = document.getElementById('surname').value;
+          const username = document.getElementById('username').value;
+          const password = document.getElementById('password').value;
+          const email = document.getElementById('email').value;
+          const telephone = document.getElementById('telephone').value;
+          const birthday = document.getElementById('birthday').value;
+          const age = calculateAge(birthday);
+          
+          // Get phone country code
+          const selectedOption = $('#country').find(':selected');
+          const phoneCode = selectedOption.attr('data-phone-code') || '';
+          const formattedPhoneNumber = formatPhoneNumber(phoneCode, telephone);
+          
+          // Create request payload
+          const payload = {
+            uName: username,
+            name: firstName,
+            surname: lastName,
+            uEmail: email,
+            uNumber: formattedPhoneNumber,
+            age: age,
+            password: password
+          };
+          
+          // Send POST request to API
+          fetch('http://localhost:8080/api/customers/register', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(payload)
+          })
+          .then(response => {
+            // Check if response is ok (status code 200-299)
+            if (!response.ok) {
+              // If not ok, parse the JSON to get the error message
+              return response.json().then(errorData => {
+                throw new Error(errorData.message || 'Registration failed. Please try again.');
+              });
+            }
+            return response.json();
+          })
+          .then(data => {
+            if (data.success) {
+              // Show success message
+              document.getElementById('successMessage').style.display = 'block';
+              showToast('Registration successful! Redirecting to login page...', 'success');
+              
+              // Redirect to login page after 3 seconds
+              setTimeout(function() {
+                window.location.href = 'LOGIN.html';
+              }, 3000);
+            } else {
+              // Show error message from response if available
+              const errorMessage = data.message || 'Registration failed. Please try again.';
+              showToast(errorMessage);
+            }
+          })
+          .catch(error => {
+            console.error('Registration error:', error);
+            showToast(error.message || 'Registration failed. Please check your network connection.');
+          });
+        }
+      });
     });
+
+    // Function to show toast notifications
+    function showToast(message, type = 'error') {
+      const toastContainer = document.getElementById('toastContainer');
+      
+      // Create toast element
+      const toast = document.createElement('div');
+      toast.className = `toast ${type}`;
+      
+      // Create message element
+      const toastMessage = document.createElement('div');
+      toastMessage.className = 'toast-message';
+      toastMessage.textContent = message;
+      
+      // Create close button
+      const closeButton = document.createElement('button');
+      closeButton.className = 'toast-close';
+      closeButton.innerHTML = '&times;';
+      closeButton.onclick = function() {
+        toastContainer.removeChild(toast);
+      };
+      
+      // Append elements to toast
+      toast.appendChild(toastMessage);
+      toast.appendChild(closeButton);
+      
+      // Append toast to container
+      toastContainer.appendChild(toast);
+      
+      // Remove toast after 5 seconds
+      setTimeout(() => {
+        if (toast.parentNode === toastContainer) {
+          toastContainer.removeChild(toast);
+        }
+      }, 5000);
+    }
 
     document.addEventListener('DOMContentLoaded', function () {
       const birthdayInput = document.getElementById('birthday');
@@ -436,7 +772,7 @@
             monthDropdown.style.width = "130px"; // Set consistent width
             monthDropdown.style.height = "30px"; // Set consistent height
             monthDropdown.style.borderRadius = "8px"; // Add border radius
-            monthDropdown.style.marginRight = "10px"; // Move to the right by 20px
+            monthDropdown.style.marginRight = "10px"; // Move to the right by 10px
           }
 
           // Move year input wrapper to the right
@@ -445,6 +781,9 @@
             yearDropdown.style.width = "65px"; // Set consistent width
             yearDropdown.style.borderRadius = "8px"; // Set consistent border radius
           }
+        },
+        onChange: function() {
+          validateBirthday();
         }
       });
     });
