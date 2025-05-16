@@ -48,18 +48,18 @@
           <div class="form-row">
             <div class="form-group">
               <label for="firstname">First Name</label>
-              <input type="text" id="firstname" name="firstname" required>
+              <input type="text" id="firstname" name="firstname" >
             </div>
             
             <div class="form-group">
               <label for="lastname">Last Name</label>
-              <input type="text" id="lastname" name="lastname" required>
+              <input type="text" id="lastname" name="lastname" >
             </div>
           </div>
           
           <div class="form-group">
             <label for="displayname">Display Name</label>
-            <input type="text" id="displayname" name="displayname" required>
+            <input type="text" id="displayname" name="displayname" >
           </div>
           
           <div class="form-group">
@@ -178,13 +178,18 @@
           </div>
           
           <div class="stats-card">
+            <h3>Total Play Time</h3>
+            <p class="stats-value">0 minutes</p>
+          </div>
+          
+          <div class="stats-card">
             <h3>Total Spent</h3>
             <p class="stats-value">$0.00</p>
           </div>
           
           <div class="stats-card">
-            <h3>Account Age</h3>
-            <p class="stats-value">0 days</p>
+            <h3>Times Played</h3>
+            <p class="stats-value">0</p>
           </div>
         </div>
         
@@ -207,6 +212,22 @@
             </table>
           </div>
         <!--/div-->
+        
+        <h2>Games Played</h2>
+        <div class="statement-table-container">
+          <table class="statement-table">
+            <thead>
+              <tr>
+                <th>Game Name</th>
+                <th>Last Played</th>
+                <th>Times Played</th>
+              </tr>
+            </thead>
+            <tbody id="played-games-body">
+              <!-- Played games rows will be inserted here -->
+            </tbody>
+          </table>
+        </div>
       </section>
       
       <!-- Delete Account Section -->
@@ -392,7 +413,7 @@
       
       try {
         const response = await fetch(`http://localhost:8080/api/customers/id=${currentUserId}`, {
-          method: 'POST',
+          method: 'PUT',
           headers: {
             'Content-Type': 'application/json',
           },
@@ -556,7 +577,10 @@
     // Function to fetch and populate user statistics
     async function fetchUserStatistics() {
       try {
-        // Fetch orders (purchases)
+        // First fetch played games to calculate total play time
+        await fetchPlayedGames();
+        
+        // Then fetch orders (purchases)
         const ordersResponse = await fetch(`http://localhost:8080/api/orders/user=${currentUserId}`);
         if (!ordersResponse.ok) {
           throw new Error('Failed to fetch user statistics');
@@ -572,7 +596,7 @@
         
         // Update stats cards
         document.querySelector('#statistics-section .stats-card:nth-child(1) .stats-value').textContent = gamesOwned;
-        document.querySelector('#statistics-section .stats-card:nth-child(2) .stats-value').textContent = `$${totalSpent.toFixed(2)}`;
+        document.querySelector('#statistics-section .stats-card:nth-child(3) .stats-value').textContent = `$${totalSpent.toFixed(2)}`;
 
         // Populate statement table
         const statementBody = document.getElementById('statement-body');
@@ -599,24 +623,88 @@
 
         // Add deposits to statement (if your API supports this)
         // Note: You'll need to implement this when the API is available
-        // Example of how a deposit would look:
-        /*
-        deposits.forEach(deposit => {
-          const row = document.createElement('tr');
-          row.innerHTML = `
-            <td>${new Date(deposit.date).toLocaleString()}</td>
-            <td>Deposit</td>
-            <td class="amount-positive">+$${deposit.amount.toFixed(2)}</td>
-            <td>Account Deposit</td>
-            <td><span class="status-badge success">Successful</span></td>
-          `;
-          statementBody.appendChild(row);
-        });
-        */
 
       } catch (error) {
         console.error('Error fetching user statistics:', error);
         showMessage('profile-message', 'Failed to load user statistics. Please try again.', 'error');
+      }
+    }
+
+    // Function to fetch and populate played games
+    async function fetchPlayedGames() {
+      try {
+        const response = await fetch(`http://localhost:8080/api/played/user=${currentUserId}`);
+        
+        if (!response.ok) {
+          throw new Error('Failed to fetch played games');
+        }
+        
+        const playedGames = await response.json();
+        const playedGamesBody = document.getElementById('played-games-body');
+        playedGamesBody.innerHTML = '';
+        
+        // Calculate total play time and total play count
+        let totalPlayTime = 0;
+        let totalPlayCount = 0;
+        
+        // Sort games by lastPlayed (most recent first)
+        playedGames.sort((a, b) => {
+          return new Date(b.lastPlayed) - new Date(a.lastPlayed);
+        });
+        
+        if (playedGames.length === 0) {
+          const row = document.createElement('tr');
+          row.innerHTML = `<td colspan="3" class="no-content-message">No games played yet</td>`;
+          playedGamesBody.appendChild(row);
+        } else {
+          // Add each played game to the table and calculate totals
+          playedGames.forEach(played => {
+            // Add to totals
+            totalPlayTime += played.playTime || 0;
+            totalPlayCount += played.playTime; // Count each unique game
+            
+            const row = document.createElement('tr');
+            
+            // Format the last played date and time
+            const lastPlayed = new Date(played.lastPlayed);
+            const dateStr = lastPlayed.toLocaleDateString();
+            const timeStr = lastPlayed.toLocaleTimeString();
+            
+            // Get play count (number of times played)
+            const playCount = played.playTime || 0; // Using playTime as the count of plays
+            
+            row.innerHTML = `
+              <td>${played.game.gName}</td>
+              <td>${dateStr} at ${timeStr}</td>
+              <td>${playCount}</td>
+            `;
+            
+            playedGamesBody.appendChild(row);
+          });
+        }
+        
+        // Format and display total play time
+        let totalPlayTimeDisplay;
+        if (totalPlayTime < 60) {
+          totalPlayTimeDisplay = `${totalPlayTime} minutes`;
+        } else {
+          const hours = Math.floor(totalPlayTime / 60);
+          const minutes = totalPlayTime % 60;
+          totalPlayTimeDisplay = `${hours} hours${minutes > 0 ? ` ${minutes} minutes` : ''}`;
+        }
+        
+        // Update the stats cards
+        document.querySelector('#statistics-section .stats-card:nth-child(2) .stats-value').textContent = totalPlayTimeDisplay;
+        document.querySelector('#statistics-section .stats-card:nth-child(4) .stats-value').textContent = totalPlayCount;
+        
+      } catch (error) {
+        console.error('Error fetching played games:', error);
+        const playedGamesBody = document.getElementById('played-games-body');
+        playedGamesBody.innerHTML = `<tr><td colspan="3" class="error-message">Failed to load played games data</td></tr>`;
+        
+        // Even if there's an error, set values to 0
+        document.querySelector('#statistics-section .stats-card:nth-child(2) .stats-value').textContent = '0 minutes';
+        document.querySelector('#statistics-section .stats-card:nth-child(4) .stats-value').textContent = '0';
       }
     }
 
@@ -660,8 +748,8 @@
         document.getElementById('friends-list').style.display = 'none';
         document.getElementById('no-friends-message').style.display = 'none';
         
-        // Fetch friends from API
-        const response = await fetch(`/service/friend/user/${currentUserId}`);
+        // Fetch friends from API using the correct endpoint
+        const response = await fetch(`http://localhost:8080/api/friends/user=${currentUserId}`);
         
         if (!response.ok) {
           throw new Error('Failed to fetch friends');
@@ -687,14 +775,14 @@
         
         // Add friends to list
         friends.forEach(friend => {
-          // Determine which user is the friend (user1 or user2)
-          const friendUser = friend.user1.id == currentUserId ? friend.user2 : friend.user1;
-          
+          // Create friend card with friend details
           const friendCard = document.createElement('div');
           friendCard.className = 'friend-card';
           
-          const displayName = friendUser.dName || friendUser.uName || 'Unknown User';
-          const userName = friendUser.uName || '';
+          friend = friend.user2;
+          
+          const displayName = friend.dName || friend.uName || 'Unknown User';
+          const userName = friend.uName || '';
           
           friendCard.innerHTML = `
             <div class="friend-avatar">
@@ -703,8 +791,8 @@
             <h3 class="friend-name">${displayName}</h3>
             <p class="friend-username">@${userName}</p>
             <div class="friend-actions">
-              <button class="friend-action-btn view-profile-btn" data-id="${friendUser.id}">View Profile</button>
-              <button class="friend-action-btn danger remove-friend-btn" data-id="${friendUser.id}">Remove</button>
+              <button class="friend-action-btn view-profile-btn" data-id="${friend.userID}">View Profile</button>
+              <button class="friend-action-btn danger remove-friend-btn" data-id="${friend.userID}">Remove</button>
             </div>
           `;
           
@@ -718,7 +806,7 @@
           });
           
           removeFriendBtn.addEventListener('click', () => {
-            removeFriend(friendUser.id, displayName);
+            removeFriend(friend.userID, displayName);
           });
           
           friendsList.appendChild(friendCard);
@@ -745,7 +833,8 @@
           return;
         }
         
-        const response = await fetch(`/service/friend/user1/${currentUserId}/user2/${friendId}`, {
+        // Use the correct endpoint for removing a friend
+        const response = await fetch(`http://localhost:8080/api/friends/user=${currentUserId}/friend=${friendId}`, {
           method: 'DELETE'
         });
         
@@ -753,15 +842,9 @@
           throw new Error('Failed to remove friend');
         }
         
-        const result = await response.json();
-        
-        if (result.success) {
-          showMessage('friends-message', `${friendName} has been removed from your friends`, 'success');
-          // Refresh friends list
-          await fetchFriends();
-        } else {
-          showMessage('friends-message', result.message || 'Failed to remove friend', 'error');
-        }
+        showMessage('friends-message', `${friendName} has been removed from your friends`, 'success');
+        // Refresh friends list
+        await fetchFriends();
         
       } catch (error) {
         console.error('Error removing friend:', error);
@@ -838,14 +921,21 @@
       document.getElementById('popup-search-no-results').style.display = 'none';
       
       try {
-        // Search for users by username
-        const response = await fetch(`/service/search/users?username=${encodeURIComponent(searchInput)}`);
+        // Get all users from the API
+        const response = await fetch(`http://localhost:8080/api/customers/all`);
         
         if (!response.ok) {
           throw new Error('Failed to search for users');
         }
         
-        const users = await response.json();
+        // Get the list of all users
+        const allUsers = await response.json();
+        
+        // Filter users based on search input (username or display name contains the search input)
+        const users = allUsers.Customer.filter(user => 
+          (user.uName && user.uName.toLowerCase().includes(searchInput.toLowerCase())) || 
+          (user.dName && user.dName.toLowerCase().includes(searchInput.toLowerCase()))
+        );
         
         // Hide loading message
         document.getElementById('popup-search-loading').style.display = 'none';
@@ -863,15 +953,27 @@
         const currentUserId = localStorage.getItem('userId');
         
         // Filter out current user
-        const filteredUsers = users.filter(user => user.id != currentUserId);
+        const filteredUsers = users.filter(user => user.userID != currentUserId);
         
         if (filteredUsers.length === 0) {
           document.getElementById('popup-search-no-results').style.display = 'block';
           return;
         }
         
+        // Get current friends list to check if users are already friends
+        const friendsResponse = await fetch(`http://localhost:8080/api/friends/user=${currentUserId}`);
+        let friendsList = [];
+        if (friendsResponse.ok) {
+          friendsList = await friendsResponse.json();
+        }
+        
+        // Function to check if a user is already a friend
+        const isAlreadyFriend = (userId) => {
+          return friendsList.some(friend => friend.userID === userId);
+        };
+        
         // Add users to list
-        filteredUsers.forEach(async user => {
+        filteredUsers.forEach(user => {
           const userCard = document.createElement('div');
           userCard.className = 'friend-card';
           
@@ -885,14 +987,12 @@
             <h3 class="friend-name">${displayName}</h3>
             <p class="friend-username">@${userName}</p>
             <div class="friend-actions">
-              <button class="friend-action-btn add-friend-btn" data-id="${user.id}">Add Friend</button>
+              <button class="friend-action-btn add-friend-btn" data-id="${user.userID}">Add Friend</button>
             </div>
           `;
           
           // Check if already friends
-          const isFriend = await checkFriendship(currentUserId, user.id);
-          
-          if (isFriend) {
+          if (isAlreadyFriend(user.userID)) {
             const addBtn = userCard.querySelector('.add-friend-btn');
             addBtn.textContent = 'Friends';
             addBtn.disabled = true;
@@ -900,7 +1000,7 @@
           } else {
             // Add event listener for add button
             userCard.querySelector('.add-friend-btn').addEventListener('click', () => {
-              addFriend(user.id, displayName);
+              addFriend(user.userID, displayName);
             });
           }
           
@@ -917,23 +1017,6 @@
       }
     }
     
-    // Function to check if two users are friends
-    async function checkFriendship(user1Id, user2Id) {
-      try {
-        const response = await fetch(`/service/friend/user1/${user1Id}/user2/${user2Id}`);
-        
-        if (!response.ok) {
-          return false;
-        }
-        
-        const result = await response.json();
-        return result.success && result.areFriends;
-      } catch (error) {
-        console.error('Error checking friendship:', error);
-        return false;
-      }
-    }
-    
     // Function to add a friend
     async function addFriend(friendId, friendName) {
       try {
@@ -944,34 +1027,22 @@
           return;
         }
         
-        const response = await fetch('/service/friend/add', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({
-            user1Id: currentUserId,
-            user2Id: friendId
-          })
+        // Use the correct endpoint for adding a friend
+        const response = await fetch(`http://localhost:8080/api/friends/user=${currentUserId}/friend=${friendId}`, {
+          method: 'POST'
         });
         
         if (!response.ok) {
           throw new Error('Failed to add friend');
         }
         
-        const result = await response.json();
+        showMessage('friends-message', `${friendName} has been added to your friends`, 'success');
         
-        if (result.success) {
-          showMessage('friends-message', `${friendName} has been added to your friends`, 'success');
-          
-          // Close the search popup
-          closeFriendSearch();
-          
-          // Refresh friends list
-          await fetchFriends();
-        } else {
-          alert(result.message || 'Failed to add friend');
-        }
+        // Close the search popup
+        closeFriendSearch();
+        
+        // Refresh friends list
+        await fetchFriends();
         
       } catch (error) {
         console.error('Error adding friend:', error);

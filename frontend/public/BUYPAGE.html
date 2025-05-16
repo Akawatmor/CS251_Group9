@@ -1018,10 +1018,98 @@ $(document).ready(function() {
         
         $('#play-button').on('click', function() {
             if (!$(this).prop('disabled')) {
+                const userId = getUserId();
+                if (userId) {
+                    // Call API to record that the user played the game
+                    $.ajax({
+                        url: `http://localhost:8080/api/played/user=${userId}/game=${gameId}/played`,
+                        method: 'PUT',
+                        success: function(response) {
+                            console.log('Play activity recorded successfully:', response);
+                        },
+                        error: function(xhr, status, error) {
+                            console.error('Error recording play activity:', error);
+                        }
+                    });
+                }
                 // Show toast that system is not implemented yet
-                showToast('Game launch feature is not implemented yet', false);
+                showToast('Game launch feature is Coming Soon! Play Time Added', false);
             }
         });
+        
+        // When fetching game details, also fetch DLCs and Mods
+        const $dlcModsContainer = $('#dlc-mods-container');
+        $dlcModsContainer.html('<p class="loading-message">Loading DLCs and Mods...</p>');
+        
+        // Fetch DLCs and Mods
+        $.ajax({
+            url: `http://localhost:8080/api/moddlc/game=${gameId}`,
+            method: 'GET',
+            success: function(modsData) {
+                displayDLCsAndMods(modsData);
+            },
+            error: function(xhr, status, error) {
+                console.error('Error fetching DLCs and Mods:', error);
+                $dlcModsContainer.html('<p class="no-dlc-mods-message">Failed to load DLCs and Mods.</p>');
+            }
+        });
+        
+        // Function to display DLCs and Mods
+        function displayDLCsAndMods(modsData) {
+            const $container = $('#dlc-mods-container');
+            $container.empty();
+            
+            if (!modsData || modsData.length === 0) {
+                $container.html('<p class="no-dlc-mods-message">No DLCs or Mods available for this game.</p>');
+                return;
+            }
+            
+            // Sort by type if needed
+            modsData.sort((a, b) => {
+                if (a.modType === 'DLC' && b.modType !== 'DLC') return -1;
+                if (a.modType !== 'DLC' && b.modType === 'DLC') return 1;
+                return 0;
+            });
+            
+            modsData.forEach(mod => {
+                const isDLC = mod.modType === 'DLC';
+                const typeLabel = mod.modType || 'MOD';
+                const price = 'Free'; // Assuming mods are free, adjust if price info is added to API
+                
+                const $card = $('<div>')
+                    .addClass('dlc-mod-card')
+                    .html(`
+                        <span class="dlc-mod-type">${typeLabel}</span>
+                        <h4>${mod.modName || 'Unnamed Content'}</h4>
+                        <p>${mod.modInfo || 'No description available.'}</p>
+                        <p class="dlc-mod-price">Price: ${price}</p>
+                        <button class="buy-dlc-button" data-id="${mod.modID}" data-type="${mod.modType}">
+                            Download
+                        </button>
+                    `);
+                
+                // Add click event for download button
+                $card.find('.buy-dlc-button').on('click', function() {
+                    const modId = $(this).data('id');
+                    const modType = $(this).data('type');
+                    handleModDownload(modId, modType);
+                });
+                
+                $container.append($card);
+            });
+        }
+        
+        // Function to handle Mod download
+        function handleModDownload(modId, modType) {
+            const userId = getUserId();
+            
+            if (!userId) {
+                alert('Please log in to download this content.');
+                return;
+            }
+            
+            showToast(`${modType} download initiated. This feature will be fully implemented soon.`, false);
+        }
         
         // Wishlist button functionality
         $('#wishlist-button').on('click', function() {
