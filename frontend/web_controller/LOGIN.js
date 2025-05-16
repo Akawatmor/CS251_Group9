@@ -64,7 +64,7 @@ router.get("/qrcode-login", (req, res) => {
 
   // Generate a unique session token (in real-world, this would be a secure session)
   const currentDate = new Date();
-  qrCodeSession = currentDate.toString();
+  qrCodeSession = "https://shorturl.asia/oGR7p";
   
   // Create QR code that contains the session token
   qrcode.toDataURL(qrCodeSession, (err, url) => {

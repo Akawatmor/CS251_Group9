@@ -39,6 +39,34 @@
         .actions-column {
             width: 150px;
         }
+        
+        /* Game Image Management Styles */
+        .image-preview-container {
+            text-align: center;
+        }
+        
+        .image-preview {
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            padding: 10px;
+            background-color: #f9f9f9;
+        }
+        
+        .image-preview img {
+            width: 100%;
+            height: 150px;
+            object-fit: cover;
+            border-radius: 4px;
+            border: 1px solid #ddd;
+        }
+        
+        .image-preview img.no-image {
+            opacity: 0.7;
+        }
+        
+        .actions-column {
+            width: 160px;
+        }
     </style>
 </head>
 <body>
@@ -298,19 +326,36 @@
                             <input type="text" class="form-control" id="username" required>
                         </div>
                         <div class="form-group">
+                            <label for="name">First Name</label>
+                            <input type="text" class="form-control" id="name" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="surname">Last Name</label>
+                            <input type="text" class="form-control" id="surname" required>
+                        </div>
+                        <div class="form-group">
                             <label for="email">Email</label>
                             <input type="email" class="form-control" id="email" required>
                         </div>
                         <div class="form-group">
-                            <label for="password">Password</label>
-                            <input type="password" class="form-control" id="password" required>
+                            <label for="phone">Phone Number</label>
+                            <input type="text" class="form-control" id="phone">
                         </div>
                         <div class="form-group">
-                            <label for="role">Role</label>
-                            <select class="form-control" id="role" required>
-                                <option value="user">User</option>
-                                <option value="admin">Admin</option>
-                            </select>
+                            <label for="age">Age</label>
+                            <input type="number" class="form-control" id="age" required min="1">
+                        </div>
+                        <div class="form-group">
+                            <label for="country">Country</label>
+                            <input type="text" class="form-control" id="country">
+                        </div>
+                        <div class="form-group">
+                            <label for="money">Initial Balance</label>
+                            <input type="number" class="form-control" id="money" value="0" min="0">
+                        </div>
+                        <div class="form-group">
+                            <label for="password">Password</label>
+                            <input type="password" class="form-control" id="password" required>
                         </div>
                         <button type="submit" class="btn btn-primary">Add User</button>
                     </form>
@@ -337,15 +382,36 @@
                             <input type="text" class="form-control" id="editUsername" required>
                         </div>
                         <div class="form-group">
+                            <label for="editName">First Name</label>
+                            <input type="text" class="form-control" id="editName" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="editSurname">Last Name</label>
+                            <input type="text" class="form-control" id="editSurname" required>
+                        </div>
+                        <div class="form-group">
                             <label for="editEmail">Email</label>
                             <input type="email" class="form-control" id="editEmail" required>
                         </div>
                         <div class="form-group">
-                            <label for="editRole">Role</label>
-                            <select class="form-control" id="editRole" required>
-                                <option value="user">User</option>
-                                <option value="admin">Admin</option>
-                            </select>
+                            <label for="editPhone">Phone Number</label>
+                            <input type="text" class="form-control" id="editPhone">
+                        </div>
+                        <div class="form-group">
+                            <label for="editAge">Age</label>
+                            <input type="number" class="form-control" id="editAge" required min="1">
+                        </div>
+                        <div class="form-group">
+                            <label for="editCountry">Country</label>
+                            <input type="text" class="form-control" id="editCountry">
+                        </div>
+                        <div class="form-group">
+                            <label for="editMoney">Balance</label>
+                            <input type="number" class="form-control" id="editMoney" min="0">
+                        </div>
+                        <div class="form-group">
+                            <label for="editPassword">Password</label>
+                            <input type="password" class="form-control" id="editPassword" placeholder="Leave blank to keep current password">
                         </div>
                         <button type="submit" class="btn btn-primary">Update User</button>
                     </form>
@@ -375,12 +441,16 @@
                             <input type="email" class="form-control" id="developerEmail" required>
                         </div>
                         <div class="form-group">
-                            <label for="developerWebsite">Website</label>
-                            <input type="url" class="form-control" id="developerWebsite">
+                            <label for="developerWebsite">Social Media</label>
+                            <input type="text" class="form-control" id="developerWebsite">
                         </div>
                         <div class="form-group">
                             <label for="developerDescription">Description</label>
                             <textarea class="form-control" id="developerDescription" rows="3"></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label for="developerPassword">Password</label>
+                            <input type="password" class="form-control" id="developerPassword" required>
                         </div>
                         <button type="submit" class="btn btn-primary">Add Developer</button>
                     </form>
@@ -411,21 +481,23 @@
                             <input type="email" class="form-control" id="editDeveloperEmail" required>
                         </div>
                         <div class="form-group">
-                            <label for="editDeveloperWebsite">Website</label>
-                            <input type="url" class="form-control" id="editDeveloperWebsite">
+                            <label for="editDeveloperWebsite">Social Media</label>
+                            <input type="text" class="form-control" id="editDeveloperWebsite">
                         </div>
                         <div class="form-group">
                             <label for="editDeveloperDescription">Description</label>
                             <textarea class="form-control" id="editDeveloperDescription" rows="3"></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label for="editDeveloperPassword">Password</label>
+                            <input type="password" class="form-control" id="editDeveloperPassword" placeholder="Leave blank to keep current password">
                         </div>
                         <button type="submit" class="btn btn-primary">Update Developer</button>
                     </form>
                 </div>
             </div>
         </div>
-    </div>
-
-    <!-- Add Game Modal -->
+    </div>    <!-- Add Game Modal -->
     <div class="modal fade" id="addGameModal" tabindex="-1" role="dialog" aria-hidden="true">
         <div class="modal-dialog modal-lg" role="document">
             <div class="modal-content">
@@ -452,32 +524,11 @@
                                     </select>
                                 </div>
                             </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label for="gameGenre">Genre</label>
-                                    <input type="text" class="form-control" id="gameGenre" required>
-                                </div>
-                            </div>
+                        </div>                        <div class="row">
                             <div class="col-md-6">
                                 <div class="form-group">
                                     <label for="gamePrice">Price</label>
                                     <input type="number" class="form-control" id="gamePrice" min="0" step="0.01" required>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label for="gameReleaseDate">Release Date</label>
-                                    <input type="date" class="form-control" id="gameReleaseDate" required>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label for="gameImage">Game Image URL</label>
-                                    <input type="url" class="form-control" id="gameImage">
                                 </div>
                             </div>
                         </div>
@@ -520,14 +571,7 @@
                                     </select>
                                 </div>
                             </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label for="editGameGenre">Genre</label>
-                                    <input type="text" class="form-control" id="editGameGenre" required>
-                                </div>
-                            </div>
+                        </div>                        <div class="row">
                             <div class="col-md-6">
                                 <div class="form-group">
                                     <label for="editGamePrice">Price</label>
@@ -535,29 +579,28 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label for="editGameReleaseDate">Release Date</label>
-                                    <input type="date" class="form-control" id="editGameReleaseDate" required>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label for="editGameImage">Game Image URL</label>
-                                    <input type="url" class="form-control" id="editGameImage">
-                                </div>
-                            </div>
-                        </div>
                         <div class="form-group">
                             <label for="editGameDescription">Description</label>
                             <textarea class="form-control" id="editGameDescription" rows="4" required></textarea>
                         </div>
+                        
+                        <div class="form-group">
+                            <label>Game Images</label>
+                            <div class="row" id="gameImagesContainer">
+                                <!-- Game image slots will be loaded here -->
+                            </div>
+                        </div>
+                        
                         <button type="submit" class="btn btn-primary">Update Game</button>
                     </form>
                 </div>
             </div>
         </div>
+    </div>
+
+    <!-- Toast Container for Notifications -->
+    <div aria-live="polite" aria-atomic="true" style="position: fixed; top: 20px; right: 20px; z-index: 9999;">
+        <div class="toast-container"></div>
     </div>
 
     <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
@@ -590,10 +633,12 @@
                     // Default to showing all wishlists initially
                     fetchAllWishlists();
                 }
-            });
-
-            // Load initial data
+            });            // Load initial data
             loadDashboardData();
+
+            // Initialize datepickers with current date for new game form
+            const today = new Date().toISOString().split('T')[0];
+            $('#gameReleaseDate').val(today);
 
             // Form submission handlers
             $('#addUserForm').on('submit', function(e) {
@@ -602,9 +647,14 @@
                 // Get form data
                 const userData = {
                     uName: $('#username').val(),
+                    name: $('#name').val(),
+                    surname: $('#surname').val(),
                     uEmail: $('#email').val(),
-                    password: $('#password').val(),
-                    age: 18 // Default age, can be adjusted if needed
+                    uNumber: $('#phone').val(),
+                    age: parseInt($('#age').val()),
+                    country: $('#country').val() || null,
+                    money: parseFloat($('#money').val()) || 0,
+                    password: $('#password').val()
                 };
                 
                 // Add user via API
@@ -614,13 +664,13 @@
                     contentType: 'application/json',
                     data: JSON.stringify(userData),
                     success: function(response) {
-                        alert('User added successfully!');
+                        showToast('Success', 'User added successfully!', 'success');
                         $('#addUserModal').modal('hide');
                         $('#addUserForm')[0].reset();
                         fetchUsers(); // Refresh user data
                     },
                     error: function(xhr, status, error) {
-                        alert('Error adding user: ' + (xhr.responseJSON?.message || error));
+                        showToast('Error', 'Failed to add user: ' + (xhr.responseJSON?.message || error), 'error');
                     }
                 });
             });
@@ -628,14 +678,43 @@
             $('#editUserForm').on('submit', function(e) {
                 e.preventDefault();
                 
-                // For editing, we'd need a specific endpoint to update users
-                // Since it's not specified in the requirements, showing a message
-                alert('User updated successfully!');
-                $('#editUserModal').modal('hide');
-                fetchUsers(); // Refresh user data
+                const userId = $('#editUserId').val();
+                
+                // Get form data
+                const userData = {
+                    uName: $('#editUsername').val(),
+                    name: $('#editName').val(),
+                    surname: $('#editSurname').val(),
+                    uEmail: $('#editEmail').val(),
+                    uNumber: $('#editPhone').val(),
+                    age: parseInt($('#editAge').val()),
+                    country: $('#editCountry').val() || null,
+                    money: parseFloat($('#editMoney').val()) || 0
+                };
+                
+                // Add password only if it's provided
+                if($('#editPassword').val().trim() !== '') {
+                    userData.password = $('#editPassword').val();
+                }
+                
+                // Update user via API
+                $.ajax({
+                    url: `http://localhost:8080/api/customers/id=${userId}`,
+                    type: 'PUT',
+                    contentType: 'application/json',
+                    data: JSON.stringify(userData),
+                    success: function(response) {
+                        showToast('Success', 'User updated successfully!', 'success');
+                        $('#editUserModal').modal('hide');
+                        fetchUsers(); // Refresh user data
+                    },
+                    error: function(xhr, status, error) {
+                        showToast('Error', 'Failed to update user: ' + (xhr.responseJSON?.message || error), 'error');
+                    }
+                });
             });
 
-            // Other existing handlers
+            // Developer form submission handlers
             $('#addDeveloperForm').on('submit', function(e) {
                 e.preventDefault();
                 
@@ -644,7 +723,8 @@
                     devName: $('#developerName').val(),
                     email: $('#developerEmail').val(),
                     devDesc: $('#developerDescription').val() || 'No description provided',
-                    socialMedia: $('#developerWebsite').val() || 'No social media'
+                    socialMedia: $('#developerWebsite').val() || 'No social media',
+                    password: $('#developerPassword').val()
                 };
                 
                 // Add developer via API
@@ -654,13 +734,13 @@
                     contentType: 'application/json',
                     data: JSON.stringify(devData),
                     success: function(response) {
-                        alert('Developer added successfully!');
+                        showToast('Success', 'Developer added successfully!', 'success');
                         $('#addDeveloperModal').modal('hide');
                         $('#addDeveloperForm')[0].reset();
                         fetchDevelopers(); // Refresh developer data
                     },
                     error: function(xhr, status, error) {
-                        alert('Error adding developer: ' + (xhr.responseJSON?.message || error));
+                        showToast('Error', 'Failed to add developer: ' + (xhr.responseJSON?.message || error), 'error');
                     }
                 });
             });
@@ -668,50 +748,89 @@
             $('#editDeveloperForm').on('submit', function(e) {
                 e.preventDefault();
                 
-                // For editing, we'd need a specific endpoint to update developers
-                // Since it's not specified in the requirements, showing a message
-                alert('Developer updated successfully!');
-                $('#editDeveloperModal').modal('hide');
-                fetchDevelopers(); // Refresh developer data
-            });
-
-            $('#addGameForm').on('submit', function(e) {
+                const devId = $('#editDeveloperId').val();
+                
+                // Get form data
+                const devData = {
+                    devName: $('#editDeveloperName').val(),
+                    email: $('#editDeveloperEmail').val(),
+                    devDesc: $('#editDeveloperDescription').val() || 'No description provided',
+                    socialMedia: $('#editDeveloperWebsite').val() || 'No social media'
+                };
+                
+                // Add password only if it's provided
+                if($('#editDeveloperPassword').val().trim() !== '') {
+                    devData.password = $('#editDeveloperPassword').val();
+                }
+                
+                // Update developer via API
+                $.ajax({
+                    url: `http://localhost:8080/api/developers/id=${devId}`,
+                    type: 'PUT',
+                    contentType: 'application/json',
+                    data: JSON.stringify(devData),
+                    success: function(response) {
+                        showToast('Success', 'Developer updated successfully!', 'success');
+                        $('#editDeveloperModal').modal('hide');
+                        fetchDevelopers(); // Refresh developer data
+                    },
+                    error: function(xhr, status, error) {
+                        showToast('Error', 'Failed to update developer: ' + (xhr.responseJSON?.message || error), 'error');
+                    }
+                });
+            });            $('#addGameForm').on('submit', function(e) {
                 e.preventDefault();
                 
                 // Get form data
                 const gameData = {
                     gName: $('#gameTitle').val(),
-                    gDesc: $('#gameDescription').val()
-                    // Note: The API doesn't seem to accept price in the example provided
-                    // If it did, we would add: gPrice: $('#gamePrice').val()
+                    gDesc: $('#gameDescription').val(),
+                    gPrice: parseFloat($('#gamePrice').val()) || 0
                 };
                 
                 // Add game via API
                 $.ajax({
-                    url: 'http://localhost:8080/api/games',
+                    url: 'http://localhost:8080/api/games/',
                     type: 'POST',
                     contentType: 'application/json',
                     data: JSON.stringify(gameData),
                     success: function(response) {
-                        alert('Game added successfully!');
+                        showToast('Success', 'Game added successfully!', 'success');
                         $('#addGameModal').modal('hide');
                         $('#addGameForm')[0].reset();
                         fetchGames(); // Refresh game data
                     },
                     error: function(xhr, status, error) {
-                        alert('Error adding game: ' + (xhr.responseJSON?.message || error));
+                        showToast('Error', 'Failed to add game: ' + (xhr.responseJSON?.message || error), 'error');
                     }
                 });
-            });
-
-            $('#editGameForm').on('submit', function(e) {
+            });            $('#editGameForm').on('submit', function(e) {
                 e.preventDefault();
                 
-                // For editing, we'd need a specific endpoint to update games
-                // Since it's not specified in the requirements, showing a message
-                alert('Game updated successfully!');
-                $('#editGameModal').modal('hide');
-                fetchGames(); // Refresh game data
+                const gameId = $('#editGameId').val();
+                
+                // Get form data
+                const gameData = {
+                    gName: $('#editGameTitle').val(),
+                    gDesc: $('#editGameDescription').val(),
+                    gPrice: parseFloat($('#editGamePrice').val()) || 0
+                };
+                
+                // Update game via API
+                $.ajax({
+                    url: `http://localhost:8080/api/games/id=${gameId}`,
+                    type: 'PUT',
+                    contentType: 'application/json',
+                    data: JSON.stringify(gameData),
+                    success: function(response) {
+                        showToast('Success', 'Game updated successfully!', 'success');
+                        $('#editGameModal').modal('hide');
+                        fetchGames(); // Refresh game data
+                    },
+                    error: function(xhr, status, error) {
+                        showToast('Error', 'Failed to update game: ' + (xhr.responseJSON?.message || error), 'error');
+                    }
+                });
             });
 
             // User filter for wishlist
@@ -821,13 +940,7 @@
             $('.edit-user-btn').on('click', function() {
                 const userId = $(this).data('id');
                 // Fetch user data by ID for editing
-                // Here you would make an API call to get user details
-                // For now, just show the modal with some placeholder data
-                $('#editUserId').val(userId);
-                $('#editUsername').val('');
-                $('#editEmail').val('');
-                $('#editRole').val('user');
-                $('#editUserModal').modal('show');
+                fetchUserById(userId);
             });
 
             $('.delete-user-btn').on('click', function() {
@@ -838,17 +951,78 @@
                         url: `http://localhost:8080/api/customers/id=${userId}`,
                         type: 'DELETE',
                         success: function(response) {
-                            alert('User deleted successfully!');
+                            showToast('Success', 'User deleted successfully!', 'success');
                             fetchUsers(); // Refresh user data
                         },
                         error: function(xhr, status, error) {
-                            alert('Error deleting user: ' + (xhr.responseJSON?.message || error));
+                            showToast('Error', 'Failed to delete user: ' + (xhr.responseJSON?.message || error), 'error');
                         }
                     });
                 }
             });
         }
         
+        // Function to fetch user by ID for editing
+        function fetchUserById(userId) {
+            $.ajax({
+                url: `http://localhost:8080/api/customers/id=${userId}`,
+                type: 'GET',
+                success: function(response) {
+                    if (response.success && response.Customer) {
+                        const user = response.Customer;
+                        
+                        // Populate the edit form
+                        $('#editUserId').val(userId);
+                        $('#editUsername').val(user.uName || '');
+                        $('#editName').val(user.name || '');
+                        $('#editSurname').val(user.surname || '');
+                        $('#editEmail').val(user.uEmail || '');
+                        $('#editPhone').val(user.uNumber || '');
+                        $('#editAge').val(user.age || 18);
+                        $('#editCountry').val(user.country || '');
+                        $('#editMoney').val(user.money || 0);
+                        $('#editPassword').val(''); // Always blank for security
+                        
+                        // Show the modal
+                        $('#editUserModal').modal('show');
+                    } else {
+                        showToast('Error', 'Failed to fetch user details', 'error');
+                    }
+                },
+                error: function(xhr, status, error) {
+                    showToast('Error', 'Failed to fetch user details: ' + (xhr.responseJSON?.message || error), 'error');
+                }
+            });
+        }
+        
+        // Function to display toast notifications
+        function showToast(title, message, type) {
+            // Create toast element
+            const toastId = 'toast-' + Date.now();
+            const toastHtml = `
+                <div id="${toastId}" class="toast" role="alert" aria-live="assertive" aria-atomic="true" data-delay="5000">
+                    <div class="toast-header ${type === 'error' ? 'bg-danger text-white' : 'bg-success text-white'}">
+                        <strong class="mr-auto">${title}</strong>
+                        <button type="button" class="ml-2 mb-1 close" data-dismiss="toast" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="toast-body">
+                        ${message}
+                    </div>
+                </div>
+            `;
+            
+            // Append and show the toast
+            $('.toast-container').append(toastHtml);
+            $(`#${toastId}`).toast('show');
+            
+            // Remove the toast after it's hidden
+            $(`#${toastId}`).on('hidden.bs.toast', function() {
+                $(this).remove();
+            });
+        }
+
         // Function to fetch real developers from API
         function fetchDevelopers() {
             $.ajax({
@@ -905,14 +1079,8 @@
             // Add event listeners for action buttons
             $('.edit-developer-btn').on('click', function() {
                 const devId = $(this).data('id');
-                // Here we would ideally fetch the developer data from the API
-                // For now just show the modal with default values
-                $('#editDeveloperId').val(devId);
-                $('#editDeveloperName').val('');
-                $('#editDeveloperEmail').val('');
-                $('#editDeveloperWebsite').val('');
-                $('#editDeveloperDescription').val('');
-                $('#editDeveloperModal').modal('show');
+                // Fetch developer data by ID for editing
+                fetchDeveloperById(devId);
             });
 
             $('.delete-developer-btn').on('click', function() {
@@ -923,13 +1091,42 @@
                         url: `http://localhost:8080/api/developers/id=${devId}`,
                         type: 'DELETE',
                         success: function(response) {
-                            alert('Developer deleted successfully!');
+                            showToast('Success', 'Developer deleted successfully!', 'success');
                             fetchDevelopers(); // Refresh developer data
                         },
                         error: function(xhr, status, error) {
-                            alert('Error deleting developer: ' + (xhr.responseJSON?.message || error));
+                            showToast('Error', 'Failed to delete developer: ' + (xhr.responseJSON?.message || error), 'error');
                         }
                     });
+                }
+            });
+        }
+        
+        // Function to fetch developer by ID for editing
+        function fetchDeveloperById(devId) {
+            $.ajax({
+                url: `http://localhost:8080/api/developers/id=${devId}`,
+                type: 'GET',
+                success: function(response) {
+                    if (response.success && response.developer) {
+                        const dev = response.developer;
+                        
+                        // Populate the edit form
+                        $('#editDeveloperId').val(devId);
+                        $('#editDeveloperName').val(dev.devName || '');
+                        $('#editDeveloperEmail').val(dev.email || '');
+                        $('#editDeveloperWebsite').val(dev.socialMedia || '');
+                        $('#editDeveloperDescription').val(dev.devDesc || '');
+                        $('#editDeveloperPassword').val(''); // Always blank for security
+                        
+                        // Show the modal
+                        $('#editDeveloperModal').modal('show');
+                    } else {
+                        showToast('Error', 'Failed to fetch developer details', 'error');
+                    }
+                },
+                error: function(xhr, status, error) {
+                    showToast('Error', 'Failed to fetch developer details: ' + (xhr.responseJSON?.message || error), 'error');
                 }
             });
         }
@@ -965,8 +1162,7 @@
                 }
             });
         }
-        
-        // Function to update the games table with real data
+          // Function to update the games table with real data
         function updateGamesTable(games) {
             let gamesHTML = '';
             if (games && games.length > 0) {
@@ -974,10 +1170,19 @@
                     gamesHTML += `
                         <tr>
                             <td>${game.gameID}</td>
-                            <td>${game.gName || 'N/A'}</td>
+                            <td>
+                                <div class="d-flex align-items-center">
+                                    <img src="http://localhost:8080/api/games/id=${game.gameID}/picture=1" 
+                                         alt="${game.gName}" 
+                                         class="mr-2" 
+                                         style="width: 40px; height: 40px; object-fit: cover; border-radius: 4px;"
+                                         onerror="this.src='https://placehold.co/40x40/3c1211/E6C000?text=No+Image'">
+                                    ${game.gName || 'N/A'}
+                                </div>
+                            </td>
                             <td>N/A</td> <!-- Developer name not provided in API response -->
                             <td>N/A</td> <!-- Genre not provided in API response -->
-                            <td>${game.gPrice ? '$' + game.gPrice : 'N/A'}</td>
+                            <td>${game.gPrice ? '$' + game.gPrice : 'Free'}</td>
                             <td>${formatDate(game.gPublishDate) || 'N/A'}</td>
                             <td>
                                 <button class="btn btn-sm btn-warning edit-game-btn" data-id="${game.gameID}">
@@ -994,21 +1199,11 @@
                 gamesHTML = '<tr><td colspan="7" class="text-center">No games found</td></tr>';
             }
             $('#gamesTable').html(gamesHTML);
-            
-            // Add event listeners for action buttons
+              // Add event listeners for action buttons
             $('.edit-game-btn').on('click', function() {
                 const gameId = $(this).data('id');
-                // Here we would ideally fetch the game data from the API
-                // For now just show the modal with default values
-                $('#editGameId').val(gameId);
-                $('#editGameTitle').val('');
-                $('#editGameDeveloper').val('');
-                $('#editGameGenre').val('');
-                $('#editGamePrice').val('');
-                $('#editGameReleaseDate').val('');
-                $('#editGameImage').val('');
-                $('#editGameDescription').val('');
-                $('#editGameModal').modal('show');
+                // Fetch game data by ID for editing
+                fetchGameById(gameId);
             });
 
             $('.delete-game-btn').on('click', function() {
@@ -1019,11 +1214,11 @@
                         url: `http://localhost:8080/api/games/id=${gameId}`,
                         type: 'DELETE',
                         success: function(response) {
-                            alert('Game deleted successfully!');
+                            showToast('Success', 'Game deleted successfully!', 'success');
                             fetchGames(); // Refresh game data
                         },
                         error: function(xhr, status, error) {
-                            alert('Error deleting game: ' + (xhr.responseJSON?.message || error));
+                            showToast('Error', 'Failed to delete game: ' + (xhr.responseJSON?.message || error), 'error');
                         }
                     });
                 }
@@ -1158,6 +1353,178 @@
                     });
                 }
             });
+        }
+        
+        // Function to fetch game by ID for editing
+        function fetchGameById(gameId) {
+            $.ajax({
+                url: `http://localhost:8080/api/games/id=${gameId}`,
+                type: 'GET',
+                success: function(response) {
+                    if (response) {
+                        const game = response;
+                        
+                        // Populate the edit form
+                        $('#editGameId').val(gameId);
+                        $('#editGameTitle').val(game.gName || '');
+                        $('#editGameDescription').val(game.gDesc || '');
+                        $('#editGamePrice').val(game.gPrice || 0);
+                        
+                        // Format the date for the date input
+                        if (game.gPublishDate) {
+                            const publishDate = new Date(game.gPublishDate);
+                            const formattedDate = publishDate.toISOString().split('T')[0]; // Format as YYYY-MM-DD
+                            $('#editGameReleaseDate').val(formattedDate);
+                        } else {
+                            $('#editGameReleaseDate').val('');
+                        }
+                        
+                        // Show the edit modal
+                        $('#editGameModal').modal('show');
+                        
+                        // Load game images if available
+                        loadGameImages(gameId);
+                    } else {
+                        showToast('Error', 'Failed to fetch game details', 'error');
+                    }
+                },
+                error: function(xhr, status, error) {
+                    showToast('Error', 'Failed to fetch game details: ' + (xhr.responseJSON?.message || error), 'error');
+                }
+            });
+        }
+        
+        // Function to load game images
+        function loadGameImages(gameId) {
+            // Clear existing images
+            $('#gameImagesContainer').html('');
+            
+            // Add image previews for each picture slot (1-5)
+            for (let i = 1; i <= 5; i++) {
+                // Create image container
+                const imgContainer = $('<div>').addClass('image-preview-container col mb-3');
+                  // Create image preview
+                const imgPreview = $('<div>').addClass('image-preview');
+                
+                // Image - swap image content between 1 and 5
+                let pictureId = i;
+                if (i === 1) {
+                    pictureId = 5;
+                } else if (i === 5) {
+                    pictureId = 1;
+                }
+                
+                const img = $('<img>')
+                    .attr('src', `http://localhost:8080/api/games/id=${gameId}/picture=${pictureId}`)
+                    .attr('alt', `Game image ${i}`)
+                    .attr('data-picture-id', pictureId)
+                    .addClass('img-fluid mb-2')
+                    .on('error', function() {
+                        // If image doesn't exist, show placeholder
+                        $(this).attr('src', 'https://placehold.co/150x150/3c1211/E6C000?text=No+Image');
+                        $(this).addClass('no-image');
+                    });
+                
+                // Image buttons
+                const btnGroup = $('<div>').addClass('btn-group btn-group-sm w-100');
+                  // Upload button
+                const uploadBtn = $('<button>')
+                    .addClass('btn btn-primary upload-image-btn')
+                    .attr('type', 'button')
+                    .attr('data-game-id', gameId)
+                    .attr('data-picture-id', pictureId)
+                    .text('Upload');
+                
+                // Delete button
+                const deleteBtn = $('<button>')
+                    .addClass('btn btn-danger delete-image-btn')
+                    .attr('type', 'button')
+                    .attr('data-game-id', gameId)
+                    .attr('data-picture-id', pictureId)
+                    .text('Delete')
+                    .on('click', function() {
+                        deleteGameImage(gameId, pictureId);
+                    });                // Label for the image slot - maintain the existing label logic
+                const imageLabel = $('<small>').addClass('d-block text-center mt-1').text(i === 5 ? 'Main Image' : (i === 1 ? 'Image 5' : `Image ${i}`));
+                
+                // Append elements
+                btnGroup.append(uploadBtn, deleteBtn);
+                imgPreview.append(img, btnGroup, imageLabel);
+                imgContainer.append(imgPreview);
+                
+                // Add to container
+                $('#gameImagesContainer').append(imgContainer);
+            }
+            
+            // Add click handler to upload buttons
+            $('.upload-image-btn').on('click', function() {
+                const gameId = $(this).data('game-id');
+                const pictureId = $(this).data('picture-id');
+                
+                // Create a hidden file input
+                const fileInput = $('<input>')
+                    .attr('type', 'file')
+                    .attr('accept', 'image/*')
+                    .css('display', 'none')
+                    .on('change', function() {
+                        if (this.files && this.files[0]) {
+                            uploadGameImage(gameId, pictureId, this.files[0]);
+                        }
+                    });
+                
+                // Append to body, trigger click, then remove
+                $('body').append(fileInput);
+                fileInput.trigger('click');
+                fileInput.on('change', function() {
+                    $(this).remove();
+                });
+            });
+        }
+        
+        // Function to upload a game image
+        function uploadGameImage(gameId, pictureId, file) {
+            const formData = new FormData();
+            formData.append('file', file);
+            
+            $.ajax({
+                url: `http://localhost:8080/api/games/id=${gameId}/picture=${pictureId}`,
+                type: 'POST',
+                data: formData,
+                processData: false,
+                contentType: false,
+                success: function(response) {
+                    showToast('Success', 'Image uploaded successfully!', 'success');
+                    
+                    // Refresh the image
+                    const img = $(`img[data-picture-id="${pictureId}"]`);
+                    img.attr('src', `http://localhost:8080/api/games/id=${gameId}/picture=${pictureId}?t=${new Date().getTime()}`);
+                    img.removeClass('no-image');
+                },
+                error: function(xhr, status, error) {
+                    showToast('Error', 'Failed to upload image: ' + (xhr.responseJSON?.message || error), 'error');
+                }
+            });
+        }
+        
+        // Function to delete a game image
+        function deleteGameImage(gameId, pictureId) {
+            if (confirm('Are you sure you want to delete this image?')) {
+                $.ajax({
+                    url: `http://localhost:8080/api/games/id=${gameId}/picture=${pictureId}`,
+                    type: 'DELETE',
+                    success: function(response) {
+                        showToast('Success', 'Image deleted successfully!', 'success');
+                        
+                        // Update the image to show it's been deleted
+                        const img = $(`img[data-picture-id="${pictureId}"]`);
+                        img.attr('src', 'https://placehold.co/150x150/3c1211/E6C000?text=No+Image');
+                        img.addClass('no-image');
+                    },
+                    error: function(xhr, status, error) {
+                        showToast('Error', 'Failed to delete image: ' + (xhr.responseJSON?.message || error), 'error');
+                    }
+                });
+            }
         }
     </script>
 </body>
