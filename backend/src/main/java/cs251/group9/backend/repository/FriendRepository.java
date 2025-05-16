@@ -14,6 +14,9 @@ import java.util.Optional;
 public interface FriendRepository extends JpaRepository<Friend, FriendId> {
     @Query("SELECT f FROM Friend f WHERE f.user1.id = :userId OR f.user2.id = :userId")
     List<Friend> findByUser1IdOrUser2Id(@Param("userId") Long userId);
+
+    @Query("SELECT f FROM Friend f WHERE f.user1.id = :userId")
+    List<Friend> findByUser1Id(@Param("userId") Long userId);
     
     @Query("SELECT f FROM Friend f WHERE f.user1.id = :user1Id AND f.user2.id = :user2Id")
     Optional<Friend> findByUser1IdAndUser2Id(@Param("user1Id") Long user1Id, @Param("user2Id") Long user2Id);

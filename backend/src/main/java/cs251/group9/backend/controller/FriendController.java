@@ -31,7 +31,7 @@ public class FriendController {
     // Get all friends of a user
     @GetMapping("/user={userId}")
     public ResponseEntity<List<Friend>> getFriendsByUserId(@PathVariable Long userId) {
-        List<Friend> friends = repo.findByUser1IdOrUser2Id(userId);
+        List<Friend> friends = repo.findByUser1Id(userId);
         return ResponseEntity.ok(friends);
     }
     
