@@ -23,13 +23,28 @@ public class ModDLCController {
     
     @Autowired
     private GameFileService fileService;
+
+    @Autowired
+    private GameRepository gameRepo;
     
 
 /////////////////////// Add mod //////////////////////
-/// TODO: Add GameID to the request body
+/// 
     @PostMapping
     public ResponseEntity<ModDLC7x> createMod(@RequestBody ModDLC7x mod) {
         return ResponseEntity.ok(modRepo.save(mod));
+    }
+    
+    // Add mod by game ID
+    @PostMapping("/game={gameId}")
+    public ResponseEntity<?> createModForGame(@PathVariable Long gameId, @RequestBody ModDLC7x mod) {
+        // Need to autowire GameRepository
+        return gameRepo.findById(gameId)
+                .map(game -> {
+                    mod.setGame(game);
+                    return ResponseEntity.ok(modRepo.save(mod));
+                })
+                .orElse(ResponseEntity.notFound().build());
     }
 
 /////////////////////// TODO: Update Game to the mod //////////////////////

@@ -5,6 +5,7 @@ package cs251.group9.backend.controller;
 
 import java.util.List;
 import java.util.stream.Collectors;
+import java.time.LocalDateTime;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -42,6 +43,19 @@ public class PlayedController {
         return playedRepo.findByUserIDAndGameID(userID, gameID)
             .map(played -> {
                 played.setPlayTime(played.getPlayTime() + additionalMinutes);
+                return ResponseEntity.ok(playedRepo.save(played));
+            })
+            .orElse(ResponseEntity.notFound().build());
+    }
+    
+///////////////// Update last play time and increment play count //////////////////////
+    @PutMapping("/user={userID}/game={gameID}/played")
+    public ResponseEntity<Played> updateLastPlayTimeAndCount(@PathVariable Long userID, 
+                                                           @PathVariable Long gameID) {
+        return playedRepo.findByUserIDAndGameID(userID, gameID)
+            .map(played -> {
+                played.setLastPlayed(LocalDateTime.now());
+                played.setPlayTime(played.getPlayTime() + 1);
                 return ResponseEntity.ok(playedRepo.save(played));
             })
             .orElse(ResponseEntity.notFound().build());

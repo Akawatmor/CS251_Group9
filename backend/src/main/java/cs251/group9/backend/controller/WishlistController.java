@@ -1,6 +1,7 @@
 package cs251.group9.backend.controller;
 
 import cs251.group9.backend.entity.*;
+import cs251.group9.backend.repository.WishlistRepository;
 import cs251.group9.backend.service.*;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +17,11 @@ public class WishlistController {
     
     @Autowired 
     private WishlistService wishlistService;
+
+    @Autowired
+    private WishlistRepository wishlistRepository;
+
+
     
 ///////////////////// Add to wishlist //////////////////////
     @PostMapping("/user={userID}/game={gameID}")
@@ -27,6 +33,13 @@ public class WishlistController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                 .body(new ErrorResponse(e.getMessage()));
         }
+    }
+
+///////////////////// Get all games in wishlist //////////////////////
+/// 
+    @GetMapping("/all")
+    public ResponseEntity<List<Wishlist>> getAllWishlists() {
+        return ResponseEntity.ok(wishlistRepository.findAll());
     }
     
 ///////////////////// Get all games in wishlist //////////////////////

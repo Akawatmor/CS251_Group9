@@ -29,14 +29,14 @@ public class FriendController {
     @Autowired private Customer1xRepository customerRepo;  // Added repository for Customer entities
 
     // Get all friends of a user
-    @GetMapping("/{userId}")
+    @GetMapping("/user={userId}")
     public ResponseEntity<List<Friend>> getFriendsByUserId(@PathVariable Long userId) {
         List<Friend> friends = repo.findByUser1IdOrUser2Id(userId);
         return ResponseEntity.ok(friends);
     }
     
     // Get a specific friendship
-    @GetMapping("/{user1Id}/{user2Id}")
+    @GetMapping("/user={user1Id}/friend={user2Id}")
     public ResponseEntity<?> getFriendship(@PathVariable Long user1Id, @PathVariable Long user2Id) {
         Optional<Friend> friendship = repo.findFriendshipBetweenUsers(user1Id, user2Id);
         
@@ -47,9 +47,16 @@ public class FriendController {
     }
 
     // Add Friend using IDs
-    @PostMapping("/{user1Id}/{user2Id}")
+    @PostMapping("/user={user1Id}/friend={user2Id}")
     public ResponseEntity<?> addFriendship(@PathVariable Long user1Id, @PathVariable Long user2Id) {
-        // Check if friendship already exists
+        // Prevent self-friendship
+        if (user1Id.equals(user2Id)) {
+            return ResponseEntity
+                .status(HttpStatus.BAD_REQUEST)
+                .body("Cannot add yourself as a friend");
+        }
+        
+        // Check if friendship already exists (in either direction)
         if (repo.findFriendshipBetweenUsers(user1Id, user2Id).isPresent()) {
             return ResponseEntity
                 .status(HttpStatus.CONFLICT)
@@ -68,16 +75,35 @@ public class FriendController {
         
         // Create composite key
         FriendId friendId = new FriendId();
-        friendId.setUserID1(user1Id);
-        friendId.setUserID2(user2Id);
+        // Ensure smaller ID is always userID1 to maintain consistency
+        if (user1Id < user2Id) {
+            friendId.setUserID1(user1Id);
+            friendId.setUserID2(user2Id);
+        } else {
+            friendId.setUserID1(user2Id);
+            friendId.setUserID2(user1Id);
+        }
         
         // Create friend entity
         Friend newFriendship = new Friend();
         newFriendship.setId(friendId);
-        newFriendship.setUser1(user1Opt.get());
-        newFriendship.setUser2(user2Opt.get());
+        // Set users according to the userID order we determined above
+        if (user1Id < user2Id) {
+            newFriendship.setUser1(user1Opt.get());
+            newFriendship.setUser2(user2Opt.get());
+        } else {
+            newFriendship.setUser1(user2Opt.get());
+            newFriendship.setUser2(user1Opt.get());
+        }
         
-        return ResponseEntity.status(HttpStatus.CREATED).body(repo.save(newFriendship));
+        try {
+            Friend savedFriendship = repo.save(newFriendship);
+            return ResponseEntity.status(HttpStatus.CREATED).body(savedFriendship);
+        } catch (Exception e) {
+            return ResponseEntity
+                .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body("Error creating friendship: " + e.getMessage());
+        }
     }
     
     // Standard add friend method (kept for backward compatibility)
@@ -87,14 +113,22 @@ public class FriendController {
     }
     
     // Remove friendship
-    @DeleteMapping("/{user1Id}/{user2Id}")
+    @DeleteMapping("/user={user1Id}/friend={user2Id}")
     public ResponseEntity<?> deleteFriendship(@PathVariable Long user1Id, @PathVariable Long user2Id) {
         Optional<Friend> friendship = repo.findFriendshipBetweenUsers(user1Id, user2Id);
         
         if (friendship.isPresent()) {
-            repo.delete(friendship.get());
-            return ResponseEntity.ok("Friendship deleted successfully");
+            try {
+                repo.delete(friendship.get());
+                return ResponseEntity.ok("Friendship deleted successfully");
+            } catch (Exception e) {
+                return ResponseEntity
+                    .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Error deleting friendship: " + e.getMessage());
+            }
         }
-        return ResponseEntity.notFound().build();
+        return ResponseEntity
+            .status(HttpStatus.NOT_FOUND)
+            .body("Friendship not found");
     }
 }

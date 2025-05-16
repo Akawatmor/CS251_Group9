@@ -6,9 +6,13 @@ package cs251.group9.backend.service;
 import org.springframework.beans.factory.annotation.*;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.*;
+import org.springframework.transaction.annotation.Transactional;
 
-import cs251.group9.backend.entity.Customer1x;
+import cs251.group9.backend.entity.*;
 import cs251.group9.backend.repository.Customer1xRepository;
+
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
 
 import java.util.*;
 
@@ -17,6 +21,9 @@ public class Customer1xService {
 
     @Autowired
     private Customer1xRepository customerRepo;
+    
+    @PersistenceContext
+    private EntityManager entityManager;
 
     /**
      * Register a new customer
@@ -95,22 +102,59 @@ public class Customer1xService {
      * @throws RuntimeException if customer not found
      */
     public Customer1x updateProfile(Long userId, Customer1x updated) {
+        // Validate input
         if (userId == null || updated == null) {
             throw new IllegalArgumentException("UserId and updated customer details cannot be null");
         }
         
+        // Find existing customer
         Customer1x existing = customerRepo.findByuserID(userId);
         if (existing == null) {
             throw new RuntimeException("User not found");
         }
-        
-        
-        // Exclude userID and money from being copied
-        BeanUtils.copyProperties(updated, existing, "userID", "money", "password");
-        
-        // Update password only if provided
-        if (updated.getPassword() != null && !updated.getPassword().isEmpty()) {
+
+        System.out.println("Existing customer: " + existing);
+        System.out.println("Updated customer: " + updated);
+
+        // Handle username updates with proper null checks
+        if (updated.getuName() != null) {
+            // Keep existing username regardless of what was submitted
+            updated.setuName(existing.getuName());
+        }
+
+        // Handle name updates with proper null checks
+        if (updated.getName() != null) {
+            // Allow name to be updated
+            existing.setName(updated.getName());
+        }
+
+        // Handle surname updates with proper null checks
+        if (updated.getSurname() != null) {
+            // Allow surname to be updated
+            existing.setSurname(updated.getSurname());
+        }
+
+        // Handle email updates with proper null checks
+        if (updated.getuEmail() != null) {
+            // Keep existing email regardless of what was submitted
+            updated.setuEmail(existing.getuEmail());
+        }
+
+        // Handle display name updates with proper null checks
+        if (updated.getdName() != null) {
+            // Allow display name to be updated
+            existing.setdName(updated.getdName());
+        }
+
+        // Handle password updates with proper null checks
+        if (updated.getPassword() != null) {
+            // Allow password to be updated
             existing.setPassword(updated.getPassword());
+        }
+        // Handle money updates with proper null checks
+        if (updated.getMoney() != null) {
+            // Allow money to be updated
+            existing.setMoney(updated.getMoney());
         }
         
         return customerRepo.save(existing);
@@ -157,12 +201,44 @@ public class Customer1xService {
      * Delete a customer
      * @param userId ID of the customer to delete
      * @throws IllegalArgumentException if userId is null
+     * @throws RuntimeException if deletion fails due to constraint violations
      */
+    @Transactional
     public void deleteCustomer(Long userId) {
         if (userId == null) {
             throw new IllegalArgumentException("UserId cannot be null");
         }
-        customerRepo.deleteById(userId);
+        
+        try {
+            // Execute custom query to remove all related records first
+            String cleanupQuery = "DELETE FROM Friend f WHERE f.user1.userID = :userId OR f.user2.userID = :userId";
+            entityManager.createQuery(cleanupQuery).setParameter("userId", userId).executeUpdate();
+            
+            // Delete Wishlist entries
+            entityManager.createQuery("DELETE FROM Wishlist w WHERE w.customer.userID = :userId")
+                         .setParameter("userId", userId).executeUpdate();
+            
+            // Delete Review entries
+            entityManager.createQuery("DELETE FROM Review r WHERE r.customer.userID = :userId")
+                         .setParameter("userId", userId).executeUpdate();
+            
+            // Delete Played entries
+            entityManager.createQuery("DELETE FROM Played p WHERE p.customer.userID = :userId")
+                         .setParameter("userId", userId).executeUpdate();
+            
+            // Delete Achievement User entries
+            entityManager.createQuery("DELETE FROM AchievementUser au WHERE au.customer.userID = :userId")
+                         .setParameter("userId", userId).executeUpdate();
+            
+            // Delete Order entries
+            entityManager.createQuery("DELETE FROM Order3x o WHERE o.customer.userID = :userId")
+                         .setParameter("userId", userId).executeUpdate();
+            
+            // Now it's safe to delete the customer
+            customerRepo.deleteById(userId);
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to delete customer: " + e.getMessage(), e);
+        }
     }
 
     /**
