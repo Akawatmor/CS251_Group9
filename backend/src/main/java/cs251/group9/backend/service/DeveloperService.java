@@ -103,6 +103,7 @@ public class DeveloperService {
         
         Developer3x existing = getDeveloperById(devId);
         
+        /*
         // Check if trying to change to an existing developer name
         if (!existing.getDevName().equals(updated.getDevName()) && 
                 isDeveloperNameTaken(updated.getDevName())) {
@@ -113,10 +114,25 @@ public class DeveloperService {
         if (!existing.getEmail().equals(updated.getEmail()) && 
                 isEmailTaken(updated.getEmail())) {
             throw new RuntimeException("Email already taken");
-        }
+        }*/
         
-        // Update fields but preserve ID
-        BeanUtils.copyProperties(updated, existing, "devID", "teamPicture");
+        // Copy properties from updated to existing
+        if (updated.getDevName() != null) {
+            existing.setDevName(updated.getDevName());
+        }
+        if (updated.getEmail() != null) {
+            existing.setEmail(updated.getEmail());
+        }
+        if (updated.getPassword() != null) {
+            existing.setPassword(updated.getPassword());
+        }
+        if (updated.getDevDesc() != null) {
+            existing.setDevDesc(updated.getDevDesc());
+        }
+
+        if (updated.getSocialMedia() != null) {
+            existing.setSocialMedia(updated.getSocialMedia());
+        }
         
         return developerRepo.save(existing);
     }

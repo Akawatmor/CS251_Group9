@@ -156,6 +156,21 @@ public class Customer1xService {
             // Allow money to be updated
             existing.setMoney(updated.getMoney());
         }
+        //country
+        if (updated.getCountry() != null) {
+            // Allow country to be updated
+            existing.setCountry(updated.getCountry());
+        }
+        if (updated.getAge() != null) {
+            // Allow number to be updated
+            existing.setAge((updated.getAge()));
+        }
+        if (updated.getuNumber() != null) {
+            // Allow number to be updated
+            existing.setuNumber(updated.getuNumber());
+        }
+
+
         
         return customerRepo.save(existing);
     }

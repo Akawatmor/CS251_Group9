@@ -106,9 +106,21 @@ public class GameController {
         return gameRepo.findById(id)
                 .map(game -> {
                     // Only update allowed fields, preserve others
-                    game.setgName(updatedGame.getgName());
-                    game.setgDesc(updatedGame.getgDesc());
-                    game.setgPrice(updatedGame.getgPrice());
+                    
+                    if (updatedGame.getgName() != null) {
+                        game.setgName(updatedGame.getgName());
+                    }
+                    if (updatedGame.getgPrice() != null) {
+                        game.setgPrice(updatedGame.getgPrice());
+                    }
+                    if (updatedGame.getgDesc() != null) {
+                        game.setgDesc(updatedGame.getgDesc());
+                    }
+                    /*
+                    if (updatedGame.getRating() != null) {
+                        game.setRating(updatedGame.getRating());
+                    }
+                        */
                     
                     // Don't update these automatically
                     // game.setRating(updatedGame.getRating());
